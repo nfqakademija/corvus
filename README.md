@@ -9,5 +9,6 @@ vagrant up
 vagrant ssh
 cd /var/www/corvus/
 composer install
+```
 
 then <http://corvus.dev> should show "Hello World" from CorvusMainBundle
