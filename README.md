@@ -4,4 +4,10 @@ Clean vagrant machine with Symfony installed.
 
 ## Notes
 
-`vagrant up` then <http://corvus.dev> should show Symfony welcome page.
+```sh
+vagrant up
+vagrant ssh
+cd /var/www/corvus/
+composer install
+
+then <http://corvus.dev> should show "Hello World" from CorvusMainBundle

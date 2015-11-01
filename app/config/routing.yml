@@ -1,3 +1,4 @@
-app:
-    resource: "@AppBundle/Controller/"
+corvus_main:
+    resource: "@CorvusMainBundle/Controller/"
     type:     annotation
+    prefix:   /
