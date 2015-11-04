@@ -1,3 +1,18 @@
+food:
+    resource: "@FoodBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+event:
+    resource: "@EventBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+dashboard:
+    resource: "@DashboardBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 corvus_main:
     resource: "@CorvusMainBundle/Controller/"
     type:     annotation
