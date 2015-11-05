@@ -2,7 +2,7 @@
 
 Clean vagrant machine with Symfony installed.
 
-## Notes
+## Instalation
 
 ```sh
 vagrant up
@@ -10,5 +10,7 @@ vagrant ssh
 cd /var/www/corvus/
 composer install
 ```
+
+to create DB tables run: ```php app/console doctrine:schema:update --force```
 
 then <http://corvus.dev> should show "Hello World" from CorvusMainBundle
