@@ -1,0 +1,9 @@
+{# AppBundle:Welcome:welcome.html.twig #}
+{% extends "CorvusMainBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+    <h1>Prisijungimas</h1>
+{{ render(controller('FOSUserBundle:Security:login')) }}
+    <h1>Registracija</h1>
+{{ render(controller('FOSUserBundle:Registration:register')) }}
+{% endblock fos_user_content %}

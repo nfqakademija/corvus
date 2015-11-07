@@ -16,4 +16,8 @@ class DefaultController extends Controller
     {
         return array('name' => 'World');
     }
+
+    public function welcomeAction(){
+        return $this->render('CorvusMainBundle:welcome:welcome.html.twig');
+    }
 }
