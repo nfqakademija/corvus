@@ -14,10 +14,28 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array('name' => 'World');
+
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($isFullyAuthenticated) {
+            return $this->dashboardAction();
+        } else{
+            return $this->welcomeAction();
+        }
     }
 
+    /**
+     * @Route("/login")
+     */
     public function welcomeAction(){
         return $this->render('CorvusMainBundle:welcome:welcome.html.twig');
+    }
+
+    /**
+     * @Route("/dashboard")
+     */
+    public function dashboardAction(){
+        return $this->render('CorvusMainBundle:welcome:dashboard.html.twig');
     }
 }
