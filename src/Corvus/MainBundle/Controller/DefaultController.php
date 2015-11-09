@@ -36,6 +36,12 @@ class DefaultController extends Controller
      * @Route("/dashboard")
      */
     public function dashboardAction(){
-        return $this->render('CorvusMainBundle:welcome:dashboard.html.twig');
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $id = $user->getId();
+
+        return $this->render('CorvusMainBundle:welcome:dashboard.html.twig', array(
+            'user_id' => $id
+        ));
     }
 }
