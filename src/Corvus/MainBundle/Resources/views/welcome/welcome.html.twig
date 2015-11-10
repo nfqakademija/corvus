@@ -3,11 +3,11 @@
 
 {% block fos_user_content %}
     <div class="col-md-5">
-        <h1>Prisijungimas</h1>
+        <h1>Log in</h1>
         {{ render(controller('FOSUserBundle:Security:login')) }}
     </div>
     <div class="col-md-5 col-md-offset-1">
-        <h1>Registracija</h1>
+        <h1>Registration</h1>
         {{ render(controller('FOSUserBundle:Registration:register')) }}
     </div>
 {% endblock fos_user_content %}
