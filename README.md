@@ -15,4 +15,4 @@ create DB
 Update DB, so that it have fos_user table
  php app/console doctrine:schema:update --force
 ```
-then <http://corvus.dev> should show "Hello World" from CorvusMainBundle
+then <http://corvus.dev> should show login and registration forms
