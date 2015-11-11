@@ -28,10 +28,16 @@ class DefaultController extends Controller
     /**
      * @Route("/login")
      */
-    public function welcomeAction(){
-        return $this->render('CorvusMainBundle:welcome:welcome.html.twig');
-    }
+    public function welcomeAction()
+    {
+        /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('fos_user.registration.form.factory');
 
+        $form = $formFactory->createForm();
+        return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
     /**
      * @Route("/dashboard")
      */

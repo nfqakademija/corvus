@@ -8,6 +8,8 @@
     </div>
     <div class="col-md-5 col-md-offset-1">
         <h1>Registration</h1>
-        {{ render(controller('FOSUserBundle:Registration:register')) }}
+
+            {% include "FOSUserBundle:Registration:register_content.html.twig" %}
+
     </div>
 {% endblock fos_user_content %}
