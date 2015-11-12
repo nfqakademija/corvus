@@ -1,28 +1,28 @@
-filters:
-    paths:
-        - 'src/*'
-    excluded_paths:
-        - 'src/**/Tests'
-        - 'src/**/Resources'
+filter:
+  paths:
+    - 'src/*'
+  excluded_paths:
+    - 'src/**/Tests'
+    - 'src/**/Resources'
 
 checks:
-    php: true
+  php: true
 
 coding_style:
-    php:
-        spaces:
-            around_operations:
-                concatenation: false
+  php:
+    spaces:
+      around_operators:
+        concatenation: false
 
 build:
-    dependencies:
-        override:
-            - composer install --no-interaction --prefer-sourse
+  dependencies:
+    override:
+      - composer install --no-interaction --prefer-source
 
-    tests:
-        override:
-            -
-                command: bin/phpunit -c app --coverage-clover=my-coverage-file
-                coverage:
-                    file: my-coverage-file
-                    format: php-cover
+  tests:
+    override:
+      -
+        command: bin/phpunit -c app --coverage-clover=coverage.xml
+        coverage:
+          file: coverage.xml
+          format: php-clover
