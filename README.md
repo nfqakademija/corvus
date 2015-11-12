@@ -14,6 +14,5 @@ composer install
 
 to create DB tables run: ```php app/console doctrine:schema:update --force```
 
-
 then <http://corvus.dev> should show login and registration forms
 
