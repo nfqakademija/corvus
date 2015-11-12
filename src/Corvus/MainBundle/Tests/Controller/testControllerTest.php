@@ -11,6 +11,10 @@ class testControllerTest extends WebTestCase
         $client = static::createClient();
 
         $crawler = $client->request('GET', '/Contacts');
+	$heading = $crawler->filter('h1')->eq(0)->text();
+	$this->assertEquals('Welcome to the test:Contacts page', $heading);
+	
+	
     }
 
 }
