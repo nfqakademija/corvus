@@ -17,3 +17,11 @@ corvus_main:
     resource: "@CorvusMainBundle/Controller/"
     type:     annotation
     prefix:   /
+
+login:
+    path:     /login
+    defaults: { _controller: CorvusMainBundle:Default:welcome }
+    methods:  [GET, POST]
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
