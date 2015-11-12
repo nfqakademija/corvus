@@ -1,3 +1,4 @@
+
 food:
     resource: "@FoodBundle/Controller/"
     type:     annotation
@@ -13,7 +14,17 @@ dashboard:
     type:     annotation
     prefix:   /
 
+
 corvus_main:
-    resource: "@CorvusMainBundle/Controller/"
-    type:     annotation
-    prefix:   /
+    path:     /
+    defaults: { _controller: CorvusMainBundle:Default:index }
+
+login:
+    path:     /login
+    defaults: { _controller: CorvusMainBundle:Default:welcome }
+    methods:  [GET, POST]
+
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
