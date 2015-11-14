@@ -16,10 +16,12 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
             new Corvus\MainBundle\CorvusMainBundle(),
             new Corvus\DashboardBundle\DashboardBundle(),
             new Corvus\EventBundle\EventBundle(),
             new Corvus\FoodBundle\FoodBundle(),
+            new Corvus\UserBundle\CorvusUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
