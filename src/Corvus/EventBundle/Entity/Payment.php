@@ -17,19 +17,23 @@ use Doctrine\ORM\Mapping as ORM;
 class Payment
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="payment_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $paymentId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="user_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "userPayments")
+     * @ORM\JoinColumn(name = "user_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $userId;
 
     /**
-     * @ORM\Column(type="integer", name="event_id")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "eventPayments")
+     * @ORM\JoinColumn(name = "event_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $eventId;
 

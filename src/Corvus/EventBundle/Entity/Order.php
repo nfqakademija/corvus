@@ -17,24 +17,30 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="order_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $orderId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="dish_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\FoodBundle\Entity\Dish")
+     * @ORM\JoinColumn(name="dish_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $dishId;
 
     /**
-     * @ORM\Column(type="integer", name="user_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "userOrders")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $userId;
 
     /**
-     * @ORM\Column(type="integer", name="event_id")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "eventOrders")
+     * @ORM\JoinColumn(name="event_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $eventId;
 

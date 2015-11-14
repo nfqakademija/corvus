@@ -17,16 +17,19 @@ use Doctrine\ORM\Mapping as ORM;
 class Dish
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="dish_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $dishId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="dealer_id")
+     * @ORM\ManyToOne(targetEntity = "Dealer", inversedBy = "dishes")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @var integer
      */
-    protected $dealerId;
+    protected $dealer;
 
     /**
      * @ORM\Column(type="string", name="name", length=255)

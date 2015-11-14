@@ -7,7 +7,9 @@
  */
 namespace Corvus\EventBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 /**
  * @ORM\Entity
@@ -16,19 +18,24 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="event_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $eventId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="host_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "eventsHost")
+     * @ORM\JoinColumn(name = "host_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $hostId;
 
     /**
-     * @ORM\Column(type="integer", name="dealer_id")
+     * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @var integer
      */
     protected $dealerId;
 
@@ -46,6 +53,34 @@ class Event
      * @ORM\Column(type="boolean", name="is_deleted")
      */
     protected $isDeleted;
+
+    /**
+     *  @ORM\OneToMany(targetEntity="EventUser", mappedBy="eventId")
+     */
+    protected $userEvents;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "EventUser", mappedBy="eventId")
+     */
+    protected $emails;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="eventId")
+     */
+    protected $eventPayments;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "Order", mappedBy = "eventId")
+     */
+    protected $eventOrders;
+
+    public function __construct()
+    {
+        $this->userEvents = new ArrayCollection();
+        $this->emails = new ArrayCollection();
+        $this->eventPayments = new ArrayCollection();
+        $this->eventOrders = new ArrayCollection();
+    }
 
     /**
      * Get eventId

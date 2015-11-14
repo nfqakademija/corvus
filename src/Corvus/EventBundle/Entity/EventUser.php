@@ -17,14 +17,18 @@ use Doctrine\ORM\Mapping as ORM;
 class EventUser
 {
     /**
-     * @ORM\Column(type="integer", name="user_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "eventUsers")
+     * @ORM\JoinColumn(name = "user_id", referencedColumnName = "id")
      * @ORM\Id
+     * @var integer
      */
     protected $userId;
 
     /**
-     * @ORM\Column(type="integer", name="event_id")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "userEvents")
+     * @ORM\JoinColumn(name = "event_id", referencedColumnName = "id")
      * @ORM\Id
+     * @var integer
      */
     protected $eventId;
 

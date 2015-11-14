@@ -8,6 +8,7 @@
 
 namespace Corvus\FoodBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,29 +18,44 @@ use Doctrine\ORM\Mapping as ORM;
 class Dealer
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="dealer_id")
+     * @ORM\OneToMany(targetEntity = "Dish", mappedBy = "dealer")
+     */
+    protected $dishes;
+
+    public function __construct()
+    {
+        $this->dishes = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $dealerId;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255, name="name")
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", length=255, name="phone")
+     * @var string
      */
     protected $phone;
 
     /**
      * @ORM\Column(type="string", length=255, name="address")
+     * @var string
      */
     protected $address;
 
     /**
      * @ORM\Column(type="string", length=255, name="email")
+     * @var string
      */
     protected $email;
 
