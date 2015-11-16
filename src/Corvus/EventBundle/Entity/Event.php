@@ -52,7 +52,7 @@ class Event
     /**
      * @ORM\Column(type="boolean", name="is_deleted")
      */
-    protected $isDeleted;
+    protected $isDeleted = false;
 
     /**
      *  @ORM\OneToMany(targetEntity="EventUser", mappedBy="eventId")
