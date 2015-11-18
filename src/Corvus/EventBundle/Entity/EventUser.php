@@ -17,67 +17,66 @@ use Doctrine\ORM\Mapping as ORM;
 class EventUser
 {
     /**
-     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "eventUsers")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "events")
      * @ORM\JoinColumn(name = "user_id", referencedColumnName = "id")
      * @ORM\Id
-     * @var integer
+     * @var User
      */
-    protected $userId;
+    protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "userEvents")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "users")
      * @ORM\JoinColumn(name = "event_id", referencedColumnName = "id")
      * @ORM\Id
-     * @var integer
+     * @var Event
      */
-    protected $eventId;
-
+    protected $event;
 
     /**
-     * Set userId
+     * Set user
      *
-     * @param integer $userId
+     * @param \Corvus\MainBundle\Entity\User $user
      *
      * @return EventUser
      */
-    public function setUserId($userId)
+    public function setUser(\Corvus\MainBundle\Entity\User $user)
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userId
+     * Get user
      *
-     * @return integer
+     * @return \Corvus\MainBundle\Entity\User
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
-     * Set eventId
+     * Set event
      *
-     * @param integer $eventId
+     * @param \Corvus\EventBundle\Entity\Event $event
      *
      * @return EventUser
      */
-    public function setEventId($eventId)
+    public function setEvent(\Corvus\EventBundle\Entity\Event $event)
     {
-        $this->eventId = $eventId;
+        $this->event = $event;
 
         return $this;
     }
 
     /**
-     * Get eventId
+     * Get event
      *
-     * @return integer
+     * @return \Corvus\EventBundle\Entity\Event
      */
-    public function getEventId()
+    public function getEvent()
     {
-        return $this->eventId;
+        return $this->event;
     }
 }

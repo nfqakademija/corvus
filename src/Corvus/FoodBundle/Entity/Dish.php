@@ -27,67 +27,42 @@ class Dish
     /**
      * @ORM\ManyToOne(targetEntity = "Dealer", inversedBy = "dishes")
      * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
-     * @var integer
+     * @var Dealer
      */
     protected $dealer;
 
     /**
      * @ORM\Column(type="string", name="name", length=255)
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", name="image_link", length=255)
+     * @var string
      */
     protected $imageLink;
 
     /**
-     * @ORM\Column(type="string", name="category", length=255)
-     */
-    protected $category;
-
-    /**
-     * @ORM\Column(type="integer", name="price")
+     * @ORM\Column(type="float", name="price")
+     * @var float
      */
     protected $price;
 
     /**
-     * @ORM\Column(type="boolean", name="removed_from_menu")
+     * @ORM\Column(type="boolean", name="removed_from_menu", nullable=true)
+     * @var boolean
      */
     protected $removedFromMenu;
 
     /**
-     * Get dishId
+     * Get id
      *
      * @return integer
      */
-    public function getDishId()
+    public function getId()
     {
-        return $this->dishId;
-    }
-
-    /**
-     * Set dealerId
-     *
-     * @param integer $dealerId
-     *
-     * @return Dish
-     */
-    public function setDealerId($dealerId)
-    {
-        $this->dealerId = $dealerId;
-
-        return $this;
-    }
-
-    /**
-     * Get dealerId
-     *
-     * @return integer
-     */
-    public function getDealerId()
-    {
-        return $this->dealerId;
+        return $this->id;
     }
 
     /**
@@ -115,33 +90,33 @@ class Dish
     }
 
     /**
-     * Set category
+     * Set imageLink
      *
-     * @param string $category
+     * @param string $imageLink
      *
      * @return Dish
      */
-    public function setCategory($category)
+    public function setImageLink($imageLink)
     {
-        $this->category = $category;
+        $this->imageLink = $imageLink;
 
         return $this;
     }
 
     /**
-     * Get category
+     * Get imageLink
      *
      * @return string
      */
-    public function getCategory()
+    public function getImageLink()
     {
-        return $this->category;
+        return $this->imageLink;
     }
 
     /**
      * Set price
      *
-     * @param integer $price
+     * @param float $price
      *
      * @return Dish
      */
@@ -155,7 +130,7 @@ class Dish
     /**
      * Get price
      *
-     * @return integer
+     * @return float
      */
     public function getPrice()
     {
@@ -187,26 +162,26 @@ class Dish
     }
 
     /**
-     * Set imageLink
+     * Set dealer
      *
-     * @param string $imageLink
+     * @param \Corvus\FoodBundle\Entity\Dealer $dealer
      *
      * @return Dish
      */
-    public function setImageLink($imageLink)
+    public function setDealer(\Corvus\FoodBundle\Entity\Dealer $dealer = null)
     {
-        $this->imageLink = $imageLink;
+        $this->dealer = $dealer;
 
         return $this;
     }
 
     /**
-     * Get imageLink
+     * Get dealer
      *
-     * @return string
+     * @return \Corvus\FoodBundle\Entity\Dealer
      */
-    public function getImageLink()
+    public function getDealer()
     {
-        return $this->imageLink;
+        return $this->dealer;
     }
 }
