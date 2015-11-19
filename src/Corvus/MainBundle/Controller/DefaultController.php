@@ -19,7 +19,7 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
-            return $this->dashboardAction();
+            return $this->redirectToRoute('corvus_dashboard_default_index');
         } else{
             return $this->welcomeAction();
         }
@@ -31,16 +31,27 @@ class DefaultController extends Controller
     public function welcomeAction()
     {
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
-        $formFactory = $this->get('fos_user.registration.form.factory');
 
-        $form = $formFactory->createForm();
-        return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
-            'form' => $form->createView(),
-        ));
+
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($isFullyAuthenticated) {
+            return $this->redirectToRoute('corvus_dashboard_default_index');
+        } else {
+
+
+            $formFactory = $this->get('fos_user.registration.form.factory');
+
+            $form = $formFactory->createForm();
+            return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
     }
-    /**
+    /*
      * @Route("/dashboard")
-     */
+     *
     public function dashboardAction(){
 
         $user = $this->container->get('security.context')->getToken()->getUser();
@@ -50,4 +61,5 @@ class DefaultController extends Controller
             'user_id' => $id
         ));
     }
+    */
 }
