@@ -33,7 +33,7 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Corvus\EventBundle\Entity\EventUser", mappedBy="user")
+     * @ORM\ManyToMany(targetEntity="Corvus\EventBundle\Entity\Event", mappedBy="users")
      * @var Event[]|ArrayCollection
      */
     protected $events;
@@ -64,30 +64,6 @@ class User extends BaseUser
         $this->eventsHost = new ArrayCollection();
         $this->payments = new ArrayCollection();
         $this->orders = new ArrayCollection();
-    }
-
-    /**
-     * Add event
-     *
-     * @param \Corvus\EventBundle\Entity\EventUser $event
-     *
-     * @return User
-     */
-    public function addEvent(\Corvus\EventBundle\Entity\EventUser $event)
-    {
-        $this->events[] = $event;
-
-        return $this;
-    }
-
-    /**
-     * Remove event
-     *
-     * @param \Corvus\EventBundle\Entity\EventUser $event
-     */
-    public function removeEvent(\Corvus\EventBundle\Entity\EventUser $event)
-    {
-        $this->events->removeElement($event);
     }
 
     /**
@@ -200,5 +176,29 @@ class User extends BaseUser
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * Add event
+     *
+     * @param \Corvus\EventBundle\Entity\Event $event
+     *
+     * @return User
+     */
+    public function addEvent(\Corvus\EventBundle\Entity\Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param \Corvus\EventBundle\Entity\Event $event
+     */
+    public function removeEvent(\Corvus\EventBundle\Entity\Event $event)
+    {
+        $this->events->removeElement($event);
     }
 }

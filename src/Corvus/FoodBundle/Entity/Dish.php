@@ -38,6 +38,12 @@ class Dish
     protected $name;
 
     /**
+     * @ORM\Column(type="string", name="description", length=255)
+     * @var string
+     */
+    protected $description;
+
+    /**
      * @ORM\Column(type="string", name="image_link", length=255)
      * @var string
      */
@@ -53,7 +59,7 @@ class Dish
      * @ORM\Column(type="boolean", name="removed_from_menu", nullable=true)
      * @var boolean
      */
-    protected $removedFromMenu;
+    protected $removedFromMenu = false;
 
     /**
      * Get id
@@ -183,5 +189,29 @@ class Dish
     public function getDealer()
     {
         return $this->dealer;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Dish
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

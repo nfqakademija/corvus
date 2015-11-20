@@ -62,7 +62,7 @@ class Event
     protected $isDeleted;
 
     /**
-     *  @ORM\ManyToMany(targetEntity="EventUser", mappedBy="event")
+     *  @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", mappedBy="events")
      * @var User[]|ArrayCollection
      */
     protected $users;
@@ -248,30 +248,6 @@ class Event
     }
 
     /**
-     * Add user
-     *
-     * @param \Corvus\EventBundle\Entity\EventUser $user
-     *
-     * @return Event
-     */
-    public function addUser(\Corvus\EventBundle\Entity\EventUser $user)
-    {
-        $this->users[] = $user;
-
-        return $this;
-    }
-
-    /**
-     * Remove user
-     *
-     * @param \Corvus\EventBundle\Entity\EventUser $user
-     */
-    public function removeUser(\Corvus\EventBundle\Entity\EventUser $user)
-    {
-        $this->users->removeElement($user);
-    }
-
-    /**
      * Get users
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -381,5 +357,29 @@ class Event
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * Add user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     *
+     * @return Event
+     */
+    public function addUser(\Corvus\MainBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     */
+    public function removeUser(\Corvus\MainBundle\Entity\User $user)
+    {
+        $this->users->removeElement($user);
     }
 }
