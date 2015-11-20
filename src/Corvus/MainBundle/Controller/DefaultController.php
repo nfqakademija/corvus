@@ -19,7 +19,7 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
-            return $this->redirectToRoute('corvus_dashboard_default_index');
+            return $this->redirectToRoute('corvus_main');
         } else{
             return $this->welcomeAction();
         }
@@ -37,7 +37,7 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
-            return $this->redirectToRoute('corvus_dashboard_default_index');
+            return $this->redirectToRoute('corvus_main');
         } else {
 
 

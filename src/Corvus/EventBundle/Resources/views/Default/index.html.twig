@@ -1,1 +1,28 @@
-Hello {{ name }}!
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+
+Event name: {{ event_name }}!<br>
+dealer {{ dealer }}<br>
+    <div class="col-md-8" style="outline: 1px solid lightgray;" >
+        <h3>Patiekalai</h3>
+        <div>
+            <ul class="list-group">
+                {% for dish in dishes %}
+                    <li class="list-group-item">
+                        <b>{{ dish.name }}</b> <br>
+                        kaina: {{ dish.price }}
+                        <div style="float: right;">Kiekis:<input type="number" name="quantity" min="1" max="5"> <button>Prideti</button></div>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-4" style="outline: 1px solid lightgray; height: 200px;" >
+        <h3>Krepselis</h3>
+    </div>
+
+
+{% endblock event_content %}
