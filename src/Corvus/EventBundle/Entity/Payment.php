@@ -20,90 +20,44 @@ class Payment
      * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "userPayments")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "payments")
      * @ORM\JoinColumn(name = "user_id", referencedColumnName = "id")
-     * @var integer
+     * @var User
      */
-    protected $userId;
+    protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "eventPayments")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "payments")
      * @ORM\JoinColumn(name = "event_id", referencedColumnName = "id")
-     * @var integer
+     * @var Event
      */
-    protected $eventId;
+    protected $event;
 
     /**
-     * @ORM\Column(type="integer", name="paid")
+     * @ORM\Column(type="float", name="paid")
+     * @var float
      */
     protected $paid;
 
     /**
-     * Get paymentId
+     * Get id
      *
      * @return integer
      */
-    public function getPaymentId()
+    public function getId()
     {
-        return $this->paymentId;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     *
-     * @return Payment
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * Set eventId
-     *
-     * @param integer $eventId
-     *
-     * @return Payment
-     */
-    public function setEventId($eventId)
-    {
-        $this->eventId = $eventId;
-
-        return $this;
-    }
-
-    /**
-     * Get eventId
-     *
-     * @return integer
-     */
-    public function getEventId()
-    {
-        return $this->eventId;
+        return $this->id;
     }
 
     /**
      * Set paid
      *
-     * @param integer $paid
+     * @param float $paid
      *
      * @return Payment
      */
@@ -117,10 +71,58 @@ class Payment
     /**
      * Get paid
      *
-     * @return integer
+     * @return float
      */
     public function getPaid()
     {
         return $this->paid;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     *
+     * @return Payment
+     */
+    public function setUser(\Corvus\MainBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Corvus\MainBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set event
+     *
+     * @param \Corvus\EventBundle\Entity\Event $event
+     *
+     * @return Payment
+     */
+    public function setEvent(\Corvus\EventBundle\Entity\Event $event = null)
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * Get event
+     *
+     * @return \Corvus\EventBundle\Entity\Event
+     */
+    public function getEvent()
+    {
+        return $this->event;
     }
 }
