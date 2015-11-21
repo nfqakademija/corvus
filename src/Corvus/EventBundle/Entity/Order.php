@@ -54,7 +54,7 @@ class Order
     protected $quantity;
 
     /**
-     * @ORM\Column(type="integer", name="price_per_unit")
+     * @ORM\Column(type="float", name="price_per_unit")
      * @var float
      */
     protected $pricePerUnit;

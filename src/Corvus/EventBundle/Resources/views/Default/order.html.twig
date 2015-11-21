@@ -1,0 +1,57 @@
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+    <div class="col-md-12" style="outline: 1px solid lightgray;" >
+        <div class="col-md-3" >
+            <b>Event name:</b> <br>
+            {{ event.title }}!
+        </div>
+
+        <div class="col-md-3" >
+            <b>Date:</b> <br>
+            {{ event.enddatetime | date }}
+        </div>
+
+        <div class="col-md-3" >
+            <b>Food Dealer:</b> <br>
+            {{ dealer }}
+        </div>
+        <div class="col-md-3" >
+            <b>people ammount:</b> <br>
+            NEED TO FIX!!!!!!
+        </div>
+
+
+    </div>
+
+    <div class="col-md-12" style="outline: 1px solid lightgray;" >
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Dish</th>
+                    <th>Ammount</th>
+                    <th>Total Price</th>
+                    <th>Mark if cant order</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.dish.name | raw}}</td>
+                    <td>{{ order.quantity | raw}}</td>
+                    <td>{{ order.pricePerUnit | raw}}</td>
+                    <td>X</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="col-md-12" style="outline: 1px solid lightgray;" >
+        <h4>Apytiksilis pristatymo laikas</h4>
+        <input type="date"> <br>
+        <button>Patvirtinti</button> <button>Atsaukti</button>
+    </div>
+
+{% endblock event_content %}
