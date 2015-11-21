@@ -14,6 +14,10 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array('name' => 'Dashboard');
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $id = $user->getId();
+
+        //return $this->render('CorvusMainBundle:welcome:dashboard.html.twig', array('user_id' => $id));
+        return array('name' => $id);
     }
 }
