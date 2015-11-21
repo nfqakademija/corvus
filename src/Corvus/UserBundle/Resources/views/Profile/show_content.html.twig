@@ -1,0 +1,10 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="fos_user_user_show" xmlns="http://www.w3.org/1999/html">
+    <p>{{ 'profile.show.username'|trans }}: {{ user.username }}</p>
+    <p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
+
+    <a href="{{ path('fos_user_profile_edit') }}">Edit profile</a></br>
+    <a href="{{ path('fos_user_change_password') }}">Change password</a></br>
+    <a href="{{ path('corvus_main') }}">Dashboard</a>
+</div>
