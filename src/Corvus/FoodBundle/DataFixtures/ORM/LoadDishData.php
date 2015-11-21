@@ -66,6 +66,12 @@ class LoadDishData extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($dish5);
         $manager->flush();
+
+        $this->addReference('f1', $dish1);
+        $this->addReference('f2', $dish2);
+        $this->addReference('f3', $dish3);
+        $this->addReference('f4', $dish4);
+        $this->addReference('f5', $dish5);
     }
 
     public function getOrder()
