@@ -17,8 +17,8 @@
             {{ dealer }}
         </div>
         <div class="col-md-3" >
-            <b>people ammount:</b> <br>
-            NEED TO FIX!!!!!!
+            <b>Ammount of people who ordered: </b>
+            {{ people_count}}
         </div>
 
 
@@ -37,9 +37,9 @@
             <tbody>
             {% for order in orders %}
                 <tr>
-                    <td>{{ order.dish.name | raw}}</td>
-                    <td>{{ order.quantity | raw}}</td>
-                    <td>{{ order.pricePerUnit | raw}}</td>
+                    <td>{{ order.orders.dish.name | raw}}</td>
+                    <td>{{ order.quantity_sum | raw}}</td>
+                    <td>{{ order.price_sum | raw}}</td>
                     <td>X</td>
                 </tr>
             {% endfor %}
@@ -49,9 +49,15 @@
     </div>
 
     <div class="col-md-12" style="outline: 1px solid lightgray;" >
-        <h4>Apytiksilis pristatymo laikas</h4>
-        <input type="date"> <br>
-        <button>Patvirtinti</button> <button>Atsaukti</button>
+        <h4>Approximately delivery time</h4>
+        {{ form_start(form) }}
+
+
+
+        {{ form_widget(form.dueDate) }}
+        <br>
+        {{ form_widget(form.save) }}
+        {{ form_end(form) }}
     </div>
 
 {% endblock event_content %}

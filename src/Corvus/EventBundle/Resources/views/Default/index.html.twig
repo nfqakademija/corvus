@@ -5,16 +5,16 @@
 Event name: {{ event_name }}!<br>
 dealer {{ dealer }}<br>
     <div class="col-md-8" style="outline: 1px solid lightgray;" >
-        <h3>Patiekalai</h3>
+        <h3>Dish'es</h3>
         <div>
             <ul class="list-group">
                 {% for dish in dishes %}
                     <li class="list-group-item">
                         <h4>{{ dish.name }}</h4> <br>
                         {{ dish.description }} <br>
-                        kaina: {{ dish.price }} €
+                        Price: {{ dish.price }} €
                         <div style="float: right;">
-                            Kiekis:<input type="number" name="quantity" min="1" max="1000" value="1"> <button>Prideti</button>
+                            Amount:<input type="number" name="quantity" min="1" max="100" value="1"> <button data-id="{{ dish.id }}">Add</button>
                         </div>
 
                     </li>
@@ -23,22 +23,101 @@ dealer {{ dealer }}<br>
         </div>
     </div>
 
-    <div class="col-md-4" style="outline: 1px solid lightgray; height: 200px;" >
+    <div class="col-md-4" style="outline: 1px solid lightgray; min-height: 200px;" >
         <h3>Krepselis</h3>
         {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-    </div>
-    {{ form_start(form) }}
+        {# render the task's only field: description #}
 
 
+        <ul class="orders list-group"  data-prototype="
+        {% filter escape %}
 
-
+        {{ include('EventBundle::prototype.html.twig', { 'form': form.orders.vars.prototype }) }}
+        {% endfilter %}">
             {# iterate over each existing tag and render its only field: name #}
             {% for order in form.orders %}
-                <p>{{ form_row(order.id) }}</p>
+                <li class="list-group-item" >
+
+                    {{ form_widget(order.dish_id, {'attr': {'value': order.vars.value.dish.id}}) }}
+
+                    {{ form_widget(order.quantity, {'attr': {'type': 'hidden'}})}}
+
+                    preke: {{ order.vars.value.dish.name }}<br>
+                    kiekis: {{ order.vars.value.quantity }}<br>
+                    kaina: {{ order.vars.value.quantity * order.vars.value.pricePerUnit }}<br>
+
+
+                </li>
             {% endfor %}
+        </ul>
+        {{ form_end(form) }}
+    </div>
 
-    {{ form_end(form) }}
+    <script>
+        var $collectionHolder;
 
+        // setup an "add a tag" link
+        var $addOrderLink = $('<a href="#" class="add_order_link">Add a order</a>');
+        var $newLinkLi = $('<li class="list-group-item" ></li>').append($addOrderLink);
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('ul.orders');
+
+            // add a delete link to all of the existing tag form li elements
+            $collectionHolder.find('li').each(function() {
+                addOrderFormDeleteLink($(this));
+            });
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addOrderLink.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addOrderForm($collectionHolder, $newLinkLi);
+            });
+        });
+
+        function addOrderForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index).replace(/__idvalue__/g, 54).replace(/__qvalue__/g, 54) + "Preke: <br> Kiekis: <br> kaina: <br>";
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li class="list-group-item" ></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+
+            // add a delete link to the new form
+            addOrderFormDeleteLink($newFormLi);
+        }
+
+        function addOrderFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<button>-</button>');
+            $tagFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the tag form
+                $tagFormLi.remove();
+            });
+        }
+    </script>
 {% endblock event_content %}

@@ -2,7 +2,9 @@
 
 namespace Corvus\EventBundle\Controller;
 
+use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
+use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
@@ -45,8 +47,8 @@ class DefaultController extends Controller
             } else {
 
                 /*In future need to add security level, that only users which participates in event can reach this page*/
-
-                $dealer_id =  $event->getDealer();
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                $dealer_id = $event->getDealer();
                 $event_name = $event->getTitle();
 
                 $dealer = $this->getDoctrine()
@@ -57,14 +59,24 @@ class DefaultController extends Controller
                 $dishes = $this->getDoctrine()
                     ->getRepository('FoodBundle:Dish')->findBy(array('dealer' => $dealer_id));
 
-                $orders = $this->getDoctrine()
-                    ->getRepository('EventBundle:Order')->findBy(array('id' => '1'));
 
-                $form = $this->createFormBuilder()->add('orders', 'collection', array(
-                    'type'         => new OrderType($orders),
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                ))->getForm();
+                $orders = $this->getDoctrine()
+                    ->getRepository('EventBundle:Order')->findBy(array('event' => $event, 'user' => $user));
+
+
+                $cart = new Cart();
+
+                $order = new Order();
+
+                if ($orders != null) {
+                    foreach ($orders as $order) {
+                        $cart->getOrders()->add($order);
+                    }
+                }
+
+
+
+                $form = $this->createForm(new CartType(), $cart);
 
 
                 return $this->render('EventBundle:Default:index.html.twig', array(
@@ -109,28 +121,48 @@ class DefaultController extends Controller
                         'Event status is incorect '.$event_status
                     );
                 } else {
+                    $em = $this->getDoctrine()->getManager();
 
-                    $orders = $this->getDoctrine()
-                        ->getRepository('EventBundle:Order')->findAll();
+                    /*Calculating how many people ordered food*/
+                    $query = $em->createQuery(
+                        'SELECT COUNT(DISTINCT o.user)
+                        FROM EventBundle:Order o
+                        WHERE o.event = :event'
+                    )->setParameter('event',$event->getId());
+                    $people_count = $query->getSingleScalarResult();
+                    /*----------------------------------------------*/
+
+                    /* Selecting grouped data of orders */
+                    $query = $em->createQuery(
+                        'SELECT o orders, SUM(o.quantity) quantity_sum, SUM(o.pricePerUnit*o.quantity) price_sum
+                        FROM EventBundle:Order o
+                        WHERE o.event = :event
+                        GROUP BY o.dish'
+                    )->setParameter('event',$event->getId());
+
+                    $orders = $query->getResult();
+                    /*----------------------------*/
 
 
+                    /* Get dealer name*/
                     $dealer_id =  $event->getDealer();
-
-
                     $dealer = $this->getDoctrine()
                         ->getRepository('FoodBundle:Dealer')->find($dealer_id);
-
                     $dealer_name = $dealer->getName();
+                    /*--------------------------------*/
 
-                    $dishes = $this->getDoctrine()
-                        ->getRepository('FoodBundle:Dish')->findBy(array('dealer' => $dealer_id));
 
+                    $form = $this->createFormBuilder()
+                        ->add('dueDate', 'date')
+                        ->add('save', 'submit', array('label' => 'Save'))
+                        ->getForm();
 
                     return $this->render('EventBundle:Default:order.html.twig', array(
                         'event' => $event,
                         'dealer' =>  $dealer_name,
-                        'dishes' => $dishes,
+                        'people_count' => $people_count,
                         'orders' => $orders,
+                        'form' => $form->createView(),
                     ));
                 }
             }
