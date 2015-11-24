@@ -13,8 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="corvus_order")
-
+ * @ORM\Table(name="`order`")
  */
 class Order
 {
@@ -54,7 +53,7 @@ class Order
     protected $quantity;
 
     /**
-     * @ORM\Column(type="decimal", precision=6, scale=2,  name="price_per_unit")
+     * @ORM\Column(type="float", name="price_per_unit")
      * @var float
      */
     protected $pricePerUnit;

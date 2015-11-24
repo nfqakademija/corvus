@@ -62,7 +62,8 @@ class Event
     protected $isDeleted;
 
     /**
-     *  @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", mappedBy="events")
+     * @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", inversedBy="events")
+     * @ORM\JoinTable(name="events_users")
      * @var User[]|ArrayCollection
      */
     protected $users;

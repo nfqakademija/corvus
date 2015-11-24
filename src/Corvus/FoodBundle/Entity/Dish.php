@@ -44,7 +44,7 @@ class Dish
     protected $description;
 
     /**
-     * @ORM\Column(type="string", name="image_link", length=255)
+     * @ORM\Column(type="string", name="image_link", length=255, nullable=true)
      * @var string
      */
     protected $imageLink;
