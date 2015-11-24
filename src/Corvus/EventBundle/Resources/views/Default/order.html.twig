@@ -1,0 +1,67 @@
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+    <div class="col-md-12" style="outline: 1px solid lightgray;" >
+        <div class="col-md-3" >
+            <b>Event name:</b> <br>
+            {{ event.title }}!
+        </div>
+
+        <div class="col-md-3" >
+            <b>Date:</b> <br>
+            {{ event.enddatetime | date }}
+        </div>
+
+        <div class="col-md-3" >
+            <b>Food Dealer:</b> <br>
+            {{ dealer }}
+        </div>
+        <div class="col-md-3" >
+            <b>Ammount of people who ordered: </b>
+            {{ people_count}}
+        </div>
+
+
+    </div>
+
+    <div class="col-md-12" style="outline: 1px solid lightgray;" >
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Dish</th>
+                    <th>Ammount</th>
+                    <th>Total Price</th>
+                    <th>Mark if cant order</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{ form_start(form) }}
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.orders.dish.name | raw}} {{ order.orders.dish.id }}</td>
+                    <td>{{ order.quantity_sum | raw}}</td>
+                    <td>{{ order.price_sum | raw}}</td>
+                    <td>{{ form_label(form.dish_id[order.orders.dish.id]) }}{{ form_widget(form.dish_id[order.orders.dish.id]) }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="col-md-12" style="outline: 1px solid lightgray;">
+        <div class="col-md-4 col-md-offset-4" style="margin-bottom: 10px;">
+            <h4>Approximately delivery time</h4>
+            <div >
+
+                {{ form_widget(form.dueDate) }}
+
+                <br>
+                {{ form_widget(form.save, { 'attr': {'class': 'btn btn-success'} }) }}
+                <a href="{{ path('corvus_main') }}" class="btn btn-default" role="button">Cancel</a>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock event_content %}

@@ -1,3 +1,8 @@
+corvus_main:
+    resource: "@CorvusMainBundle/Controller/"
+    type:   annotation
+    prefix: /
+
 food:
     resource: "@FoodBundle/Controller/"
     type:     annotation
@@ -10,11 +15,6 @@ event:
 
 dashboard:
     resource: "@DashboardBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
-corvus_main:
-    resource: "@CorvusMainBundle/Controller/"
     type:     annotation
     prefix:   /
 

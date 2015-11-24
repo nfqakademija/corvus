@@ -1,0 +1,168 @@
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+
+Event name: {{ event_name }}!<br>
+dealer {{ dealer }}<br>
+    <div class="col-md-8" style="outline: 1px solid lightgray;" >
+        <h3>Dish'es</h3>
+        <div>
+            <ul class="list-group">
+                {% for dish in dishes %}
+                    <li class="list-group-item">
+                        <h4 class="dish_name" name="dish_name">{{ dish.name }}</h4>
+                        <div class="form-inline"  style="float: right;">
+                            <label>Amount:</label>
+                            <input class="form-control" type="number" name="quantity" min="1" max="100" value="1">
+                            <button class="btn btn-default add-dish" data-id="{{ dish.id }}">Add</button>
+                        </div>
+                        <p class="dish_description">{{ dish.description }}</p>
+                        Price: <p class="price" style="display: inline">{{ dish.price }}</p> €
+
+
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-4" style="outline: 1px solid lightgray; min-height: 200px; padding-bottom: 10px" >
+        <h3>Your Cart</h3>
+        {{ form_start(form) }}
+
+        <ul class="orders list-group"  data-prototype="
+        {% filter escape %}
+        {{ include('EventBundle::prototype.html.twig', { 'form': form.orders.vars.prototype }) }}
+        {% endfilter %}">
+
+            {# iterate over each existing tag and render its only field: name #}
+            {% for order in form.orders %}
+                <li class="list-group-item" >
+
+                    {{ form_widget(order.dish_id,  {'value': order.vars.value.dish.id, 'type' : 'hidden'}) }}
+
+                    {{ form_widget(order.quantity, {'type': 'hidden'}) }}
+
+                    <b>{{ order.vars.value.dish.name }}</b><br>
+                    Amount: {{ order.vars.value.quantity }}<br>
+                    Price: <p class="price" style="display: inline">{{ order.vars.value.quantity * order.vars.value.pricePerUnit }}</p> €<br>
+
+                </li>
+            {% endfor %}
+        </ul>
+
+        {{ form_widget(form.save, { 'attr': {'class': 'btn btn-success btn-block'} }) }}
+        {{ form_end(form) }}
+    </div>
+
+    <script>
+        var $collectionHolder;
+
+        // setup an "add order" link
+        var $newLinkLi = $('<li class="list-group-item" >Total:</li>');
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of orders
+            $collectionHolder = $('ul.orders');
+            calculateTotalPrice();
+            // add a delete link to all of the existing orders form li elements
+            $collectionHolder.find('li').each(function() {
+                addOrderFormDeleteLink($(this));
+            });
+
+            // add the "add order" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $('.add-dish').on('click', function(e) {
+                var $dish_id = $(this).attr('data-id');
+                var $existing_dih_on_cart = false;
+                $collectionHolder.find('li').each(function () {
+                    var $input_val = $(this).find("input").val();
+
+                    if ($input_val == $dish_id) {
+
+                        $existing_dih_on_cart = true;
+                    }
+
+                });
+
+                if ($existing_dih_on_cart == false) {
+
+                    var $amount = $(this).siblings("input[name='quantity']").first().val();
+
+                    if ($amount > 0 && $amount < 1000) {
+
+                        var $parent = $(this).parent();
+                        var $dish_name = $parent.siblings(".dish_name").text();
+                        var $price = parseFloat($parent.siblings(".price").text());
+
+
+                        // add a new tag form (see next code block)
+                        addOrderForm($collectionHolder, $newLinkLi, $dish_id, $amount, $dish_name, $price);
+                    }
+                }
+                calculateTotalPrice();
+            });
+        });
+
+        function addOrderForm($collectionHolder, $newLinkLi, $dish_id, $amount, $dish_name, $price ) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype
+                            .replace(/__name__/g, index)
+                            .replace(/__idvalue__/g, $dish_id)
+                            .replace(/__qvalue__/g, $amount)
+                            +"<b>" +  $dish_name + "</b> <br> Amount: "
+                            + $amount
+                            + "<br> Price: <p class='price' style='display: inline'>"+ ($price*$amount).toFixed(2) +"</p> €";
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li class="list-group-item" ></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+
+            // add a delete link to the new form
+            addOrderFormDeleteLink($newFormLi);
+        }
+
+        function addOrderFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<button class="btn btn-danger" style="float:right;">-</button>');
+            $tagFormLi.prepend($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the tag form
+                $tagFormLi.remove();
+                calculateTotalPrice();
+            });
+        }
+
+        function calculateTotalPrice(){
+            var $sum  = 0;
+            $collectionHolder = $('ul.orders');
+            $collectionHolder.find('li').each(function () {
+                var $price_val = parseFloat($(this).find(".price").first().text());
+                if(!isNaN($price_val))
+                $sum += $price_val;
+            });
+
+
+            $newLinkLi.text("Total: " + $sum.toFixed(2) + " €");
+        }
+    </script>
+{% endblock event_content %}
