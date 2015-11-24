@@ -19,6 +19,7 @@ class Dealer
 {
     /**
      * @ORM\OneToMany(targetEntity = "Dish", mappedBy = "dealer")
+     * @var Dish[]|ArrayCollection
      */
     protected $dishes;
 
@@ -60,13 +61,13 @@ class Dealer
     protected $email;
 
     /**
-     * Get dealerId
+     * Get id
      *
      * @return integer
      */
-    public function getDealerId()
+    public function getId()
     {
-        return $this->dealerId;
+        return $this->id;
     }
 
     /**
@@ -165,7 +166,37 @@ class Dealer
         return $this->email;
     }
 
-    public  function __toString(){
-        return $this->name;
+    /**
+     * Add dish
+     *
+     * @param \Corvus\FoodBundle\Entity\Dish $dish
+     *
+     * @return Dealer
+     */
+    public function addDish(\Corvus\FoodBundle\Entity\Dish $dish)
+    {
+        $this->dishes[] = $dish;
+
+        return $this;
+    }
+
+    /**
+     * Remove dish
+     *
+     * @param \Corvus\FoodBundle\Entity\Dish $dish
+     */
+    public function removeDish(\Corvus\FoodBundle\Entity\Dish $dish)
+    {
+        $this->dishes->removeElement($dish);
+    }
+
+    /**
+     * Get dishes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDishes()
+    {
+        return $this->dishes;
     }
 }
