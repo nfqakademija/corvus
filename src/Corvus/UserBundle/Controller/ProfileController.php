@@ -64,7 +64,7 @@ class ProfileController extends Controller
         }
 
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
-        $formFactory = $this->get('fos_user.profile.form.factory');
+        $formFactory = $this->get('corvus_user.profile.form.factory');
 
         $form = $formFactory->createForm();
         $form->setData($user);

@@ -17,7 +17,7 @@ class OrderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('dish_id', new IdType(), array('mapped' => false));
+        $builder->add('dish_id', 'number', array('mapped' => false));
         $builder->add('quantity', 'number');
     }
 

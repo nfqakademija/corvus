@@ -48,16 +48,19 @@
 
     </div>
 
-    <div class="col-md-12" style="outline: 1px solid lightgray;" >
-        <h4>Approximately delivery time</h4>
-        {{ form_start(form) }}
+    <div class="col-md-12" style="outline: 1px solid lightgray;">
+        <div class="col-md-4 col-md-offset-4" style="margin-bottom: 10px;">
+            <h4>Approximately delivery time</h4>
+            <div >
+                {{ form_start(form) }}
 
-
-
-        {{ form_widget(form.dueDate) }}
-        <br>
-        {{ form_widget(form.save) }}
-        {{ form_end(form) }}
+                {{ form_widget(form.dueDate) }}
+                <br>
+                {{ form_widget(form.save, { 'attr': {'class': 'btn btn-success'} }) }}
+                <a href="{{ path('corvus_main') }}" class="btn btn-default" role="button">Cancel</a>
+                {{ form_end(form) }}
+            </div>
+        </div>
     </div>
 
 {% endblock event_content %}

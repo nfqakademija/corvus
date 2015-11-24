@@ -10,11 +10,14 @@
     <body>
 
         <div class="container-fluid login-wrapper">
-            <div class="row text-center">
-                <h1>Massive food ordering system</h1>
-                <a href="{{ path('fos_user_security_logout') }}">Logout</a></br>
-                <a href="{{ path('fos_user_profile_show') }}">Your Profile</a><br>
-                <a href="{{ path('corvus_main') }}">Dashboard</a>
+            <div >
+                <h1 class="row text-center">Massive food ordering system</h1>
+
+                <div class="col-md-8 col-md-offset-2" style="margin-bottom: 10px">
+                    <a href="{{ path('fos_user_security_logout') }}" class="btn btn-default" role="button">Logout</a>
+                    <a href="{{ path('fos_user_profile_show') }}" class="btn btn-default" role="button">Your Profile</a>
+                    <a href="{{ path('corvus_main') }}" class="btn btn-default" role="button">Dashboard</a>
+                </div>
             </div>
 
 

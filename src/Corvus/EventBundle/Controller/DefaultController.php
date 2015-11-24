@@ -11,23 +11,24 @@ use Corvus\MainBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
-     * @Route("/event/")
+     * @Route("/event/{id}")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($id)
     {
-        return array('name' => 'Event');
+        return array('name' => $id);
     }
 
     /**
      * @Route("/event/{id}/pick", name="select_food")
      * @Template()
      */
-    public function pickAction($id)
+    public function pickAction($id, Request $request)
     {
 
         $isFullyAuthenticated = $this->get('security.context')
@@ -39,15 +40,24 @@ class DefaultController extends Controller
                 ->getRepository('EventBundle:Event')
                 ->find($id);
 
-            /* Throw exception if event with that id doesnt exists*/
+            /* Throw exception if event with that id doesn't exists*/
             if (!$event) {
                 throw $this->createNotFoundException(
                     'No event found for id '.$id
                 );
             } else {
-
-                /*In future need to add security level, that only users which participates in event can reach this page*/
                 $user = $this->container->get('security.context')->getToken()->getUser();
+                /*!IMPORTANT!*/
+                /*In future need to add security level, that only users which participates in event can reach this page*/
+                /*if(!$event->getUsers()->contains($user))
+                {
+                    throw $this->createNotFoundException(
+                        'You are not in this event'.$id
+                    );
+                }*/
+
+                $em = $this->getDoctrine()->getManager();
+
                 $dealer_id = $event->getDealer();
                 $event_name = $event->getTitle();
 
@@ -60,30 +70,61 @@ class DefaultController extends Controller
                     ->getRepository('FoodBundle:Dish')->findBy(array('dealer' => $dealer_id));
 
 
-                $orders = $this->getDoctrine()
+                $OriginalOrders = $this->getDoctrine()
                     ->getRepository('EventBundle:Order')->findBy(array('event' => $event, 'user' => $user));
 
 
                 $cart = new Cart();
 
-                $order = new Order();
-
-                if ($orders != null) {
-                    foreach ($orders as $order) {
+                if ($OriginalOrders != null) {
+                    foreach ($OriginalOrders as $order) {
                         $cart->getOrders()->add($order);
                     }
                 }
 
-
-
                 $form = $this->createForm(new CartType(), $cart);
 
+                $form->handleRequest($request);
 
-                return $this->render('EventBundle:Default:index.html.twig', array(
+                if($form->isValid()) {
+                    foreach ($OriginalOrders as $order) {
+                        if (false === $cart->getOrders()->contains($order)) {
+                            $em->remove($order);
+                        } else {
+                        }
+                    }
+                    $newOrders = $form["orders"];
+
+
+                    foreach($newOrders as $newOrder) {
+                        $dish_id = $newOrder->get('dish_id')->getData();
+                        $order = $newOrder->getData();
+
+                        $quantity = $order->getQuantity();
+
+                        if($quantity > 0 && $quantity < 1000) {
+                            $dish = $this->getDoctrine()
+                                ->getRepository('FoodBundle:Dish')->find($dish_id);
+
+                            $order->setDish($dish);
+                            $order->setUser($user);
+                            $order->setEvent($event);
+                            $order->setPricePerUnit($dish->getPrice());
+                            $em->persist($order);
+                        }
+                    }
+
+                    $em->flush();
+
+                    /* NEED TO REDIRECT!!!!!!!!!*/
+                }
+
+
+                return $this->render('@Event/Default/pick.html.twig', array(
                     'event_name' => $event_name,
                     'dealer' =>  $dealer_name,
                     'dishes' => $dishes,
-                    'orders' => $orders,
+                    'orders' => $OriginalOrders,
                     'form' => $form->createView(),
                 ));
             }
@@ -152,8 +193,11 @@ class DefaultController extends Controller
                     /*--------------------------------*/
 
 
+                    
+
+
                     $form = $this->createFormBuilder()
-                        ->add('dueDate', 'date')
+                        ->add('dueDate', 'datetime', array('data' => new \DateTime()))
                         ->add('save', 'submit', array('label' => 'Save'))
                         ->getForm();
 

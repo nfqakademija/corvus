@@ -62,13 +62,13 @@ class Event
     protected $isDeleted;
 
     /**
-     *  @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", mappedBy="event")
+     *  @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", mappedBy="events")
      * @var User[]|ArrayCollection
      */
     protected $users;
 
     /**
-     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event")
+     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="events")
      * @var string
      */
     protected $emails;

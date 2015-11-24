@@ -33,7 +33,7 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Corvus\EventBundle\Entity\Event", mappedBy="users")
+     * @ORM\ManyToMany(targetEntity="Corvus\EventBundle\Entity\Event", inversedBy="users")
      * @var Event[]|ArrayCollection
      */
     protected $events;
