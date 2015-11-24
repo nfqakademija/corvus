@@ -23,11 +23,24 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
         if($form->isValid()){
-            $event->setHostId($this->getUser());
             $em = $this->getDoctrine()->getManager();
+            $event->setStatus(1);
+            $event->setHost($this->getUser());
+
+            foreach($event->getEmails() as $email){
+
+                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findBy(array('email' => $email->getEmail()))[0];
+                if($user){
+                    $event->addUser($user);
+                    $event->removeEmail($email);
+                } else {
+                    $email->setEvent($event);
+                    $em->persist($email);
+                }
+            }
+
             $em->persist($event);
             $em->flush();
-
             return $this->redirect($this->generateUrl('corvus_main'));
         }
         return array('form' => $form->createView());

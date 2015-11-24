@@ -13,12 +13,15 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('title', 'text', array('label' => 'Title'))
-            ->add('dealer_id', 'entity', array(
+            ->add('dealer', 'entity', array(
                 'class' => 'Corvus\FoodBundle\Entity\Dealer'
             ))
             ->add('title', 'text')
             ->add('end_date_time', 'date')
-            ->add('emails', 'collection', array('type' => new EventMailType))
+            ->add('emails', 'collection', array(
+
+                'type' => new EventMailType,
+                'allow_add'    => true))
             ->add('submit', 'submit');
     }
     public function getName()
