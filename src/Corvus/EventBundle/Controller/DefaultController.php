@@ -47,14 +47,13 @@ class DefaultController extends Controller
                 );
             } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
-                /*!IMPORTANT!*/
-                /*In future need to add security level, that only users which participates in event can reach this page*/
-                /*if(!$event->getUsers()->contains($user))
+
+                if(!$event->getUsers()->contains($user))
                 {
                     throw $this->createNotFoundException(
                         'You are not in this event'.$id
                     );
-                }*/
+                }
 
                 $em = $this->getDoctrine()->getManager();
 
@@ -137,7 +136,7 @@ class DefaultController extends Controller
      * @Route("/event/{id}/order",name="order_food")
      *
      */
-    public function orderAction($id)
+    public function orderAction($id, Request $request)
     {
         $isFullyAuthenticated = $this->get('security.context')
             ->isGranted('IS_AUTHENTICATED_FULLY');
@@ -184,7 +183,6 @@ class DefaultController extends Controller
                     $orders = $query->getResult();
                     /*----------------------------*/
 
-
                     /* Get dealer name*/
                     $dealer_id =  $event->getDealer();
                     $dealer = $this->getDoctrine()
@@ -192,14 +190,26 @@ class DefaultController extends Controller
                     $dealer_name = $dealer->getName();
                     /*--------------------------------*/
 
+                    $dish_ids = array();
+                    foreach($orders as $order){
+                        $dish = $order["orders"]->getDish()->getId();
+                        $dish_ids[$dish] = false;
+                    }
 
-                    
-
-
-                    $form = $this->createFormBuilder()
+                    $form = $this->createFormBuilder($orders)
+                        ->add('dish_id', 'collection', array(
+                            'type' => 'checkbox',
+                            'data' => $dish_ids,
+                        ))
                         ->add('dueDate', 'datetime', array('data' => new \DateTime()))
                         ->add('save', 'submit', array('label' => 'Save'))
                         ->getForm();
+
+                    $form->handleRequest($request);
+
+                    if($form->isValid()) {
+
+                    }
 
                     return $this->render('EventBundle:Default:order.html.twig', array(
                         'event' => $event,
