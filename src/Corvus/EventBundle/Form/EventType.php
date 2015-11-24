@@ -2,6 +2,7 @@
 
 namespace Corvus\EventBundle\Form;
 
+use Corvus\EventBundle\Form\EventMailType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +18,7 @@ class EventType extends AbstractType
             ))
             ->add('title', 'text')
             ->add('end_date_time', 'date')
+            ->add('emails', 'collection', array('type' => new EventMailType))
             ->add('submit', 'submit');
     }
     public function getName()
