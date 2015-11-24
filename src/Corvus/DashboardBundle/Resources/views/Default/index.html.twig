@@ -11,7 +11,8 @@
             <p>Status: {{ event.status }}</p>
             <p>End time: {{ event.endDateTime|date('Y-m-d H:i:s') }}</p>
             <p>Invited users: {{ event.users.count + event.emails.count}}</p>
-            <p>Users who already ordered: {{ ordered[event.getId] }}</p>
+            <p>Users who already ordered: {{ event.getOrdersCount }}</p>
+            <p>Event total / Event debt: {{ event.getDebtTotal }} / {{ event.getDebtLeft }}</p>
         </div>
     {% endfor %}
     <a href="{{ path('fos_user_security_logout') }}">Logout</a></br>

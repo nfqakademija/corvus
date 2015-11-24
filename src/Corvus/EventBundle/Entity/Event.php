@@ -8,6 +8,7 @@
 namespace Corvus\EventBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
@@ -382,5 +383,37 @@ class Event
     public function removeUser(\Corvus\MainBundle\Entity\User $user)
     {
         $this->users->removeElement($user);
+    }
+
+    public function getOrdersCount()
+    {
+        $orders = array();
+        foreach ($this->orders as $order) {
+            $orders[$order->getUser()->getId()] = true;
+        }
+
+        return count($orders);
+    }
+
+    public function getDebtLeft()
+    {
+        $eventPayment = 0;
+        foreach ($this->payments as $payment) {
+            $eventPayment += $payment->getPaid();
+        }
+
+        return $this->getDebtTotal() - $eventPayment;
+    }
+
+    public function getDebtTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if ($order->getUser() != $this->host) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+
+        return $eventSum;
     }
 }
