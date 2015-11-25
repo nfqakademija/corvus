@@ -158,6 +158,30 @@ class Event
     }
 
     /**
+     * Set deliveryDateTime
+     *
+     * @param \DateTime $deliveryDateTime
+     *
+     * @return Event
+     */
+    public function setDeliveryDateTime($deliveryDateTime)
+    {
+        $this->deliveryDateTime = $deliveryDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryDateTime
+     *
+     * @return \DateTime
+     */
+    public function getDeliveryDateTime()
+    {
+        return $this->deliveryDateTime;
+    }
+
+    /**
      * Set status
      *
      * @param integer $status
