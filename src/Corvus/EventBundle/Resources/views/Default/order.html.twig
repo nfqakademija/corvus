@@ -41,7 +41,7 @@
                     <td>{{ order.orders.dish.name | raw}} {{ order.orders.dish.id }}</td>
                     <td>{{ order.quantity_sum | raw}}</td>
                     <td>{{ order.price_sum | raw}}</td>
-                    <td>{{ form_label(form.dish_id[order.orders.dish.id]) }}{{ form_widget(form.dish_id[order.orders.dish.id]) }}</td>
+                    <td class="remove_checkbox">{{ form_label(form.dish_id[order.orders.dish.id]) }}{{ form_widget(form.dish_id[order.orders.dish.id]) }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -54,7 +54,7 @@
             <h4>Approximately delivery time</h4>
             <div >
 
-                {{ form_widget(form.dueDate) }}
+                    {{ form_widget(form.dueDate) }}
 
                 <br>
                 {{ form_widget(form.save, { 'attr': {'class': 'btn btn-success'} }) }}
@@ -63,5 +63,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+
+        jQuery(document).ready(function() {
+            $(":checkbox").on("change", function() {
+                var that = this;
+                $(this).parent().parent().css("background-color", function() {
+                    return that.checked ? "#ff4d4d" : "";
+                });
+            });
+
+        });
+    </script>
 
 {% endblock event_content %}

@@ -199,16 +199,20 @@ class DefaultController extends Controller
                     $form = $this->createFormBuilder($orders)
                         ->add('dish_id', 'collection', array(
                             'type' => 'checkbox',
+                            'required' => false,
                             'data' => $dish_ids,
                         ))
-                        ->add('dueDate', 'datetime', array('data' => new \DateTime()))
+                        ->add('dueDate', 'datetime', array(
+                            'data' => new \DateTime(),
+                        ))
                         ->add('save', 'submit', array('label' => 'Save'))
                         ->getForm();
 
                     $form->handleRequest($request);
 
                     if($form->isValid()) {
-
+                        dump($form->getData());
+                        exit;
                     }
 
                     return $this->render('EventBundle:Default:order.html.twig', array(
