@@ -17,12 +17,18 @@ class EventType extends AbstractType
                 'class' => 'Corvus\FoodBundle\Entity\Dealer'
             ))
             ->add('title', 'text')
-            ->add('end_date_time', 'date')
+            ->add('end_date_time', 'datetime',array(
+                'label' => 'Order ends:',
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                'format' => 'y-MM-dd HH:mm',
+                'attr' => array('class' => 'date'))
+            )
             ->add('emails', 'collection', array(
-
+                'label' => 'Guests:',
                 'type' => new EventMailType,
                 'allow_add'    => true))
-            ->add('submit', 'submit');
+            ->add('submit', 'submit', array('label' => 'Create'));
     }
     public function getName()
     {

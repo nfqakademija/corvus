@@ -11,7 +11,7 @@ class EventMailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email');
+            ->add('email', 'hidden');
     }
 
     public function configureOptions(OptionsResolver $resolver)

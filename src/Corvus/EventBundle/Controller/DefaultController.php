@@ -15,7 +15,7 @@ class DefaultController extends Controller
      * @Route("/event/new")
      * @Template()
      */
-    public function formAction(Request $request)
+    public function createEventAction(Request $request)
     {
         $event = new Event();
         $form = $this->createForm(new EventType(), $event);
@@ -28,10 +28,13 @@ class DefaultController extends Controller
             $event->setHost($this->getUser());
 
             foreach($event->getEmails() as $email){
-
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findBy(array('email' => $email->getEmail()))[0];
-                if($user){
-                    $event->addUser($user);
+                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findBy(
+                    array('email' => $email->getEmail()),
+                    array(),
+                    $limit = 1
+                );
+                if($user && is_array($user)){
+                    $event->addUser($user[0]);
                     $event->removeEmail($email);
                 } else {
                     $email->setEvent($event);
@@ -41,7 +44,7 @@ class DefaultController extends Controller
 
             $em->persist($event);
             $em->flush();
-            return $this->redirect($this->generateUrl('corvus_main'));
+            return $this->redirect($this->generateUrl('/'));
         }
         return array('form' => $form->createView());
     }
