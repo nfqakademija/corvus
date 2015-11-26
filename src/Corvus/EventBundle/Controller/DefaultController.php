@@ -161,67 +161,103 @@ class DefaultController extends Controller
                         'Event status is incorect '.$event_status
                     );
                 } else {
-                    $em = $this->getDoctrine()->getManager();
 
-                    /*Calculating how many people ordered food*/
-                    $query = $em->createQuery(
-                        'SELECT COUNT(DISTINCT o.user)
-                        FROM EventBundle:Order o
-                        WHERE o.event = :event'
-                    )->setParameter('event',$event->getId());
-                    $people_count = $query->getSingleScalarResult();
-                    /*----------------------------------------------*/
+                    $event_host = $event->getHost();
+                    $user =$this->get('security.context')->getToken()->getUser();
 
-                    /* Selecting grouped data of orders */
-                    $query = $em->createQuery(
-                        'SELECT o orders, SUM(o.quantity) quantity_sum, SUM(o.pricePerUnit*o.quantity) price_sum
-                        FROM EventBundle:Order o
-                        WHERE o.event = :event
-                        GROUP BY o.dish'
-                    )->setParameter('event',$event->getId());
+                    /*If current user is not this event host*/
+                    if($event_host !== $user) {
+                        throw $this->createNotFoundException(
+                            'You are not host of this event ' . $event_status
+                        );
+                    } else {
+                        $em = $this->getDoctrine()->getManager();
 
-                    $orders = $query->getResult();
-                    /*----------------------------*/
+                        /*Calculating how many people ordered food*/
+                        $query = $em->createQuery(
+                            'SELECT COUNT(DISTINCT o.user)
+                            FROM EventBundle:Order o
+                            WHERE o.event = :event'
+                        )->setParameter('event', $event->getId());
+                        $people_count = $query->getSingleScalarResult();
+                        /*----------------------------------------------*/
 
-                    /* Get dealer name*/
-                    $dealer_id =  $event->getDealer();
-                    $dealer = $this->getDoctrine()
-                        ->getRepository('FoodBundle:Dealer')->find($dealer_id);
-                    $dealer_name = $dealer->getName();
-                    /*--------------------------------*/
+                        /* Selecting grouped data of orders */
+                        $query = $em->createQuery(
+                            'SELECT o orders, SUM(o.quantity) quantity_sum, SUM(o.pricePerUnit*o.quantity) price_sum
+                            FROM EventBundle:Order o
+                            WHERE o.event = :event
+                            GROUP BY o.dish'
+                        )->setParameter('event', $event->getId());
 
-                    $dish_ids = array();
-                    foreach($orders as $order){
-                        $dish = $order["orders"]->getDish()->getId();
-                        $dish_ids[$dish] = false;
+                        $orders = $query->getResult();
+                        /*----------------------------*/
+
+                        /* Get dealer name*/
+                        $dealer_id = $event->getDealer();
+                        $dealer = $this->getDoctrine()
+                            ->getRepository('FoodBundle:Dealer')->find($dealer_id);
+                        $dealer_name = $dealer->getName();
+                        /*--------------------------------*/
+
+                        /* Get dish id's. Used for form*/
+                        $dish_ids = array();
+                        foreach ($orders as $order) {
+                            $dish = $order["orders"]->getDish()->getId();
+                            $dish_ids[$dish] = false;
+                        }
+                        /*--------------------------*/
+
+                        $form = $this->createFormBuilder()
+                            ->add('dish_id', 'collection', array(
+                                'type' => 'checkbox',
+                                'required' => false,
+                                'data' => $dish_ids,
+                            ))
+                            ->add('dueDate', 'datetime', array(
+                                'data' => new \DateTime(),
+                            ))
+                            ->add('save', 'submit', array('label' => 'Save'))
+                            ->getForm();
+
+                        $form->handleRequest($request);
+
+
+                        if ($form->isValid()) {
+                            $event_orders = $event->getOrders();
+                            $dish_ids = $form["dish_id"]->getData();
+
+
+
+                            /*Checking if order with that dish_id need to be removed*/
+                            foreach ($dish_ids as $dish_id => $statement) {
+                                if ($statement === true) {
+                                    foreach ($event_orders as $order) {
+                                        $order_dish_id = $order->getDish()->getId();
+                                        if ($order_dish_id === $dish_id) {
+                                            $order->setIsRemoved(true);
+
+                                            $em->persist($order);
+                                        }
+                                    }
+                                }
+                            }
+
+                            $event->setDeliveryDateTime($form["dueDate"]->getData());
+
+                            $event->setStatus(3);
+
+                            $em->flush();
+                        }
+
+                        return $this->render('EventBundle:Default:order.html.twig', array(
+                            'event' => $event,
+                            'dealer' => $dealer_name,
+                            'people_count' => $people_count,
+                            'orders' => $orders,
+                            'form' => $form->createView(),
+                        ));
                     }
-
-                    $form = $this->createFormBuilder($orders)
-                        ->add('dish_id', 'collection', array(
-                            'type' => 'checkbox',
-                            'required' => false,
-                            'data' => $dish_ids,
-                        ))
-                        ->add('dueDate', 'datetime', array(
-                            'data' => new \DateTime(),
-                        ))
-                        ->add('save', 'submit', array('label' => 'Save'))
-                        ->getForm();
-
-                    $form->handleRequest($request);
-
-                    if($form->isValid()) {
-                        dump($form->getData());
-                        exit;
-                    }
-
-                    return $this->render('EventBundle:Default:order.html.twig', array(
-                        'event' => $event,
-                        'dealer' =>  $dealer_name,
-                        'people_count' => $people_count,
-                        'orders' => $orders,
-                        'form' => $form->createView(),
-                    ));
                 }
             }
 

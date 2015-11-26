@@ -10,12 +10,13 @@ dealer {{ dealer }}<br>
             <ul class="list-group">
                 {% for dish in dishes %}
                     <li class="list-group-item">
-                        <h4 class="dish_name" name="dish_name">{{ dish.name }}</h4>
                         <div class="form-inline"  style="float: right;">
                             <label>Amount:</label>
                             <input class="form-control" type="number" name="quantity" min="1" max="100" value="1">
                             <button class="btn btn-default add-dish" data-id="{{ dish.id }}">Add</button>
                         </div>
+                        <h4 class="dish_name" name="dish_name">{{ dish.name }}</h4>
+
                         <p class="dish_description">{{ dish.description }}</p>
                         Price: <p class="price" style="display: inline">{{ dish.price }}</p> €
 
