@@ -1,0 +1,31 @@
+{% macro pick(eid) %}
+    <a href="#path('select_food', {'id': eid})" class="btn btn-primary">Pick food</a>
+{% endmacro %}
+
+{% macro review(eid) %}
+    <a href="#path('review_order', {'id': eid})" class="btn btn-primary">Review order</a>
+{% endmacro %}
+
+{% macro review(eid) %}
+    <a href="#path('event_payments', {'id': eid})" class="btn btn-primary">Payments</a>
+{% endmacro %}
+
+{% macro edit(eid) %}
+    <a href="#path('edit_event', {'id': eid})" class="btn btn-primary">Edit order</a>
+{% endmacro %}
+
+{% macro suspend(eid) %}
+    <a href="{{ path('suspend', {'eventId': eid}) }}" class="btn btn-primary">Place order</a>
+{% endmacro %}
+
+{% macro place(eid) %}
+    <a href="#path('place_order', {'id': eid})" class="btn btn-primary">Place order</a>
+{% endmacro %}
+
+{% macro cancel(eid) %}
+    <a href="#path('cancel_event', {'id': eid})" class="btn btn-primary">Cancel order</a>
+{% endmacro %}
+
+{% macro arrived(eid) %}
+    <a href="#path('order_arrived', {'id': eid})" class="btn btn-primary">Order arrived</a>
+{% endmacro %}

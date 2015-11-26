@@ -1,4 +1,5 @@
 {% extends "CorvusMainBundle::layout.html.twig" %}
+{% import "DashboardBundle::Default/macros.html.twig" as buttons %}
 
 {% block body %}
     <div class="row">
@@ -6,7 +7,7 @@
             <h2>This is your dashboard</h2>
         </div>
         <div class="col-md-4">
-            <div id="addEvent" class="btn btn-primary">Add new event</div>
+            <a id="addEvent" href="#path('add_event')" class="btn btn-primary">Add new event</a>
         </div>
     </div>
 
@@ -21,32 +22,47 @@
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-7">
-                        {% if event.status == 1 %}
-                            <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
-                            <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
-                            </div>
-                        {% elseif event.status == 2 %}
-                            <p>Ordering ended - time to order food</p>
-                            <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
-                            </div>
-                        {% elseif event.status == 3 %}
-                            <p>Ordered. Waiting</p>
-                            <p>Unpaid amount {{ event.getDebtLeft }}</p>
-                            </div>
-                        {% elseif event.status == 4 %}
-                            <p>Arrived</p>
-                            <p>Unpaid amount {{ event.getDebtLeft }}</p>
-                            </div>
-                        {% else %}
-                            <p>Finished</p>
-                            </div>
-                        {% endif %}
-                         <div class="col-md-4">
-                            <div class="btn btn-primary btn-xs btnHost1" data-event="{{ event.id }}"></div>
-                            <div class="btn btn-primary btn-xs event btnHost2" data-event="{{ event.id }}"></div>
-                            <div class="btn btn-primary btn-xs event btnHost3" data-event="{{ event.id }}"></div>
-                            <div class="btn btn-primary btn-xs event btnHost4" data-event="{{ event.id }}"></div>
+                    {% if event.status == 1 %}
+                        <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
+                        <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
                         </div>
+                        <div class="col-md-4">
+                            {{ buttons.pick(event.id) }}
+                            {{ buttons.edit(event.id) }}
+                            {{ buttons.suspend(event.id) }}
+                            {{ buttons.cancel(event.id) }}
+                        </div>
+                    {% elseif event.status == 2 %}
+                        <p>Ordering ended - time to order food</p>
+                        <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            {{ buttons.edit(event.id) }}
+                            {{ buttons.place(event.id) }}
+                            {{ buttons.cancel(event.id) }}
+                        </div>
+                    {% elseif event.status == 3 %}
+                        <p>Ordered. Waiting</p>
+                        <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            {{ buttons.arrived(event.id) }}
+                            {{ buttons.payments(event.id) }}
+                        </div>
+                    {% elseif event.status == 4 %}
+                        <p>Arrived</p>
+                        <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            {{ buttons.payments(event.id) }}
+                        </div>
+                    {% else %}
+                        <p>Finished</p>
+                        </div>
+                        <div class="col-md-4">
+                            {{ buttons.review(event.id) }}
+                        </div>
+                    {% endif %}
                 </div>
             {% else %}
                 <div class="row">
@@ -55,42 +71,40 @@
                     {% if event.status == 1 %}
                         <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
                         </div>
+                        <div class="col-md-4">
+                            {{ buttons.pick(event.id) }}
+                        </div>
                     {% elseif event.status == 2 %}
                         <p>Ordering ended</p>
                         </div>
+                        <div class="col-md-4">
+                            {{ buttons.review(event.id) }}
+                        </div>
                     {% elseif event.status == 3 %}
                         <p>Ordered. Waiting</p>
+                        <div class="col-md-4">
+                            {{ buttons.review(event.id) }}
+                        </div>
                         </div>
                     {% elseif event.status == 4 %}
                         <p>Arrived</p>
                         </div>
+                        <div class="col-md-4">
+                            {{ buttons.review(event.id) }}
+                        </div>
                     {% else %}
                         <p>Finished</p>
                         </div>
+                        <div class="col-md-4">
+                            {{ buttons.review(event.id) }}
+                        </div>
                     {% endif %}
-                    <div class="col-md-4">
-                        <div class="btn btn-primary btn-xs btnUser" data-event="{{ event.id }}"></div>
-                    </div>
                 </div>
             {% endif %}
 
         </div>
     {% endfor %}
 
-    <script>
-        $(document).ready(function(){
-            $('#addEvent').click(function (){
-                window.location = '#';
-            });
-            $('.btnUser').text(function(){
-                if (true){
-                    return ("Pick food");
-                } else {
-                    return ("Review order");
-                }
-            });
-        });
-    </script>
 {% endblock body %}
 
 {% block fos_user_content %}
