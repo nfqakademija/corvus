@@ -416,4 +416,10 @@ class Event
 
         return $eventSum;
     }
+
+    public function getTimeLeft()
+    {
+        $timeNow = new \DateTime('now');
+        return $timeNow->diff($this->endDateTime);
+    }
 }

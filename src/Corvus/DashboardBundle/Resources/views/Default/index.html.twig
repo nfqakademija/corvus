@@ -1,21 +1,99 @@
 {% extends "CorvusMainBundle::layout.html.twig" %}
 
-{% block fos_user_content %}
-    <h1>This is your dashboard</h1>
-    <p>Your ID: {{ name }}</p>
-    <p>You host {{ hcount }} events!</p>
-    <p>You participate in {{ ecount }} events!</p>
+{% block body %}
+    <div class="row">
+        <div class="col-md-8">
+            <h2>This is your dashboard</h2>
+        </div>
+        <div class="col-md-4">
+            <div id="addEvent" class="btn btn-primary">Add new event</div>
+        </div>
+    </div>
+
     {% for event in events %}
-        <div>
-            <h3>{{ event.title }}</h3>
-            <p>Status: {{ event.status }}</p>
-            <p>End time: {{ event.endDateTime|date('Y-m-d H:i:s') }}</p>
-            <p>Invited users: {{ event.users.count + event.emails.count}}</p>
-            <p>Users who already ordered: {{ event.getOrdersCount }}</p>
-            <p>Event total / Event debt: {{ event.getDebtTotal }} / {{ event.getDebtLeft }}</p>
+        <div class="e{{ event.id }}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>{{ event.title }}</h3>
+                </div>
+            </div>
+            {% if uid == event.host.id %}
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-7">
+                        {% if event.status == 1 %}
+                            <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
+                            <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
+                            </div>
+                        {% elseif event.status == 2 %}
+                            <p>Ordering ended - time to order food</p>
+                            <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
+                            </div>
+                        {% elseif event.status == 3 %}
+                            <p>Ordered. Waiting</p>
+                            <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                            </div>
+                        {% elseif event.status == 4 %}
+                            <p>Arrived</p>
+                            <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                            </div>
+                        {% else %}
+                            <p>Finished</p>
+                            </div>
+                        {% endif %}
+                         <div class="col-md-4">
+                            <div class="btn btn-primary btn-xs btnHost1" data-event="{{ event.id }}"></div>
+                            <div class="btn btn-primary btn-xs event btnHost2" data-event="{{ event.id }}"></div>
+                            <div class="btn btn-primary btn-xs event btnHost3" data-event="{{ event.id }}"></div>
+                            <div class="btn btn-primary btn-xs event btnHost4" data-event="{{ event.id }}"></div>
+                        </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-7">
+                    {% if event.status == 1 %}
+                        <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
+                        </div>
+                    {% elseif event.status == 2 %}
+                        <p>Ordering ended</p>
+                        </div>
+                    {% elseif event.status == 3 %}
+                        <p>Ordered. Waiting</p>
+                        </div>
+                    {% elseif event.status == 4 %}
+                        <p>Arrived</p>
+                        </div>
+                    {% else %}
+                        <p>Finished</p>
+                        </div>
+                    {% endif %}
+                    <div class="col-md-4">
+                        <div class="btn btn-primary btn-xs btnUser" data-event="{{ event.id }}"></div>
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
     {% endfor %}
-    <a href="{{ path('fos_user_security_logout') }}">Logout</a></br>
-    <a href="{{ path('fos_user_profile_show') }}">Your Profile</a>
 
+    <script>
+        $(document).ready(function(){
+            $('#addEvent').click(function (){
+                window.location = '#';
+            });
+            $('.btnUser').text(function(){
+                if (true){
+                    return ("Pick food");
+                } else {
+                    return ("Review order");
+                }
+            });
+        });
+    </script>
+{% endblock body %}
+
+{% block fos_user_content %}
+        <a href="{{ path('fos_user_security_logout') }}">Logout</a></br>
+        <a href="{{ path('fos_user_profile_show') }}">Your Profile</a>
 {% endblock fos_user_content %}

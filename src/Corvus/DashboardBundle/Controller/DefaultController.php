@@ -20,9 +20,6 @@ class DefaultController extends Controller
 
         $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($id);
 
-        $event_host_cnt = $user->getEventsHost()->count();
-        $event_cnt = $user->getEvents()->count();
-
         $em = $this->getDoctrine()->getManager();
 
        /* $query = $em->createQuery(
@@ -64,6 +61,6 @@ class DefaultController extends Controller
             $o[] = ['event' => $event, 'ordered' => $query->getSingleScalarResult()];
         }*/
 
-        return array('name' => $id, 'hcount' => $event_host_cnt, 'ecount' => $event_cnt, 'events' => $e);
+        return array('uid' => $id, 'events' => $e);
     }
 }
