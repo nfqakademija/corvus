@@ -22,17 +22,9 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $query = $em->createQuery(
-            'SELECT e
-            FROM EventBundle:Event e
-            LEFT JOIN e.users u
-            WHERE e.host = :uid OR u.id = :uid
-            ORDER BY e.endDateTime ASC'
-        )->setParameter('uid', $id);
+        $e = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($id);
 
-        $e = $query->getResult();
-
-        dump($e);
+        //dump($e);
         //exit;
         return ['user' => $user, 'events' => $e];
     }

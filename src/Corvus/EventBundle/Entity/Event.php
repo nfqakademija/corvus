@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\EventRepository")
  * @ORM\Table(name="event")
  */
 class Event
