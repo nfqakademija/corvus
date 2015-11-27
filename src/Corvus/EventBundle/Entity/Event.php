@@ -52,6 +52,11 @@ class Event
     protected $endDateTime;
 
     /**
+     * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
+     */
+    protected $deliveryDateTime;
+
+    /**
      * @ORM\Column(type="integer", name="status")
      * @var integer
      */
@@ -71,7 +76,7 @@ class Event
 
     /**
      * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event")
-     * @var string
+     * @var EventEmail[]|ArrayCollection
      */
     protected $emails;
 
@@ -151,6 +156,30 @@ class Event
     public function getEndDateTime()
     {
         return $this->endDateTime;
+    }
+
+    /**
+     * Set deliveryDateTime
+     *
+     * @param \DateTime $deliveryDateTime
+     *
+     * @return Event
+     */
+    public function setDeliveryDateTime($deliveryDateTime)
+    {
+        $this->deliveryDateTime = $deliveryDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryDateTime
+     *
+     * @return \DateTime
+     */
+    public function getDeliveryDateTime()
+    {
+        return $this->deliveryDateTime;
     }
 
     /**

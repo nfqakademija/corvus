@@ -18,7 +18,7 @@
                     <h3>{{ event.title }}</h3>
                 </div>
             </div>
-            {% if uid == event.host.id %}
+            {% if user.id == event.host.id %}
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-7">

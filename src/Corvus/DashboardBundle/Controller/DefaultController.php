@@ -32,8 +32,9 @@ class DefaultController extends Controller
 
         $e = $query->getResult();
 
-        //dump($e);
-        return array('uid' => $id, 'events' => $e);
+        dump($e);
+        //exit;
+        return ['user' => $user, 'events' => $e];
     }
 
     /**
@@ -48,7 +49,7 @@ class DefaultController extends Controller
             case 1:
                 $event->setStatus(2);
                 $em->flush();
-                return $this->redirectToRoute('dashboard');
+                return $this->redirectToRoute('order_food', ['id' => $eventId]);
                 break;
             case 2:
                 $now = new \DateTime('now');

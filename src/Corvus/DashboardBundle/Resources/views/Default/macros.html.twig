@@ -1,5 +1,5 @@
 {% macro pick(eid) %}
-    <a href="#path('select_food', {'id': eid})" class="btn btn-primary">Pick food</a>
+    <a href="{{ path('select_food', {'id': eid}) }}" class="btn btn-primary">Pick food</a>
 {% endmacro %}
 
 {% macro review(eid) %}
@@ -19,7 +19,7 @@
 {% endmacro %}
 
 {% macro place(eid) %}
-    <a href="#path('place_order', {'id': eid})" class="btn btn-primary">Place order</a>
+    <a href="{{ path('order_food', {'id': eid}) }}" class="btn btn-primary">Place order</a>
 {% endmacro %}
 
 {% macro cancel(eid) %}

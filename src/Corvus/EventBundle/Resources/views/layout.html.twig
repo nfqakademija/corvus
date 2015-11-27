@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <title>Massive food ordering system</title>
+    </head>
+    <body>
+
+        <div class="container-fluid login-wrapper">
+            <div >
+                <h1 class="row text-center">Massive food ordering system</h1>
+
+                <div class="col-md-8 col-md-offset-2" style="margin-bottom: 10px">
+                    <a href="{{ path('fos_user_security_logout') }}" class="btn btn-default" role="button">Logout</a>
+                    <a href="{{ path('fos_user_profile_show') }}" class="btn btn-default" role="button">Your Profile</a>
+                    <a href="{{ path('dashboard') }}" class="btn btn-default" role="button">Dashboard</a>
+                </div>
+            </div>
+
+
+                <div class="col-md-8 col-md-offset-2">
+
+                    {% block event_content %}
+                    {% endblock event_content %}
+                </div>
+        </div>
+    </body>
+</html>
