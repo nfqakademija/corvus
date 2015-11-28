@@ -14,7 +14,6 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-
         $isFullyAuthenticated = $this->get('security.context')
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
@@ -31,16 +30,12 @@ class DefaultController extends Controller
     public function welcomeAction()
     {
         /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
-
-
         $isFullyAuthenticated = $this->get('security.context')
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
             return $this->redirectToRoute('dashboard');
         } else {
-
-
             $formFactory = $this->get('fos_user.registration.form.factory');
 
             $form = $formFactory->createForm();
