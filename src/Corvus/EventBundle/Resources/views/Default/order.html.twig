@@ -38,10 +38,10 @@
             {{ form_start(form) }}
             {% for order in orders %}
                 <tr>
-                    <td>{{ order.orders.dish.name | raw}} {{ order.orders.dish.id }}</td>
+                    <td>{{ order.orders.dish.name | raw}}</td>
                     <td>{{ order.quantity_sum | raw}}</td>
-                    <td>{{ order.price_sum | raw}}</td>
-                    <td class="remove_checkbox">{{ form_label(form.dish_id[order.orders.dish.id]) }}{{ form_widget(form.dish_id[order.orders.dish.id]) }}</td>
+                    <td>{{ order.price_sum | raw}} €</td>
+                    <td class="remove_checkbox">{{ form_widget(form.dish_id[order.orders.dish.id]) }}</td>
                 </tr>
             {% endfor %}
             </tbody>

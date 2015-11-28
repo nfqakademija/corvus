@@ -5,6 +5,7 @@ namespace Corvus\EventBundle\Controller;
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Form\Type\CartType;
+use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
@@ -21,7 +22,7 @@ class DefaultController extends Controller
      */
     public function indexAction($id)
     {
-        return array('name' => $id);
+        return ['name' => $id];
     }
 
     /**
@@ -30,7 +31,6 @@ class DefaultController extends Controller
      */
     public function pickAction($id, Request $request)
     {
-
         $isFullyAuthenticated = $this->get('security.context')
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
@@ -66,12 +66,10 @@ class DefaultController extends Controller
                 $dealer_name = $dealer->getName();
 
                 $dishes = $this->getDoctrine()
-                    ->getRepository('FoodBundle:Dish')->findBy(array('dealer' => $dealer_id));
-
+                    ->getRepository('FoodBundle:Dish')->findBy(['dealer' => $dealer_id]);
 
                 $OriginalOrders = $this->getDoctrine()
-                    ->getRepository('EventBundle:Order')->findBy(array('event' => $event, 'user' => $user));
-
+                    ->getRepository('EventBundle:Order')->findBy(['event' => $event, 'user' => $user]);
 
                 $cart = new Cart();
 
@@ -86,14 +84,19 @@ class DefaultController extends Controller
                 $form->handleRequest($request);
 
                 if($form->isValid()) {
+                    $newOrders = $form["orders"];
+                    $matched = false;
                     foreach ($OriginalOrders as $order) {
-                        if (false === $cart->getOrders()->contains($order)) {
-                            $em->remove($order);
-                        } else {
+                        foreach($newOrders as $newOrder){
+                            if($order->getDish()->getId() == $newOrder->get('dish_id')->getData()){
+                                $matched = true;
+                            }
+                            if($matched == false){
+                                $em->remove($order);
+                            }
+                            $matched = false;
                         }
                     }
-                    $newOrders = $form["orders"];
-
 
                     foreach($newOrders as $newOrder) {
                         $dish_id = $newOrder->get('dish_id')->getData();
@@ -112,23 +115,20 @@ class DefaultController extends Controller
                             $em->persist($order);
                         }
                     }
-
                     $em->flush();
-
-                    /* NEED TO REDIRECT!!!!!!!!!*/
+                    return $this->redirectToRoute('dashboard');
                 }
 
-
-                return $this->render('@Event/Default/pick.html.twig', array(
+                return $this->render('@Event/Default/pick.html.twig', [
                     'event_name' => $event_name,
                     'dealer' =>  $dealer_name,
                     'dishes' => $dishes,
                     'orders' => $OriginalOrders,
                     'form' => $form->createView(),
-                ));
+                ]);
             }
         } else {
-            return $this->redirectToRoute('corvus_main');
+            return $this->redirectToRoute('dashboard');
         }
     }
 
@@ -161,72 +161,78 @@ class DefaultController extends Controller
                         'Event status is incorect '.$event_status
                     );
                 } else {
-                    $em = $this->getDoctrine()->getManager();
+                    $event_host = $event->getHost();
+                    $user =$this->get('security.context')->getToken()->getUser();
 
-                    /*Calculating how many people ordered food*/
-                    $query = $em->createQuery(
-                        'SELECT COUNT(DISTINCT o.user)
-                        FROM EventBundle:Order o
-                        WHERE o.event = :event'
-                    )->setParameter('event',$event->getId());
-                    $people_count = $query->getSingleScalarResult();
-                    /*----------------------------------------------*/
+                    /*If current user is not this event host*/
+                    if($event_host !== $user) {
+                        throw $this->createNotFoundException(
+                            'You are not host of this event ' . $event_status
+                        );
+                    } else {
+                        $em = $this->getDoctrine()->getManager();
 
-                    /* Selecting grouped data of orders */
-                    $query = $em->createQuery(
-                        'SELECT o orders, SUM(o.quantity) quantity_sum, SUM(o.pricePerUnit*o.quantity) price_sum
-                        FROM EventBundle:Order o
-                        WHERE o.event = :event
-                        GROUP BY o.dish'
-                    )->setParameter('event',$event->getId());
+                        $people_count = $this->getDoctrine()
+                            ->getRepository('EventBundle:Order')
+                            ->getPeopleCountWhoOrdered($event);
 
-                    $orders = $query->getResult();
-                    /*----------------------------*/
+                        $orders = $this->getDoctrine()
+                            ->getRepository('EventBundle:Order')
+                            ->getGroupedOrders($event);
 
-                    /* Get dealer name*/
-                    $dealer_id =  $event->getDealer();
-                    $dealer = $this->getDoctrine()
-                        ->getRepository('FoodBundle:Dealer')->find($dealer_id);
-                    $dealer_name = $dealer->getName();
-                    /*--------------------------------*/
+                        /* Get dealer name*/
+                        $dealer_id = $event->getDealer();
+                        $dealer = $this->getDoctrine()
+                            ->getRepository('FoodBundle:Dealer')->find($dealer_id);
+                        $dealer_name = $dealer->getName();
 
-                    $dish_ids = array();
-                    foreach($orders as $order){
-                        $dish = $order["orders"]->getDish()->getId();
-                        $dish_ids[$dish] = false;
+                        /* Get dish id's. Used for form*/
+                        $dish_ids = [];
+                        foreach ($orders as $order) {
+                            $dish = $order["orders"]->getDish()->getId();
+                            $dish_ids[$dish] = false;
+                        }
+
+                        $form = $this->createForm(new MissingDishCheckType($dish_ids));
+
+                        $form->handleRequest($request);
+
+                        if ($form->isValid()) {
+                            $event_orders = $event->getOrders();
+                            $dish_ids = $form["dish_id"]->getData();
+
+                            /*Checking if order with that dish_id need to be removed*/
+                            foreach ($dish_ids as $dish_id => $statement) {
+                                if ($statement === true) {
+                                    foreach ($event_orders as $order) {
+                                        $order_dish_id = $order->getDish()->getId();
+                                        if ($order_dish_id === $dish_id) {
+                                            $order->setIsRemoved(true);
+
+                                            $em->persist($order);
+                                        }
+                                    }
+                                }
+                            }
+
+                            $event->setDeliveryDateTime($form["dueDate"]->getData());
+                            $event->setStatus(3);
+
+                            $em->flush();
+                        }
+
+                        return $this->render('EventBundle:Default:order.html.twig', [
+                            'event' => $event,
+                            'dealer' => $dealer_name,
+                            'people_count' => $people_count,
+                            'orders' => $orders,
+                            'form' => $form->createView(),
+                        ]);
                     }
-
-                    $form = $this->createFormBuilder($orders)
-                        ->add('dish_id', 'collection', array(
-                            'type' => 'checkbox',
-                            'required' => false,
-                            'data' => $dish_ids,
-                        ))
-                        ->add('dueDate', 'datetime', array(
-                            'data' => new \DateTime(),
-                        ))
-                        ->add('save', 'submit', array('label' => 'Save'))
-                        ->getForm();
-
-                    $form->handleRequest($request);
-
-                    if($form->isValid()) {
-                        dump($form->getData());
-                        exit;
-                    }
-
-                    return $this->render('EventBundle:Default:order.html.twig', array(
-                        'event' => $event,
-                        'dealer' =>  $dealer_name,
-                        'people_count' => $people_count,
-                        'orders' => $orders,
-                        'form' => $form->createView(),
-                    ));
                 }
             }
-
         } else {
-            return $this->redirectToRoute('corvus_main');
+            return $this->redirectToRoute('dashboard');
         }
     }
 }
