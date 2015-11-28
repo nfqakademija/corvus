@@ -33,12 +33,13 @@
                 <input class="form-control email_input" type="text"> <button class="btn btn-default email_add" id="add_email_button">Add</button>
             </div>
             <div class="email_list" data-prototype="{{ form_widget(form.emails.vars.prototype.email)|e }}">
-                {% for event_email in form.emails %}
-                    {{ form_widget(event_email.email) }}
-                {% endfor %}
+                {#{% for event_email in form.emails %}#}
+                    {#{{ form_widget(event_email.email) }}#}
+                {#{% endfor %}#}
             </div>
-            <a href="/" class="btn btn-default cancel_event">Cancel</a>
+            <a href="{{ path('corvus_main_default_dashboard') }}" class="btn btn-default cancel_event">Cancel</a>
             {{ form_widget(form.submit, {'attr' : { 'class' : 'btn btn-default create_event'}})}}
+            {% do form.emails.setRendered %}
             {{ form_end(form) }}
         </div>
 {% endblock %}
@@ -46,6 +47,6 @@
 {% block javascripts %}
     <script src="{{asset('bundles/event/plugins/js/moment.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('bundles/event/plugins/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
-    <script src="{{asset('bundles/event/js/event.js')}}" type="text/javascript"></script>
+    <script src="{{asset('bundles/event/js/createEvent.js')}}" type="text/javascript"></script>
 
 {% endblock %}

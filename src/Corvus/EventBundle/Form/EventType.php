@@ -3,11 +3,11 @@
 namespace Corvus\EventBundle\Form;
 
 use Corvus\EventBundle\Form\EventMailType;
+use Corvus\EventBundle\Validator\Constraints\DateTimeNotPast;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -22,7 +22,11 @@ class EventType extends AbstractType
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
-                'attr' => array('class' => 'date'))
+                'attr' => array('class' => 'date'),
+                    'constraints' => array(
+                        new DateTimeNotPast()
+                    )
+                    )
             )
             ->add('emails', 'collection', array(
                 'label' => 'Guests:',
@@ -38,6 +42,7 @@ class EventType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Corvus\EventBundle\Entity\Event',
+            'constraint' => ''
         ));
     }
 }

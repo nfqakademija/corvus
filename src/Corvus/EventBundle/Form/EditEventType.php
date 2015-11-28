@@ -3,12 +3,14 @@
 namespace Corvus\EventBundle\Form;
 
 use Corvus\EventBundle\Form\EventMailType;
+use Corvus\UserBundle\CorvusUserBundle;
 use Doctrine\ORM\EntityManager;
+use FOS\UserBundle\Propel\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class editEventType extends AbstractType
+class EditEventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -21,12 +23,16 @@ class editEventType extends AbstractType
                 'disabled' => true
             ))
             ->add('end_date_time', 'datetime',array(
-                    'label' => 'Order ends:',
-                    'input' => 'datetime',
-                    'widget' => 'single_text',
-                    'format' => 'y-MM-dd HH:mm',
-                    'attr' => array('class' => 'date'))
-            )
+                'label' => 'Order ends:',
+                'input' => 'datetime',
+                'widget' => 'single_text',
+                'format' => 'y-MM-dd HH:mm',
+                'attr' => array('class' => 'date'))
+            )->add('users', 'collection', array(
+                'label' => null,
+                'type' => new UserEmailType(),
+                'disabled' => true
+            ))
             ->add('emails', 'collection', array(
                 'label' => 'Guests:',
                 'type' => new EventMailType,

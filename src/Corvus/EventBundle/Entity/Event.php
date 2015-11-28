@@ -34,7 +34,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
-     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id", nullable=false)
      * @var Dealer
      */
     protected $dealer;
@@ -50,7 +50,7 @@ class Event
      */
     protected $endDateTime;
 
-    /**
+    /***
      * @ORM\Column(type="integer", name="status")
      * @var integer
      */
@@ -69,13 +69,13 @@ class Event
     protected $users;
 
     /**
-     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event")
+     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event", cascade={"persist"})
      * @var string
      */
     protected $emails;
 
     /**
-     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="event")
+     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="event" )
      * @var Payment[]|ArrayCollection
      */
     protected $payments;
@@ -267,7 +267,7 @@ class Event
      */
     public function addEmail(\Corvus\EventBundle\Entity\EventMail $email)
     {
-        $this->emails[] = $email;
+        $this->emails->add($email);
 
         return $this;
     }

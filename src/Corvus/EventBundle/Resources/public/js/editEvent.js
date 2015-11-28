@@ -12,7 +12,6 @@ $(document).ready(function(){
         $('#time_input').datetimepicker({
             locale: 'en',
             format: 'YYYY-MM-DD HH:mm',
-            minDate: moment(),
             stepping: 30
         });
         // Get the ul that holds the collection of tags

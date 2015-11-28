@@ -1,5 +1,4 @@
 <?php
-// src/AppBundle/Validator/Constraints/ContainsAlphanumericValidator.php
 namespace Corvus\EventBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -9,9 +8,10 @@ class DateTimeNotPastValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (new \DateTime() < $value) {
+        dump($value);
+        if (new \DateTime() > $value) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('%string%', $value)
+                ->setParameter('%string%', $value->format('Y-m-d h:u'))
                 ->addViolation();
         }
     }
