@@ -1,30 +1,47 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Vartotojas
- * Date: 2015.11.19
- * Time: 18:38
+ * User: vsks-NFQ-academy
+ * Date: 11/21/2015
+ * Time: 17:07
  */
 
-namespace FoodBundle\DataFixtures\ORM;
+namespace Corvus\FoodBundle\DataFixtures\ORM;
 
-use Corvus\FoodBundle\Entity\Dealer;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Corvus\FoodBundle\Entity\Dish;
+use Corvus\FoodBundle\Entity\Dealer;
 
-class LoadDealerData implements FixtureInterface
+class LoadDealerData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
         $dealer = new Dealer();
-
-        $dealer->setAddress("Vilnius");
-        $dealer->setEmail("email@email.com");
-        $dealer->setName("Ciliaks");
-        $dealer->setPhone("+37066666666");
+        $dealer->setName('Kebabine');
+        $dealer->setAddress('In Shehkine');
+        $dealer->setEmail("kebab@one.lt");
+        $dealer->setPhone("852223322");
 
         $manager->persist($dealer);
         $manager->flush();
+
+        $this->addReference('d1', $dealer);
+
+        $dealer2 = new Dealer();
+        $dealer2->setName('Tashnilovka');
+        $dealer2->setAddress('Stoties rajonas');
+        $dealer2->setEmail("volodzia@mail.ru");
+        $dealer2->setPhone("+37060012345");
+
+        $manager->persist($dealer2);
+        $manager->flush();
+
+        $this->addReference('d2', $dealer2);
+    }
+
+    public function getOrder()
+    {
+        return 1;
     }
 }

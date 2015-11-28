@@ -19,7 +19,7 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
-            return $this->redirectToRoute('corvus_main');
+            return $this->redirectToRoute('dashboard');
         } else{
             return $this->welcomeAction();
         }
@@ -37,7 +37,7 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         if ($isFullyAuthenticated) {
-            return $this->redirectToRoute('corvus_main');
+            return $this->redirectToRoute('dashboard');
         } else {
 
 
@@ -49,17 +49,4 @@ class DefaultController extends Controller
             ));
         }
     }
-    /*
-     * @Route("/dashboard")
-     *
-    public function dashboardAction(){
-
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $id = $user->getId();
-
-        return $this->render('CorvusMainBundle:welcome:dashboard.html.twig', array(
-            'user_id' => $id
-        ));
-    }
-    */
 }
