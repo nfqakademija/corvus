@@ -12,7 +12,6 @@
     </div>
 
     {% for event in events %}
-        <div class="e{{ event.id }}">
             <div class="row">
                 <div class="col-lg-12">
                     <h3>{{ event.title }}</h3>
@@ -63,7 +62,6 @@
                             {{ buttons.review(event.id) }}
                         </div>
                     {% endif %}
-                </div>
             {% else %}
                 <div class="row">
                     <div class="col-md-1"></div>

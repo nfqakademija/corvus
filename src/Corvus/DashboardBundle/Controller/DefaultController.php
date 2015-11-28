@@ -24,8 +24,6 @@ class DefaultController extends Controller
 
         $e = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($id);
 
-        //dump($e);
-        //exit;
         return ['user' => $user, 'events' => $e];
     }
 

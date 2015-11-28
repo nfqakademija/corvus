@@ -21,7 +21,6 @@ class LoadEventData extends AbstractFixture implements OrderedFixtureInterface
         $event->setTitle("Pietus");
         $event->setDealer($this->getReference('d1'));
         $event->setEndDateTime(new \DateTime("2015-11-30 14:30:00"));
-        //$event->setDeliveryDateTime(new \DateTime("2015-11-30 15:30"))
         $event->setHost($this->getReference('u1'));
         $event->setIsDeleted(false);
         $event->setStatus(1);
@@ -34,7 +33,6 @@ class LoadEventData extends AbstractFixture implements OrderedFixtureInterface
         $event2->setTitle("Vakariene");
         $event2->setDealer($this->getReference('d2'));
         $event2->setEndDateTime(new \DateTime("2015-11-29 16:30:00"));
-        //$event2->setDeliveryDateTime(new \DateTime("2015-11-29 19:30:00"));
         $event2->setHost($this->getReference('u3'));
         $event2->setIsDeleted(false);
         $event2->setStatus(1);
