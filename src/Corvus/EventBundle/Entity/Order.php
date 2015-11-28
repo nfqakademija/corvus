@@ -8,131 +8,70 @@
 
 namespace Corvus\EventBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="order")
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\OrderRepository")
+ * @ORM\Table(name="`order`")
  */
 class Order
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="order_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $orderId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="dish_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\FoodBundle\Entity\Dish")
+     * @ORM\JoinColumn(name="dish_id", referencedColumnName = "id")
+     * @var Dish
      */
-    protected $dishId;
+    protected $dish;
 
     /**
-     * @ORM\Column(type="integer", name="user_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "orders")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName = "id")
+     * @var User
      */
-    protected $userId;
+    protected $user;
 
     /**
-     * @ORM\Column(type="integer", name="event_id")
+     * @ORM\ManyToOne(targetEntity = "Event", inversedBy = "orders")
+     * @ORM\JoinColumn(name="event_id", referencedColumnName = "id")
+     * @var Event
      */
-    protected $eventId;
+    protected $event;
 
     /**
-     * @ORM\Column(type="integer", name="quantity")
+     * @ORM\Column(type="integer", name="quantity", nullable=false)
+     * @var integer
      */
     protected $quantity;
 
     /**
-     * @ORM\Column(type="integer", name="price_per_unit")
+     * @ORM\Column(type="decimal", precision=8, scale=2, name="price_per_unit")
+     * @var float
      */
     protected $pricePerUnit;
 
     /**
-     * @ORM\Column(type="boolean", name="is_removed")
+     * @ORM\Column(type="boolean", name="is_removed", nullable=true)
+     * @var boolean
      */
     protected $isRemoved;
 
     /**
-     * Get orderId
+     * Get id
      *
      * @return integer
      */
-    public function getOrderId()
+    public function getId()
     {
-        return $this->orderId;
-    }
-
-    /**
-     * Set dishId
-     *
-     * @param integer $dishId
-     *
-     * @return Order
-     */
-    public function setDishId($dishId)
-    {
-        $this->dishId = $dishId;
-
-        return $this;
-    }
-
-    /**
-     * Get dishId
-     *
-     * @return integer
-     */
-    public function getDishId()
-    {
-        return $this->dishId;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     *
-     * @return Order
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * Set eventId
-     *
-     * @param integer $eventId
-     *
-     * @return Order
-     */
-    public function setEventId($eventId)
-    {
-        $this->eventId = $eventId;
-
-        return $this;
-    }
-
-    /**
-     * Get eventId
-     *
-     * @return integer
-     */
-    public function getEventId()
-    {
-        return $this->eventId;
+        return $this->id;
     }
 
     /**
@@ -206,4 +145,78 @@ class Order
     {
         return $this->isRemoved;
     }
+
+    /**
+     * Set dish
+     *
+     * @param \Corvus\FoodBundle\Entity\Dish $dish
+     *
+     * @return Order
+     */
+    public function setDish(\Corvus\FoodBundle\Entity\Dish $dish = null)
+    {
+        $this->dish = $dish;
+
+        return $this;
+    }
+
+    /**
+     * Get dish
+     *
+     * @return \Corvus\FoodBundle\Entity\Dish
+     */
+    public function getDish()
+    {
+        return $this->dish;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     *
+     * @return Order
+     */
+    public function setUser(\Corvus\MainBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Corvus\MainBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set event
+     *
+     * @param \Corvus\EventBundle\Entity\Event $event
+     *
+     * @return Order
+     */
+    public function setEvent(\Corvus\EventBundle\Entity\Event $event = null)
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * Get event
+     *
+     * @return \Corvus\EventBundle\Entity\Event
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
 }
+
+

@@ -14,6 +14,39 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array('name' => 'World');
+
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($isFullyAuthenticated) {
+            return $this->redirectToRoute('dashboard');
+        } else{
+            return $this->welcomeAction();
+        }
+    }
+
+    /**
+     * @Route("/login")
+     */
+    public function welcomeAction()
+    {
+        /** @var $formFactory \FOS\UserBundle\Form\Factory\FactoryInterface */
+
+
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        if ($isFullyAuthenticated) {
+            return $this->redirectToRoute('dashboard');
+        } else {
+
+
+            $formFactory = $this->get('fos_user.registration.form.factory');
+
+            $form = $formFactory->createForm();
+            return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
+                'form' => $form->createView(),
+            ));
+        }
     }
 }
