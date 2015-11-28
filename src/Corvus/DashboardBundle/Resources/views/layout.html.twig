@@ -10,7 +10,7 @@
         <div class="container-fluid login-wrapper">
             <div class="row text-center">
                 <h1>Massive food ordering system</h1>
-            </div>
+
 
             {% if app.request.hasPreviousSession %}
                 {% for type, messages in app.session.flashbag.all() %}
@@ -21,9 +21,10 @@
                     {% endfor %}
                 {% endfor %}
             {% endif %}
+            </div>
             {% block body %}
             {% endblock body %}
-            
+
         </div>
     </body>
 </html>

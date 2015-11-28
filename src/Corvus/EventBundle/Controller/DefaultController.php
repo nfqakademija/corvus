@@ -22,7 +22,7 @@ class DefaultController extends Controller
      */
     public function indexAction($id)
     {
-        return array('name' => $id);
+        return ['name' => $id];
     }
 
     /**
@@ -67,11 +67,11 @@ class DefaultController extends Controller
                 $dealer_name = $dealer->getName();
 
                 $dishes = $this->getDoctrine()
-                    ->getRepository('FoodBundle:Dish')->findBy(array('dealer' => $dealer_id));
+                    ->getRepository('FoodBundle:Dish')->findBy(['dealer' => $dealer_id]);
 
 
                 $OriginalOrders = $this->getDoctrine()
-                    ->getRepository('EventBundle:Order')->findBy(array('event' => $event, 'user' => $user));
+                    ->getRepository('EventBundle:Order')->findBy(['event' => $event, 'user' => $user]);
 
 
                 $cart = new Cart();
@@ -130,13 +130,13 @@ class DefaultController extends Controller
                 }
 
 
-                return $this->render('@Event/Default/pick.html.twig', array(
+                return $this->render('@Event/Default/pick.html.twig', [
                     'event_name' => $event_name,
                     'dealer' =>  $dealer_name,
                     'dishes' => $dishes,
                     'orders' => $OriginalOrders,
                     'form' => $form->createView(),
-                ));
+                ]);
             }
         } else {
             return $this->redirectToRoute('corvus_main');
@@ -184,25 +184,16 @@ class DefaultController extends Controller
                     } else {
                         $em = $this->getDoctrine()->getManager();
 
-                        /*Calculating how many people ordered food*/
-                        $query = $em->createQuery(
-                            'SELECT COUNT(DISTINCT o.user)
-                            FROM EventBundle:Order o
-                            WHERE o.event = :event'
-                        )->setParameter('event', $event->getId());
-                        $people_count = $query->getSingleScalarResult();
-                        /*----------------------------------------------*/
 
-                        /* Selecting grouped data of orders */
-                        $query = $em->createQuery(
-                            'SELECT o orders, SUM(o.quantity) quantity_sum, SUM(o.pricePerUnit*o.quantity) price_sum
-                            FROM EventBundle:Order o
-                            WHERE o.event = :event
-                            GROUP BY o.dish'
-                        )->setParameter('event', $event->getId());
+                        $people_count = $this->getDoctrine()
+                            ->getRepository('EventBundle:Order')
+                            ->getPeopleCountWhoOrdered($event);
 
-                        $orders = $query->getResult();
-                        /*----------------------------*/
+
+                        $orders = $this->getDoctrine()
+                            ->getRepository('EventBundle:Order')
+                            ->getGroupedOrders($event);
+
 
                         /* Get dealer name*/
                         $dealer_id = $event->getDealer();
@@ -212,7 +203,7 @@ class DefaultController extends Controller
                         /*--------------------------------*/
 
                         /* Get dish id's. Used for form*/
-                        $dish_ids = array();
+                        $dish_ids = [];
                         foreach ($orders as $order) {
                             $dish = $order["orders"]->getDish()->getId();
                             $dish_ids[$dish] = false;
@@ -251,13 +242,13 @@ class DefaultController extends Controller
                             $em->flush();
                         }
 
-                        return $this->render('EventBundle:Default:order.html.twig', array(
+                        return $this->render('EventBundle:Default:order.html.twig', [
                             'event' => $event,
                             'dealer' => $dealer_name,
                             'people_count' => $people_count,
                             'orders' => $orders,
                             'form' => $form->createView(),
-                        ));
+                        ]);
                     }
                 }
             }

@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\OrderRepository")
  * @ORM\Table(name="`order`")
  */
 class Order
@@ -218,3 +218,5 @@ class Order
         return $this->event;
     }
 }
+
+
