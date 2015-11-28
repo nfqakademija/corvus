@@ -12,7 +12,8 @@ $(document).ready(function(){
         $('#time_input').datetimepicker({
             locale: 'en',
             format: 'YYYY-MM-DD HH:mm',
-            minDate: moment()
+            minDate: moment(),
+            stepping: 30
         });
         // Get the ul that holds the collection of tags
         $collectionHolder = $('div.email_list');
@@ -28,6 +29,7 @@ $(document).ready(function(){
 
             // add a new tag form (see next code block)
             addEmailForm($collectionHolder);
+            renderEmails($collectionHolder);
         });
     });
     function isEmail(email) {
@@ -66,7 +68,7 @@ $(document).ready(function(){
     }
     function renderEmails($collectionHolder){
         $collectionHolder.find(':input').each( function (){
-            $collectionHolder.append($removeRowButton.html($(this).val));
+            $collectionHolder.append($('<div class="email_row"></div>').text($addEmailInput.val()));
         });
     }
 });
