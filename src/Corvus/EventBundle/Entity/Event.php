@@ -34,7 +34,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
-     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id", nullable=false)
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
      * @var Dealer
      */
     protected $dealer;
@@ -50,7 +50,12 @@ class Event
      */
     protected $endDateTime;
 
-    /***
+    /**
+     * @ORM\Column(type="datetime", name="delivery_date_time")
+     */
+    protected $deliveryDateTime;
+
+    /**
      * @ORM\Column(type="integer", name="status")
      * @var integer
      */
@@ -69,6 +74,7 @@ class Event
     protected $users;
 
     /**
+     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="events")
      * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event", cascade={"persist"})
      * @var string
      */
@@ -150,6 +156,30 @@ class Event
     public function getEndDateTime()
     {
         return $this->endDateTime;
+    }
+
+    /**
+     * Set deliveryDateTime
+     *
+     * @param \DateTime $deliveryDateTime
+     *
+     * @return Event
+     */
+    public function setDeliveryDateTime($deliveryDateTime)
+    {
+        $this->deliveryDateTime = $deliveryDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryDateTime
+     *
+     * @return \DateTime
+     */
+    public function getDeliveryDateTime()
+    {
+        return $this->deliveryDateTime;
     }
 
     /**

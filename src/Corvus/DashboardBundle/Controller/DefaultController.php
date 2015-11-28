@@ -9,11 +9,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/dashboard/")
+     * @Route("/dashboard/", name="corvus_main")
      * @Template()
      */
     public function indexAction()
     {
-        return array('name' => 'Dashboard');
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $id = $user->getId();
+
+        return $this->render('DashboardBundle:welcome:dashboard.html.twig', array(
+            'user_id' => $id
+        ));
     }
 }
