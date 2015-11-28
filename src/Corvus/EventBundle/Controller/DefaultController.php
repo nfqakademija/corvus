@@ -5,6 +5,7 @@ namespace Corvus\EventBundle\Controller;
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Form\Type\CartType;
+use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
@@ -86,14 +87,24 @@ class DefaultController extends Controller
                 $form->handleRequest($request);
 
                 if($form->isValid()) {
-                    foreach ($OriginalOrders as $order) {
-                        if (false === $cart->getOrders()->contains($order)) {
-                            $em->remove($order);
-                        } else {
-                        }
-                    }
                     $newOrders = $form["orders"];
+                    dump($newOrders);
+                    $matched = false;
+                    foreach ($OriginalOrders as $order) {
+                        foreach($newOrders as $newOrder){
+                            if($order->getDish()->getId() == $newOrder->get('dish_id')->getData()){
+                                $matched = true;
+                                dump($order);
+                                dump($newOrder->get('dish_id')->getData());
+                            }
+                            if($matched == false){
+                                $em->remove($order);
+                            }
+                            $matched = false;
 
+                        }
+
+                    }
 
                     foreach($newOrders as $newOrder) {
                         $dish_id = $newOrder->get('dish_id')->getData();
@@ -208,17 +219,7 @@ class DefaultController extends Controller
                         }
                         /*--------------------------*/
 
-                        $form = $this->createFormBuilder()
-                            ->add('dish_id', 'collection', array(
-                                'type' => 'checkbox',
-                                'required' => false,
-                                'data' => $dish_ids,
-                            ))
-                            ->add('dueDate', 'datetime', array(
-                                'data' => new \DateTime(),
-                            ))
-                            ->add('save', 'submit', array('label' => 'Save'))
-                            ->getForm();
+                        $form = $this->createForm(new MissingDishCheckType($dish_ids));
 
                         $form->handleRequest($request);
 
