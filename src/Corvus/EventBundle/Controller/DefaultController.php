@@ -26,15 +26,21 @@ class DefaultController extends Controller
             $em = $this->getDoctrine()->getManager();
             $event->setStatus(1);
             $event->setHost($this->getUser());
-
+            var_dump($event->getEmails());
             foreach($event->getEmails() as $email){
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findBy(
-                    array('email' => $email->getEmail()),
-                    array(),
-                    $limit = 1
-                );
-                if($user && is_array($user)){
-                    $event->addUser($user[0]);
+                $count = 0;
+                foreach($event->getEmails() as $emailDupe){
+                    if(strtolower($email->getEmail()) == strtolower($emailDupe->getEmail())){
+                        $count++;
+                    }
+                }
+                if($count > 1){
+                    $event->removeEmail($email);
+                    continue;
+                }
+                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(array('email' => $email->getEmail()));
+                if($user){
+                    $event->addUser($user);
                     $event->removeEmail($email);
                 } else {
                     $email->setEvent($event);

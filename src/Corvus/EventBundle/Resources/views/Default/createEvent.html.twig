@@ -10,6 +10,7 @@
             {# render the task's only field: description #}
             <div class="form-group">
                 {{ form_label(form.title) }}
+                {{ form_errors(form.dealer) }}
                 {{ form_widget(form.title, { 'attr' : { 'class' : 'form-control'}  }) }}
             </div>
             <div class="form-group">
@@ -17,6 +18,7 @@
                 {{ form_widget(form.dealer, { 'attr' : { 'class' : 'form-control'}  }) }}
             </div>
             {{ form_label(form.end_date_time) }}
+            {{ form_errors(form.end_date_time) }}
             <div class="form-group">
                 <div class="input-group" id="time_input">
                     {{ form_widget(form.end_date_time, { 'attr' : {'class' : 'form-control' } }) }}
@@ -26,11 +28,10 @@
                 </div>
             </div>
             {{ form_label(form.emails)}}
-            {{ form_widget(form.emails) }}
+            {{ form_errors(form.emails) }}
             <div class="form-group email">
                 <input class="form-control email_input" type="text"> <button class="btn btn-default email_add" id="add_email_button">Add</button>
             </div>
-
             <div class="email_list" data-prototype="{{ form_widget(form.emails.vars.prototype.email)|e }}">
                 {% for event_email in form.emails %}
                     {{ form_widget(event_email.email) }}
@@ -38,11 +39,6 @@
             </div>
             <a href="/" class="btn btn-default cancel_event">Cancel</a>
             {{ form_widget(form.submit, {'attr' : { 'class' : 'btn btn-default create_event'}})}}
-            <div class="alert alert-danger" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
-                {{ f }}
-            </div>
             {{ form_end(form) }}
         </div>
 {% endblock %}
