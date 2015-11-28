@@ -61,7 +61,7 @@ class RegistrationController extends Controller
             $userManager->updateUser($user);
 
             if (null === $response = $event->getResponse()) {
-                $url = $this->generateUrl('fos_user_registration_confirmed');
+                $url = $this->generateUrl('dashboard');
                 $response = new RedirectResponse($url);
             }
 
@@ -70,7 +70,7 @@ class RegistrationController extends Controller
             return $response;
         }
 
-        return $this->redirectToRoute('corvus_main');
+        return $this->redirectToRoute('dashboard');
     }
 
     /**
@@ -138,7 +138,7 @@ class RegistrationController extends Controller
 
 
 
-        return $this->redirectToRoute('corvus_main');
+        return $this->redirectToRoute('dashboard');
     }
 
     private function getTargetUrlFromSession()

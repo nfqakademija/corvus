@@ -8,11 +8,12 @@
 namespace Corvus\EventBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\EventRepository")
  * @ORM\Table(name="event")
  */
 class Event
@@ -50,7 +51,7 @@ class Event
      */
     protected $endDateTime;
 
-    /***
+    /**
      * @ORM\Column(type="integer", name="status")
      * @var integer
      */
@@ -69,8 +70,8 @@ class Event
     protected $users;
 
     /**
-     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event", cascade={"persist"})
-     * @var string
+     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event")
+     * @var EventEmail[]|ArrayCollection
      */
     protected $emails;
 
@@ -150,6 +151,30 @@ class Event
     public function getEndDateTime()
     {
         return $this->endDateTime;
+    }
+
+    /**
+     * Set deliveryDateTime
+     *
+     * @param \DateTime $deliveryDateTime
+     *
+     * @return Event
+     */
+    public function setDeliveryDateTime($deliveryDateTime)
+    {
+        $this->deliveryDateTime = $deliveryDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryDateTime
+     *
+     * @return \DateTime
+     */
+    public function getDeliveryDateTime()
+    {
+        return $this->deliveryDateTime;
     }
 
     /**
@@ -382,5 +407,43 @@ class Event
     public function removeUser(\Corvus\MainBundle\Entity\User $user)
     {
         $this->users->removeElement($user);
+    }
+
+    public function getOrdersCount()
+    {
+        $orders = array();
+        foreach ($this->orders as $order) {
+            $orders[$order->getUser()->getId()] = true;
+        }
+
+        return count($orders);
+    }
+
+    public function getDebtLeft()
+    {
+        $eventPayment = 0;
+        foreach ($this->payments as $payment) {
+            $eventPayment += $payment->getPaid();
+        }
+
+        return $this->getDebtTotal() - $eventPayment;
+    }
+
+    public function getDebtTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if ($order->getUser() != $this->host) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+
+        return $eventSum;
+    }
+
+    public function getTimeLeft()
+    {
+        $timeNow = new \DateTime('now');
+        return $timeNow->diff($this->endDateTime);
     }
 }

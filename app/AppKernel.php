@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Corvus\EventBundle\EventBundle(),
             new Corvus\FoodBundle\FoodBundle(),
             new Corvus\UserBundle\CorvusUserBundle(),
+            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

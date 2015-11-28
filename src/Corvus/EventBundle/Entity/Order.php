@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\OrderRepository")
  * @ORM\Table(name="`order`")
  */
 class Order
@@ -53,7 +53,7 @@ class Order
     protected $quantity;
 
     /**
-     * @ORM\Column(type="float", name="price_per_unit")
+     * @ORM\Column(type="decimal", precision=8, scale=2, name="price_per_unit")
      * @var float
      */
     protected $pricePerUnit;
@@ -218,3 +218,5 @@ class Order
         return $this->event;
     }
 }
+
+
