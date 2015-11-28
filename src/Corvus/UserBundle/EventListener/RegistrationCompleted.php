@@ -19,7 +19,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
 
 class RegistrationCompleted implements EventSubscriberInterface
 {
-
     private $doctrine;
 
     public function __construct(Doctrine $doctrine)
@@ -32,9 +31,9 @@ class RegistrationCompleted implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             FOSUserEvents::REGISTRATION_COMPLETED => 'onRegistrationCompleted'
-        );
+        ];
     }
 
     public function onRegistrationCompleted(FilterUserResponseEvent $event){
@@ -44,7 +43,7 @@ class RegistrationCompleted implements EventSubscriberInterface
         $em = $this->doctrine->getEntityManager();
 
         $invitations = $this->doctrine
-            ->getRepository('EventBundle:EventMail')->findBy(array('email' => $user_email));
+            ->getRepository('EventBundle:EventMail')->findBy(['email' => $user_email]);
 
         if($invitations != null) {
             foreach($invitations as $invitation){

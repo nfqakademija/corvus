@@ -22,18 +22,16 @@ class MissingDishCheckType extends AbstractType
     }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        $builder->add('dish_id', 'collection', array(
+        $builder->add('dish_id', 'collection', [
             'type' => 'checkbox',
             'required' => false,
             'data' => $this->dish_ids,
-        ))
-            ->add('dueDate', 'datetime', array(
+        ])
+            ->add('dueDate', 'datetime',[
                 'data' => new \DateTime(),
-            ))
-            ->add('save', 'submit', array('label' => 'Save'));
+            ])
+            ->add('save', 'submit', ['label' => 'Save']);
     }
-
     public function getName()
     {
         return 'MissingDishCheck';
