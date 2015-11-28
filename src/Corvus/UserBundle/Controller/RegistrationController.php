@@ -70,7 +70,9 @@ class RegistrationController extends Controller
             return $response;
         }
 
-        return $this->redirectToRoute('dashboard');
+        return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
