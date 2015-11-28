@@ -1,10 +1,6 @@
 parameters:
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-
     corvus_user.registration_completed:
         class: Corvus\UserBundle\EventListener\RegistrationCompleted
         arguments: [@doctrine]
