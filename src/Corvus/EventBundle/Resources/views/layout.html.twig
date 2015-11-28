@@ -15,6 +15,7 @@
                 <h1 class="row text-center">Massive food ordering system</h1>
 
                 <div class="col-md-8 col-md-offset-2" style="margin-bottom: 10px">
+                    <b>{{ app.user.username }}</b>
                     <a href="{{ path('fos_user_security_logout') }}" class="btn btn-default" role="button">Logout</a>
                     <a href="{{ path('fos_user_profile_show') }}" class="btn btn-default" role="button">Your Profile</a>
                     <a href="{{ path('dashboard') }}" class="btn btn-default" role="button">Dashboard</a>
