@@ -46,7 +46,7 @@ dealer {{ dealer }}<br>
                     {{ form_widget(order.quantity, {'type': 'hidden'}) }}
 
                     <b>{{ order.vars.value.dish.name }}</b><br>
-                    Amount: {{ order.vars.value.quantity }}<br>
+                    Amount: <span>{{ order.vars.value.quantity }}</span>   <button class="plus btn btn-default btn-xs">+</button><button class="minus btn btn-default btn-xs">-</button><br>
                     Price: <p class="price" style="display: inline">{{ order.vars.value.quantity * order.vars.value.pricePerUnit }}</p> €<br>
 
                 </li>
@@ -64,6 +64,34 @@ dealer {{ dealer }}<br>
         var $newLinkLi = $('<li class="list-group-item" >Total:</li>');
 
         jQuery(document).ready(function() {
+            $('button.plus').click(function(event){
+                event.preventDefault();
+                var $amount = parseFloat($(this).siblings("span").text())
+                if($amount<100) {
+                    var $price = parseFloat($(this).siblings(".price").text())
+
+                    var $pricePerOne = $price / $amount;
+
+                    $(this).siblings(".price").text(($price + $pricePerOne).toFixed(2));
+                    $(this).siblings("span").text($amount + 1);
+                    $(this).siblings("input").eq(1).val($amount+1);
+                }
+                calculateTotalPrice();
+            });
+
+            $('button.minus').click(function(event){
+                event.preventDefault();
+                var $amount = parseFloat($(this).siblings("span").text())
+
+                if($amount>1){
+                    var $price = parseFloat($(this).siblings(".price").text())
+                    var $pricePerOne = $price / $amount;
+                    $(this).siblings(".price").text(($price - $pricePerOne).toFixed(2));
+                    $(this).siblings("span").text($amount - 1);
+                    $(this).siblings("input").eq(1).val($amount-1);
+                }
+                calculateTotalPrice();
+            });
             // Get the ul that holds the collection of orders
             $collectionHolder = $('ul.orders');
             calculateTotalPrice();
@@ -86,22 +114,17 @@ dealer {{ dealer }}<br>
                     var $input_val = $(this).find("input").val();
 
                     if ($input_val == $dish_id) {
-
                         $existing_dih_on_cart = true;
                     }
-
                 });
 
                 if ($existing_dih_on_cart == false) {
-
                     var $amount = $(this).siblings("input[name='quantity']").first().val();
 
                     if ($amount > 0 && $amount < 1000) {
-
                         var $parent = $(this).parent();
                         var $dish_name = $parent.siblings(".dish_name").text();
                         var $price = parseFloat($parent.siblings(".price").text());
-
 
                         // add a new tag form (see next code block)
                         addOrderForm($collectionHolder, $newLinkLi, $dish_id, $amount, $dish_name, $price);
@@ -124,9 +147,10 @@ dealer {{ dealer }}<br>
                             .replace(/__name__/g, index)
                             .replace(/__idvalue__/g, $dish_id)
                             .replace(/__qvalue__/g, $amount)
-                            +"<b>" +  $dish_name + "</b> <br> Amount: "
+                            +"<b>" +  $dish_name + "</b> <br> Amount: <span>"
                             + $amount
-                            + "<br> Price: <p class='price' style='display: inline'>"+ ($price*$amount).toFixed(2) +"</p> €";
+                            + "</span>   <button class='plus btn btn-default btn-xs'>+</button><button class='minus btn btn-default btn-xs'>-</button> <br> Price: <p class='price' style='display: inline'>"+
+                            ($price*$amount).toFixed(2) +"</p> €";
 
             // increase the index with one for the next item
             $collectionHolder.data('index', index + 1);
@@ -161,8 +185,6 @@ dealer {{ dealer }}<br>
                 if(!isNaN($price_val))
                 $sum += $price_val;
             });
-
-
             $newLinkLi.text("Total: " + $sum.toFixed(2) + " €");
         }
     </script>
