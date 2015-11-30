@@ -1,0 +1,15 @@
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+    <div class = "col-md-12">
+    <h3>{{ event.title }}</h3>
+    </div>
+    </div>
+    {% for user in event.users %}
+        <div class = "row">
+            <div class="col-md-12">
+                <h4>{{ user.getUsername }}</h4>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock event_content %}

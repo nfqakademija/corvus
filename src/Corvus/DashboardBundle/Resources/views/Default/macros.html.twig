@@ -7,7 +7,7 @@
 {% endmacro %}
 
 {% macro payments(eid) %}
-    <a href="#path('event_payments', {'id': eid})" class="btn btn-primary">Payments</a>
+    <a href="{{ path('payments', {'id': eid}) }}" class="btn btn-primary">Payments</a>
 {% endmacro %}
 
 {% macro edit(eid) %}

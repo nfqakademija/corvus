@@ -9,7 +9,9 @@
 namespace Corvus\EventBundle\Entity;
 
 
+use Corvus\MainBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\EventDispatcher\Event;
 
 class OrderRepository extends EntityRepository
 {
@@ -38,5 +40,4 @@ class OrderRepository extends EntityRepository
 
         return $orders = $query->getResult();
     }
-
 }

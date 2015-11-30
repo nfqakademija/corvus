@@ -128,7 +128,7 @@ class DefaultController extends Controller
                 ]);
             }
         } else {
-            return $this->redirectToRoute('dashboard');
+            return $this->redirectToRoute('login');
         }
     }
 
@@ -233,6 +233,67 @@ class DefaultController extends Controller
             }
         } else {
             return $this->redirectToRoute('dashboard');
+        }
+    }
+
+    /**
+     * @Route("/event/{id}/payments", name="payments")
+     * @Template()
+     */
+    public function paymentsAction($id, Request $request)
+    {
+        $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($isFullyAuthenticated)
+        {
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
+            if ($user == $event->getHost())
+            {
+                $guests = $event->getUsers();
+                dump($event);
+                exit;
+                $paid =['paid' => 0];
+                $form = $this->createFormBuilder($paid);
+                foreach ($guests as $guest)
+                {
+                    $form = $form->add('user', 'hidden', ['data' => $guest->getId()])->add('paid', 'number');
+                }
+                $form = $form->add('save', 'submit');
+                $form = $form->getForm();
+
+                $form->handleRequest($request);
+
+                if($form->isValid())
+                {
+                    return $this->redirectToRoute('dashboard');
+                }
+                //    ->add('id', 'hidden')
+                //   ->add('paid', 'number')->getForm();
+
+                return ['event' => $event, 'guests' => $guests, 'form' => $form->createView()];
+            } else {
+                throw $this->createAccessDeniedException("You aren't host of this event");
+            }
+        } else {
+            return $this->redirectToRoute('login');
+        }
+    }
+
+    /**
+     * @Route("/event/{id}/review", name="review")
+     * @Template()
+     */
+    public function reviewAction($id)
+    {
+        $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($isFullyAuthenticated){
+            $event = $this->getDoctrine()->getRepository("EventBundle:Event")->find($id);
+            $g = $this->getDoctrine()->getRepository('EventBundle:Event')->getOrderedUsers($id);
+            dump($g);
+            exit;
+            return ['event' => $event];
+        } else {
+            return $this->redirectToRoute('login');
         }
     }
 }

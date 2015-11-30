@@ -1,0 +1,23 @@
+{% extends "EventBundle::layout.html.twig" %}
+{% block event_content %}
+    <div class="col md-12">
+        {{ form_start(form) }}
+        <table class="table-bordered">
+            {% for guest in guests %}
+                <tr>
+                    <td>
+                        {{ guest.getUsername }}
+                    </td>
+                    <td>
+                        Debt: {{ event.getUserDebt(guest) }}
+                    </td>
+                    <td>
+                        {{ form_row(form.user) }}
+                        {{ form_row(form.paid) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {{ form_end(form) }}
+    </div>
+{% endblock event_content %}

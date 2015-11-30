@@ -28,4 +28,17 @@ class EventRepository extends EntityRepository
             return null;
         }
     }
+
+    public function getOrderedUsers($id)
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT u
+            FROM CorvusMainBundle:User u
+            LEFT JOIN u.events e
+            LEFT JOIN u.orders o
+            WHERE e.id = :eid'
+        )->setParameters(['eid' => $id]);
+
+        return $query->getScalarResult();
+    }
 }
