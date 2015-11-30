@@ -16,21 +16,18 @@ use Corvus\EventBundle\Entity\Event;
 use Corvus\EventBundle\Form\EventType;
 use Corvus\EventBundle\Form\EditEventType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/event/new")
-     * @Route("/event/{id}")
      * @Template()
      */
     public function createEventAction(Request $request)
-    public function indexAction($id)
     {
         $event = new Event();
         $form = $this->createForm(new EventType(), $event);
-
+        $event->setStatus(1);
         $form->handleRequest($request);
 
         if($form->isValid()){
@@ -60,10 +57,10 @@ class DefaultController extends Controller
             }
             $em->persist($event);
             $em->flush();
-            return $this->redirect($this->generateUrl('select_food'));
+            return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
         }
         return array(
-            'form' => $form->createView(),
+            'form' => $form->createView(),g
         );
     }
     /**
@@ -114,7 +111,6 @@ class DefaultController extends Controller
         return array(
             'form' => $form->createView()
         );
-        return ['name' => $id];
     }
 
     /**

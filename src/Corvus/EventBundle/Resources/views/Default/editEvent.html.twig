@@ -42,7 +42,7 @@
                     {{ form_widget(event_email.email) }}
                 {% endfor %}
             </div>
-            <a href="{{ path('corvus_main_default_dashboard') }}" class="btn btn-default cancel_event">Cancel</a>
+            <a href="{{ path('dashboard') }}" class="btn btn-default cancel_event">Cancel</a>
             {{ form_widget(form.submit, {'attr' : { 'class' : 'btn btn-default create_event'}})}}
             {% do form.emails.setRendered %}
             {{ form_end(form) }}
