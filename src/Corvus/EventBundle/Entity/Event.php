@@ -411,7 +411,7 @@ class Event
 
     public function getOrdersCount()
     {
-        $orders = array();
+        $orders = [];
         foreach ($this->orders as $order) {
             $orders[$order->getUser()->getId()] = true;
         }

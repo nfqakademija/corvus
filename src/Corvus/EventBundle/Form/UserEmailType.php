@@ -16,9 +16,9 @@ class UserEmailType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\MainBundle\Entity\User',
-        ));
+        ]);
     }
 
     public function getName()

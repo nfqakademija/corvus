@@ -44,9 +44,9 @@ class DefaultController extends Controller
             $formFactory = $this->get('fos_user.registration.form.factory');
 
             $form = $formFactory->createForm();
-            return $this->render('CorvusMainBundle:welcome:welcome.html.twig', array(
+            return $this->render('CorvusMainBundle:welcome:welcome.html.twig', [
                 'form' => $form->createView(),
-            ));
+            ]);
         }
     }
 }

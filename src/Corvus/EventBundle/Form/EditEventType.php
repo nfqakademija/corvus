@@ -14,30 +14,30 @@ class EditEventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array('label' => 'Title'))
-            ->add('dealer', 'entity', array(
+        $builder->add('title', 'text', ['label' => 'Title'])
+            ->add('dealer', 'entity', [
                 'class' => 'Corvus\FoodBundle\Entity\Dealer',
                 'disabled' => true
-            ))
-            ->add('title', 'text', array(
+            ])
+            ->add('title', 'text', [
                 'disabled' => true
-            ))
-            ->add('end_date_time', 'datetime',array(
+            ])
+            ->add('end_date_time', 'datetime',[
                 'label' => 'Order ends:',
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
-                'attr' => array('class' => 'date'))
-            )->add('users', 'collection', array(
+                'attr' => ['class' => 'date']]
+            )->add('users', 'collection', [
                 'label' => null,
                 'type' => new UserEmailType(),
                 'disabled' => true
-            ))
-            ->add('emails', 'collection', array(
+            ])
+            ->add('emails', 'collection', [
                 'label' => 'Guests:',
                 'type' => new EventMailType,
-                'allow_add'    => true))
-            ->add('submit', 'submit', array('label' => 'Save'));
+                'allow_add'    => true])
+            ->add('submit', 'submit', ['label' => 'Save']);
     }
     public function getName()
     {
@@ -45,8 +45,8 @@ class EditEventType extends AbstractType
     }
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\EventBundle\Entity\Event',
-        ));
+        ]);
     }
 }

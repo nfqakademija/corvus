@@ -12,27 +12,27 @@ class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', array('label' => 'Title'))
-            ->add('dealer', 'entity', array(
+        $builder->add('title', 'text', ['label' => 'Title'])
+            ->add('dealer', 'entity', [
                 'class' => 'Corvus\FoodBundle\Entity\Dealer'
-            ))
+            ])
             ->add('title', 'text')
-            ->add('end_date_time', 'datetime',array(
+            ->add('end_date_time', 'datetime',[
                 'label' => 'Order ends:',
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
-                'attr' => array('class' => 'date'),
-                    'constraints' => array(
+                'attr' => ['class' => 'date'],
+                    'constraints' => [
                         new DateTimeNotPast()
-                    )
-                    )
+                    ]
+                    ]
             )
-            ->add('emails', 'collection', array(
+            ->add('emails', 'collection', [
                 'label' => 'Guests:',
                 'type' => new EventMailType,
-                'allow_add'    => true))
-            ->add('submit', 'submit', array('label' => 'Create'));
+                'allow_add'    => true])
+            ->add('submit', 'submit', ['label' => 'Create']);
     }
     public function getName()
     {
@@ -40,9 +40,9 @@ class EventType extends AbstractType
     }
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\EventBundle\Entity\Event',
             'constraint' => ''
-        ));
+        ]);
     }
 }

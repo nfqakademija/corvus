@@ -17,15 +17,15 @@ class OrderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('dish_id', 'number', array('mapped' => false));
+        $builder->add('dish_id', 'number', ['mapped' => false]);
         $builder->add('quantity', 'number');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\EventBundle\Entity\Order',
-        ));
+        ]);
     }
 
     public function getName()

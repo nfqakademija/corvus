@@ -44,7 +44,7 @@ class DefaultController extends Controller
                     $event->removeEmail($email);
                     continue;
                 }
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(array('email' => $email->getEmail()));
+                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
                 if($user){
                     $event->addUser($user);
                     $event->removeEmail($email);
@@ -59,9 +59,9 @@ class DefaultController extends Controller
             $em->flush();
             return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
         }
-        return array(
+        return [
             'form' => $form->createView(),g
-        );
+        ];
     }
     /**
      * @Route("/event/{id}/edit")
@@ -90,7 +90,7 @@ class DefaultController extends Controller
                     $event->removeEmail($email);
                     continue;
                 }
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(array('email' => $email->getEmail()));
+                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
                 if($user){
                     $event->addUser($user);
                     $event->removeEmail($email);
@@ -108,9 +108,9 @@ class DefaultController extends Controller
             $em->flush();
             return $this->redirect($this->generateUrl('dashboard'));
         }
-        return array(
+        return [
             'form' => $form->createView()
-        );
+        ];
     }
 
     /**

@@ -17,22 +17,22 @@ class CartType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $builder->add('orders', 'collection', array(
+        $builder->add('orders', 'collection', [
             'type' => new OrderType(),
             'allow_add' => true,
             'by_reference' => false,
             'allow_delete' => true,
             'label' => false,
-            ))
+            ])
             ->add('save', 'submit');
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\EventBundle\Entity\Cart',
-        ));
+        ]);
     }
 
     public function getName()

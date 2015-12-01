@@ -16,9 +16,9 @@ class EventMailType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Corvus\EventBundle\Entity\EventMail',
-        ));
+        ]);
     }
 
     public function getName()
