@@ -38,6 +38,17 @@ class LoadOrderData extends AbstractFixture implements OrderedFixtureInterface
 
         $manager->persist($order);
         $manager->flush();
+
+        $order = new Order();
+        $order->setEvent($this->getReference('e1'));
+        $order->setDish($this->getReference('f2'));
+        $order->setIsRemoved(false);
+        $order->setQuantity(1);
+        $order->setUser($this->getReference('u1'));
+        $order->setPricePerUnit(9.99);
+
+        $manager->persist($order);
+        $manager->flush();
     }
 
     public function getOrder()

@@ -9,6 +9,7 @@ use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -250,8 +251,8 @@ class DefaultController extends Controller
             if ($user == $event->getHost())
             {
                 $guests = $event->getUsers();
-                dump($event);
-                exit;
+                //dump($event);
+                //exit;
                 $paid =['paid' => 0];
                 $form = $this->createFormBuilder($paid);
                 foreach ($guests as $guest)
@@ -282,16 +283,20 @@ class DefaultController extends Controller
     /**
      * @Route("/event/{id}/review", name="review")
      * @Template()
+     * @param int
      */
     public function reviewAction($id)
     {
         $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
         if ($isFullyAuthenticated){
             $event = $this->getDoctrine()->getRepository("EventBundle:Event")->find($id);
-            $g = $this->getDoctrine()->getRepository('EventBundle:Event')->getOrderedUsers($id);
-            dump($g);
-            exit;
-            return ['event' => $event];
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            if(($user == $event->getHost()) || ($event->getUsers()->contains($user)))
+            {
+                return ['event' => $event, 'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))];
+            } else {
+                throw $this->createAccessDeniedException('You shall not pass!');
+            }
         } else {
             return $this->redirectToRoute('login');
         }
