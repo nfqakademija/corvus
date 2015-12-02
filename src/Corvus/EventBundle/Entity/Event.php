@@ -439,7 +439,7 @@ class Event
     {
         $eventSum = 0;
         foreach ($this->orders as $order) {
-            if ($order->getUser() != $this->host) {
+            if (($order->getUser() != $this->host) && (!$order->getIsRemoved())) {
                 $eventSum += $order->getPricePerUnit() * $order->getQuantity();
             }
         }

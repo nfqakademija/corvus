@@ -15,20 +15,22 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $id = $user->getId();
+        $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
 
-        $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($id);
+        if ($isFullyAuthenticated)
+        {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $event = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($user->getId());
 
-        $em = $this->getDoctrine()->getManager();
-
-        $e = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($id);
-
-        return ['user' => $user, 'events' => $e];
+            return ['user' => $user, 'events' => $event];
+        } else {
+            return $this->redirectToRoute('login');
+        }
     }
 
     /**
      * @Route("/suspend/{eventId}", name="suspend")
+     * @param integer
      */
     public function suspendAction($eventId)
     {
