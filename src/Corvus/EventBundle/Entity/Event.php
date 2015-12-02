@@ -447,6 +447,17 @@ class Event
         return $eventSum;
     }
 
+    public function getTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if (!$order->getIsRemoved()) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+        return $eventSum;
+    }
+
     public function getTimeLeft()
     {
         $timeNow = new \DateTime('now');

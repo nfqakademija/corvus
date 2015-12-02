@@ -17,6 +17,8 @@
                 </tr>
             {% endfor %}
         </table>
+        {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default'} }) }}
+        <a href="{{ path('dashboard') }}" class="btn btn-default" role="button">Cancel</a>
         {{ form_end(form) }}
     </div>
 {% endblock event_content %}
