@@ -29,7 +29,7 @@ class EventRepository extends EntityRepository
         }
     }
 
-    public function getOrderedUsers($id)
+    /*public function getOrderedUsers($id)
     {
         $query = $this->getEntityManager()->createQuery(
             'SELECT u
@@ -40,5 +40,16 @@ class EventRepository extends EntityRepository
         )->setParameters(['eid' => $id]);
 
         return $query->getScalarResult();
+    }*/
+    public function getUsersWithOrders($id)
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT DISTINCT (u)
+            FROM EventBundle:Event e
+            LEFT JOIN e.orders o
+            LEFT JOIN e.users u
+            WHERE e.id = :eid AND o.user = u'
+        )->setParameter('eid', $id);
+        return $query->getResult();
     }
 }

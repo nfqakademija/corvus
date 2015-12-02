@@ -4,8 +4,10 @@ namespace Corvus\EventBundle\Controller;
 
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
+use Corvus\EventBundle\Entity\Payment;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
+use Corvus\EventBundle\Form\Type\PaymentType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
@@ -248,32 +250,59 @@ class DefaultController extends Controller
         {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
-            if ($user == $event->getHost())
-            {
-                $guests = $event->getUsers();
-                //dump($event);
-                //exit;
-                $paid =['paid' => 0];
-                $form = $this->createFormBuilder($paid);
-                foreach ($guests as $guest)
-                {
-                    $form = $form->add('user', 'hidden', ['data' => $guest->getId()])->add('paid', 'number');
+            if ($event != null) {
+                if ($user == $event->getHost()) {
+                    $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
+                    $unpaidUserIds = [];
+                    $unpaidGuests = new ArrayCollection();
+                    foreach ($orderedGuests as $guest)
+                    {
+                        if ($guest[1] != $event->getHost()->getId())
+                        {
+                            $usr = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($guest[1]);
+                            if (($event->getUserDebt($usr)) != 0.0)
+                            {
+                                $unpaidUserIds[$guest[1]] = 0;
+                                $unpaidGuests->add($usr);
+                            }
+                        }
+                    }
+
+                    $form =$this->createForm(new PaymentType($unpaidUserIds));
+
+                    $form->handleRequest($request);
+
+                    if ($form->isValid()) {
+                        $payments = $form['payment']->getData();
+                        $em = $this->getDoctrine()->getEntityManager();
+                        foreach ($payments as $unpaidUserId => $amount) {
+                            if ($amount > 0)
+                            {
+                                $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
+                                $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
+                                if ($payment != null)
+                                {
+                                    $payment->setPaid($payment->getPaid() + $amount);
+                                    $em->flush();
+                                } else {
+                                    $payment = new Payment();
+                                    $payment->setEvent($event);
+                                    $payment->setUser($paidGuest);
+                                    $payment->setPaid($amount);
+                                    $em->persist($payment);
+                                    $em->flush();
+                                }
+                            }
+                        }
+                        return $this->redirectToRoute('dashboard');
+                    }
+
+                    return ['event' => $event, 'guests' => $unpaidGuests, 'form' => $form->createView()];
+                } else {
+                    throw $this->createAccessDeniedException("You shall not pass!");
                 }
-                $form = $form->add('save', 'submit');
-                $form = $form->getForm();
-
-                $form->handleRequest($request);
-
-                if($form->isValid())
-                {
-                    return $this->redirectToRoute('dashboard');
-                }
-                //    ->add('id', 'hidden')
-                //   ->add('paid', 'number')->getForm();
-
-                return ['event' => $event, 'guests' => $guests, 'form' => $form->createView()];
             } else {
-                throw $this->createAccessDeniedException("You aren't host of this event");
+                return $this->createAccessDeniedException("You shall not pass!");
             }
         } else {
             return $this->redirectToRoute('login');
@@ -288,12 +317,16 @@ class DefaultController extends Controller
     public function reviewAction($id)
     {
         $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
-        if ($isFullyAuthenticated){
+        if ($isFullyAuthenticated)
+        {
             $event = $this->getDoctrine()->getRepository("EventBundle:Event")->find($id);
-            $user = $this->container->get('security.token_storage')->getToken()->getUser();
-            if(($user == $event->getHost()) || ($event->getUsers()->contains($user)))
-            {
-                return ['event' => $event, 'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))];
+            if ($event != null) {
+                $user = $this->container->get('security.token_storage')->getToken()->getUser();
+                if (($user == $event->getHost()) || ($event->getUsers()->contains($user))) {
+                    return ['event' => $event, 'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))];
+                } else {
+                    throw $this->createAccessDeniedException('You shall not pass!');
+                }
             } else {
                 throw $this->createAccessDeniedException('You shall not pass!');
             }

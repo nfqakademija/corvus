@@ -23,7 +23,7 @@ class LoadOrderData extends AbstractFixture implements OrderedFixtureInterface
         $order->setIsRemoved(false);
         $order->setQuantity(2);
         $order->setUser($this->getReference('u1'));
-        $order->setPricePerUnit(3.99);
+        $order->setPricePerUnit(10.99);
 
         $manager->persist($order);
         $manager->flush();
@@ -34,7 +34,7 @@ class LoadOrderData extends AbstractFixture implements OrderedFixtureInterface
         $order->setIsRemoved(false);
         $order->setQuantity(1);
         $order->setUser($this->getReference('u2'));
-        $order->setPricePerUnit(9.99);
+        $order->setPricePerUnit(5.99);
 
         $manager->persist($order);
         $manager->flush();
@@ -45,7 +45,18 @@ class LoadOrderData extends AbstractFixture implements OrderedFixtureInterface
         $order->setIsRemoved(false);
         $order->setQuantity(1);
         $order->setUser($this->getReference('u1'));
-        $order->setPricePerUnit(9.99);
+        $order->setPricePerUnit(5.99);
+
+        $manager->persist($order);
+        $manager->flush();
+
+        $order = new Order();
+        $order->setEvent($this->getReference('e1'));
+        $order->setDish($this->getReference('f1'));
+        $order->setIsRemoved(false);
+        $order->setQuantity(1);
+        $order->setUser($this->getReference('u3'));
+        $order->setPricePerUnit(10.99);
 
         $manager->persist($order);
         $manager->flush();
