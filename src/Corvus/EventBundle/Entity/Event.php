@@ -7,6 +7,7 @@
  */
 namespace Corvus\EventBundle\Entity;
 
+use Corvus\MainBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
@@ -446,9 +447,46 @@ class Event
         return $eventSum;
     }
 
+    public function getTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if (!$order->getIsRemoved()) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+        return $eventSum;
+    }
+
     public function getTimeLeft()
     {
         $timeNow = new \DateTime('now');
         return $timeNow->diff($this->endDateTime);
+    }
+
+    public function getUserTotal(User $user)
+    {
+        $total = 0;
+        foreach ($this->orders as $order)
+        {
+            if (($order->getUser() == $user) && (!$order->getIsRemoved()))
+            {
+                $total += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+        return $total;
+    }
+
+    public function getUserDebt(User $user)
+    {
+        $debt = $this->getUserTotal($user);
+        foreach ($this->payments as $payment)
+        {
+            if ($payment->getUser() == $user)
+            {
+                $debt -= $payment->getPaid();
+            }
+        }
+        return $debt;
     }
 }

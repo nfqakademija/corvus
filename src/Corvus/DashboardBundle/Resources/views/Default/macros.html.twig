@@ -3,11 +3,11 @@
 {% endmacro %}
 
 {% macro review(eid) %}
-    <a href="#path('review', {'id': eid})" class="btn btn-primary">Review order</a>
+    <a href="{{ path('review', {'id': eid}) }}" class="btn btn-primary">Review order</a>
 {% endmacro %}
 
 {% macro payments(eid) %}
-    <a href="#path('event_payments', {'id': eid})" class="btn btn-primary">Payments</a>
+    <a href="{{ path('payments', {'id': eid}) }}" class="btn btn-primary">Payments</a>
 {% endmacro %}
 
 {% macro edit(eid) %}
