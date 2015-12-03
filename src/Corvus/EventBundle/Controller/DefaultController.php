@@ -356,8 +356,6 @@ class DefaultController extends Controller
                         if ($form->isValid())
                         {
 
-
-
                             $event_orders = $event->getOrders();
                             $dish_ids = $form["dish_id"]->getData();
 
