@@ -199,4 +199,7 @@ class Dealer
     {
         return $this->dishes;
     }
+    public function __toString(){
+        return $this->name;
+    }
 }

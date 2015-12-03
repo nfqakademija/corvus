@@ -33,20 +33,20 @@ class ProfileFormType extends AbstractType
     {
         $this->buildUserForm($builder, $options);
 
-        $builder->add('current_password', 'password', array(
+        $builder->add('current_password', 'password', [
             'label' => 'form.current_password',
             'translation_domain' => 'FOSUserBundle',
             'mapped' => false,
             'constraints' => new UserPassword(),
-        ));
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => $this->class,
             'intention'  => 'profile',
-        ));
+        ]);
     }
 
     // BC for SF < 2.7
@@ -69,7 +69,7 @@ class ProfileFormType extends AbstractType
     protected function buildUserForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', null, array('label' => 'form.username', 'translation_domain' => 'FOSUserBundle'))
+            ->add('username', null, ['label' => 'form.username', 'translation_domain' => 'FOSUserBundle'])
         ;
     }
 }
