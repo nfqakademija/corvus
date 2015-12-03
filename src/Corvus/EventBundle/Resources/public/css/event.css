@@ -1,0 +1,44 @@
+.create_event_form{
+    width: 300px;
+    margin: 0 auto;
+    text-align: left;
+}
+.create_event_form .email_list{
+    width: 100%;
+    overflow-y: scroll;
+    height: 150px;
+    margin: 15px 0;
+}
+.create_event_form .form-group.email{
+    overflow: auto;
+}
+.create_event_form .form-group.email * {
+    display: inline-block;
+}
+.create_event_form .email_input{
+    float: left;
+    width: 65%;
+}
+.create_event_form .email_add{
+    width: 30%;
+    float: right;
+}
+.create_event_form .email_list .remove_email{
+    float: right;
+    padding: 0 5px;
+    display: inline-block;
+    cursor: pointer;
+ }
+.create_event_form .email_list .email_row{
+    padding: 5px;
+    text-align: left;
+}
+.create_event_form .btn.create_event,
+.create_event_form .btn.cancel_event {
+    width: 48%;
+    display: inline-block;
+    float: right;
+}
+.create_event_form .btn.cancel_event {
+    float: left;
+}

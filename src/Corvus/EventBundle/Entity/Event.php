@@ -35,7 +35,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
-     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id", nullable=false)
      * @var Dealer
      */
     protected $dealer;
@@ -52,8 +52,8 @@ class Event
     protected $endDateTime;
 
     /**
-     * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
-     */
+    * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
+    */
     protected $deliveryDateTime;
 
     /**
@@ -65,7 +65,7 @@ class Event
     /**
      * @ORM\Column(type="boolean", name="is_deleted")
      */
-    protected $isDeleted;
+    protected $isDeleted = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", inversedBy="events")
@@ -81,7 +81,7 @@ class Event
     protected $emails;
 
     /**
-     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="event")
+     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="event" )
      * @var Payment[]|ArrayCollection
      */
     protected $payments;
@@ -297,7 +297,7 @@ class Event
      */
     public function addEmail(\Corvus\EventBundle\Entity\EventMail $email)
     {
-        $this->emails[] = $email;
+        $this->emails->add($email);
 
         return $this;
     }
@@ -416,7 +416,7 @@ class Event
 
     public function getOrdersCount()
     {
-        $orders = array();
+        $orders = [];
         foreach ($this->orders as $order) {
             $orders[$order->getUser()->getId()] = true;
         }

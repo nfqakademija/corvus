@@ -1,35 +1,28 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Vartotojas
- * Date: 2015.11.21
- * Time: 16:10
- */
 
-namespace Corvus\EventBundle\Form\Type;
-
+namespace Corvus\EventBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class OrderType extends AbstractType
+class EventMailType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('dish_id', 'number', ['mapped' => false]);
-        $builder->add('quantity', 'number');
+        $builder
+            ->add('email', 'hidden');
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Corvus\EventBundle\Entity\Order',
+            'data_class' => 'Corvus\EventBundle\Entity\EventMail',
         ]);
     }
 
     public function getName()
     {
-        return 'order';
+        return 'EventMail';
     }
 }
