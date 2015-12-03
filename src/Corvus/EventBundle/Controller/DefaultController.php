@@ -152,9 +152,12 @@ class DefaultController extends Controller
 
                 if(!$event->getUsers()->contains($user))
                 {
-                    throw $this->createNotFoundException(
-                        'You are not in this event'.$id
-                    );
+                    if($event->getHost() != $user)
+                    {
+                        throw $this->createNotFoundException(
+                            'You are not in this event' . $id
+                        );
+                    }
                 }
 
                 $em = $this->getDoctrine()->getManager();
