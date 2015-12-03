@@ -1,0 +1,8 @@
+parameters:
+
+services:
+    corvus_event.event_status:
+        class: Corvus\EventBundle\EventListener\EventCreated
+        arguments: [@swiftmailer.mailer]
+        tags:
+          - {name: kernel.event_subscriber}

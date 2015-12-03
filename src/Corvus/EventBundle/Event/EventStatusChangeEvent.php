@@ -1,9 +1,9 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Lezas
- * Date: 2015.11.29
- * Time: 17:53
+ * User: Vartotojas
+ * Date: 2015.11.30
+ * Time: 23:52
  */
 
 namespace Corvus\EventBundle\Event;
@@ -11,7 +11,7 @@ namespace Corvus\EventBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class FilterEventResponseEvent extends Event
+class EventStatusChangeEvent extends Event
 {
     protected $event;
 

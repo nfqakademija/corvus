@@ -4,6 +4,8 @@ namespace Corvus\EventBundle\Controller;
 
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
+use Corvus\EventBundle\Event\EventUsersChangeEvent;
+use Corvus\EventBundle\Event\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\FoodBundle\Entity\Dish;
@@ -52,9 +54,12 @@ class DefaultController extends Controller
 
                 if(!$event->getUsers()->contains($user))
                 {
-                    throw $this->createNotFoundException(
-                        'You are not in this event'.$id
-                    );
+                    if($event->getHost() != $user)
+                    {
+                        throw $this->createNotFoundException(
+                            'You are not in this event' . $id
+                        );
+                    }
                 }
 
                 $em = $this->getDoctrine()->getManager();
@@ -89,6 +94,11 @@ class DefaultController extends Controller
 
                 if($form->isValid())
                 {
+
+                    $dispatcher = $this->get('event_dispatcher');
+
+                    $dispatcher->dispatch(EventEvents::EVENT_CREATED, new EventUsersChangeEvent($event, $user));
+
                     $newOrders = $form["orders"];
 
                     /*For security purposes. In form every dish_id mustbe
@@ -243,6 +253,9 @@ class DefaultController extends Controller
 
                         if ($form->isValid())
                         {
+
+
+
                             $event_orders = $event->getOrders();
                             $dish_ids = $form["dish_id"]->getData();
 
