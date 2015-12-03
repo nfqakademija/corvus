@@ -38,5 +38,4 @@ class OrderRepository extends EntityRepository
 
         return $orders = $query->getResult();
     }
-
 }
