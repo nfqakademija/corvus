@@ -327,6 +327,7 @@ class DefaultController extends Controller
                             $event->setStatus(3);
 
                             $em->flush();
+                            return $this->redirectToRoute('dashboard');
                         }
 
                         return $this->render('EventBundle:Default:order.html.twig', [

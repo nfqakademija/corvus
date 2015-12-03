@@ -11,7 +11,7 @@
 {% endmacro %}
 
 {% macro edit(eid) %}
-    <a href="#path('edit_event', {'id': eid})" class="btn btn-primary">Edit order</a>
+    <a href="{{ path('corvus_event_default_editevent', {'id': eid}) }}" class="btn btn-primary">Edit event</a>
 {% endmacro %}
 
 {% macro suspend(eid) %}

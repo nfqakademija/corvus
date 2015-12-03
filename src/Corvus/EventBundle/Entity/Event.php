@@ -419,7 +419,10 @@ class Event
     {
         $orders = [];
         foreach ($this->orders as $order) {
-            $orders[$order->getUser()->getId()] = true;
+            if ($order->getUser() != $order->getEvent()->getHost())
+            {
+                $orders[$order->getUser()->getId()] = true;
+            }
         }
 
         return count($orders);
