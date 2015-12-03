@@ -26,7 +26,7 @@ class EventType extends AbstractType
                     'constraints' => [
                         new DateTimeNotPast()
                     ]
-                    ]
+                ]
             )
             ->add('emails', 'collection', [
                 'label' => 'Guests:',
@@ -41,8 +41,7 @@ class EventType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Corvus\EventBundle\Entity\Event',
-            'constraint' => ''
+            'data_class' => 'Corvus\EventBundle\Entity\Event'
         ]);
     }
 }

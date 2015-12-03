@@ -11,7 +11,7 @@ class DateTimeNotPastValidator extends ConstraintValidator
         dump($value);
         if (new \DateTime() > $value) {
             $this->context->buildViolation($constraint->message)
-                ->setParameter('%string%', $value->format('Y-m-d h:u'))
+                ->setParameter('%string%', $value->format('Y-m-d h:i'))
                 ->addViolation();
         }
     }

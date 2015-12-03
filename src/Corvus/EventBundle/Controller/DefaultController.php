@@ -53,14 +53,16 @@ class DefaultController extends Controller
                 }
             }
             foreach($event->getEmails() as $email){
-                $em->persist($email);
+                if (!$em->contains($email)){
+                    $em->persist($email);
+                }
             }
             $em->persist($event);
             $em->flush();
             return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
         }
         return [
-            'form' => $form->createView(),g
+            'form' => $form->createView()
         ];
     }
     /**
