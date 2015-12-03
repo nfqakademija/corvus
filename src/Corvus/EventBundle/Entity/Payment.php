@@ -39,7 +39,7 @@ class Payment
     protected $event;
 
     /**
-     * @ORM\Column(type="float", name="paid")
+     * @ORM\Column(type="decimal", precision=8, scale=2, name="paid")
      * @var float
      */
     protected $paid;

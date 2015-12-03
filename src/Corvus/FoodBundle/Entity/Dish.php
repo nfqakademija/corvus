@@ -50,7 +50,7 @@ class Dish
     protected $imageLink;
 
     /**
-     * @ORM\Column(type="float", name="price")
+     * @ORM\Column(type="decimal", precision=8, scale=2, name="price")
      * @var float
      */
     protected $price;
