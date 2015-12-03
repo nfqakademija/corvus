@@ -1,11 +1,9 @@
 {% extends '::base.html.twig'  %}
-
 {% block stylesheets %}
     <link href="{{asset('bundles/event/css/event.css')}}" type="text/css" rel="stylesheet">
     <link href="{{asset('bundles/event/plugins/css/bootstrap-datetimepicker.min.css')}}" type="text/css" rel="stylesheet">
 {% endblock %}
 {% block body %}
-
         <div class="col-md-6 col-md-offset-3 text-center">
             {{ form_start(form, { 'attr' : {'class' : 'create_event_form'}}) }}
             <div class="form-group">
@@ -44,14 +42,14 @@
             </div>
             <a href="{{ path('dashboard') }}" class="btn btn-default cancel_event">Cancel</a>
             {{ form_widget(form.submit, {'attr' : { 'class' : 'btn btn-default create_event'}})}}
+            {# hack to stop double label rendering #}
             {% do form.emails.setRendered %}
+            {% do form.users.setRendered %}
             {{ form_end(form) }}
         </div>
 {% endblock %}
-
 {% block javascripts %}
     <script src="{{asset('bundles/event/plugins/js/moment.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('bundles/event/plugins/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('bundles/event/js/editEvent.js')}}" type="text/javascript"></script>
-
 {% endblock %}

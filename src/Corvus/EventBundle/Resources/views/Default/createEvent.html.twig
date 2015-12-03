@@ -32,12 +32,10 @@
                 <input class="form-control email_input" type="text"> <button class="btn btn-default email_add" id="add_email_button">Add</button>
             </div>
             <div class="email_list" data-prototype="{{ form_widget(form.emails.vars.prototype.email)|e }}">
-                {#{% for event_email in form.emails %}#}
-                    {#{{ form_widget(event_email.email) }}#}
-                {#{% endfor %}#}
             </div>
             <a href="{{ path('dashboard') }}" class="btn btn-default cancel_event">Cancel</a>
             {{ form_widget(form.submit, {'attr' : { 'class' : 'btn btn-default create_event'}})}}
+            {# hack to stop double label rendering #}
             {% do form.emails.setRendered %}
             {{ form_end(form) }}
         </div>

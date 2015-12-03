@@ -25,45 +25,51 @@ class DefaultController extends Controller
      */
     public function createEventAction(Request $request)
     {
-        $event = new Event();
-        $form = $this->createForm(new EventType(), $event);
-        $event->setStatus(1);
-        $form->handleRequest($request);
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+        if ($isFullyAuthenticated) {
+            $event = new Event();
+            $form = $this->createForm(new EventType(), $event);
+            $event->setStatus(1);
+            $form->handleRequest($request);
 
-        if($form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $event->setHost($this->getUser());
-            foreach($event->getEmails() as $email){
-                $count = 0;
-                foreach($event->getEmails() as $emailDupe){
-                    if(strtolower($email->getEmail()) == strtolower($emailDupe->getEmail())){
-                        $count++;
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $event->setHost($this->getUser());
+                foreach ($event->getEmails() as $email) {
+                    $count = 0;
+                    foreach ($event->getEmails() as $emailDupe) {
+                        if (strtolower($email->getEmail()) == strtolower($emailDupe->getEmail())) {
+                            $count++;
+                        }
+                    }
+                    if ($count > 1) {
+                        $event->removeEmail($email);
+                        continue;
+                    }
+                    $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
+                    if ($user) {
+                        $event->addUser($user);
+                        $event->removeEmail($email);
+                    } else {
+                        $email->setEvent($event);
                     }
                 }
-                if($count > 1){
-                    $event->removeEmail($email);
-                    continue;
+                foreach ($event->getEmails() as $email) {
+                    if (!$em->contains($email)) {
+                        $em->persist($email);
+                    }
                 }
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
-                if($user){
-                    $event->addUser($user);
-                    $event->removeEmail($email);
-                } else {
-                    $email->setEvent($event);
-                }
+                $em->persist($event);
+                $em->flush();
+                return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
             }
-            foreach($event->getEmails() as $email){
-                if (!$em->contains($email)){
-                    $em->persist($email);
-                }
-            }
-            $em->persist($event);
-            $em->flush();
-            return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
+            return [
+                'form' => $form->createView()
+            ];
+        } else {
+            return $this->redirectToRoute('dashboard');
         }
-        return [
-            'form' => $form->createView()
-        ];
     }
     /**
      * @Route("/event/{id}/edit")
@@ -71,48 +77,54 @@ class DefaultController extends Controller
      */
     public function editEventAction(Request $request, Event $event)
     {
-        $form = $this->createForm(new EditEventType(), $event);
-
-        $form->handleRequest($request);
-        if($form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            foreach($event->getEmails() as $email){
-                $count = 0;
-                foreach($event->getEmails() as $emailDupe){
-                    if(strtolower($email->getEmail()) == strtolower($emailDupe->getEmail())){
-                        $count++;
+        $isFullyAuthenticated = $this->get('security.context')
+        ->isGranted('IS_AUTHENTICATED_FULLY');
+        $userIsHost = ($event->getHost() === $this->getUser());
+        if($isFullyAuthenticated && $userIsHost) {
+            $form = $this->createForm(new EditEventType(), $event);
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                foreach ($event->getEmails() as $email) {
+                    $count = 0;
+                    foreach ($event->getEmails() as $emailDupe) {
+                        if (strtolower($email->getEmail()) == strtolower($emailDupe->getEmail())) {
+                            $count++;
+                        }
+                    }
+                    foreach ($event->getUsers() as $user) {
+                        if (strtolower($email->getEmail()) == strtolower($user->getEmail())) {
+                            $count++;
+                        }
+                    }
+                    if ($count > 1) {
+                        $event->removeEmail($email);
+                        continue;
+                    }
+                    $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
+                    if ($user) {
+                        $event->addUser($user);
+                        $event->removeEmail($email);
+                    } else {
+                        $event->addEmail($email);
                     }
                 }
-                foreach($event->getUsers() as $user){
-                    if(strtolower($email->getEmail()) == strtolower($user->getEmail())){
-                        $count++;
-                    }
-                }
-                if($count > 1){
-                    $event->removeEmail($email);
-                    continue;
-                }
-                $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
-                if($user){
-                    $event->addUser($user);
-                    $event->removeEmail($email);
-                } else {
-                    $event->addEmail($email);
-                }
-            }
 
-            foreach($event->getEmails() as $email){
-                $email->setEvent($event);
-                $em->persist($email);
-            }
+                foreach ($event->getEmails() as $email) {
+                    $email->setEvent($event);
+                    $em->persist($email);
+                }
 
-            $em->persist($event);
-            $em->flush();
-            return $this->redirect($this->generateUrl('dashboard'));
+                $em->persist($event);
+                $em->flush();
+                return $this->redirect($this->generateUrl('dashboard'));
+            }
+            return [
+                'form' => $form->createView()
+            ];
+        } else {
+            return $this->redirectToRoute('dashboard');
         }
-        return [
-            'form' => $form->createView()
-        ];
     }
 
     /**
