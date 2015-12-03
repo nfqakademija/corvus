@@ -52,9 +52,9 @@ class Event
     protected $endDateTime;
 
     /**
-    -     * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
-    -     */
--    protected $deliveryDateTime;
+    * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
+    */
+    protected $deliveryDateTime;
 
     /**
      * @ORM\Column(type="integer", name="status")
