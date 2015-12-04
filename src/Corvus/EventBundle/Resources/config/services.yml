@@ -2,7 +2,14 @@ parameters:
 
 services:
     corvus_event.event_status:
-        class: Corvus\EventBundle\EventListener\EventCreated
-        arguments: [@swiftmailer.mailer]
+        class: Corvus\EventBundle\EventListener\EventAltered
+        tags:
+          - {name: kernel.event_subscriber}
+
+    corvus_event.send_mails:
+        class: Corvus\EventBundle\EventListener\SendMails
+        arguments:
+          - @swiftmailer.mailer
+          - @twig
         tags:
           - {name: kernel.event_subscriber}

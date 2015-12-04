@@ -6,7 +6,7 @@
  * Time: 17:38
  */
 
-namespace Corvus\EventBundle\Event;
+namespace Corvus\EventBundle;
 
 
 final class EventEvents
@@ -29,7 +29,7 @@ final class EventEvents
      *
      *@var string
      */
-    const EVENT_EDITED_TIME_PRATESTAS = 'event.edited.pratestas.laikas';
+    const EVENT_EDITED_TIME_EXTENDED = 'event.edited.extended.time';
 
     /*
      * The event.created event is thrown every time, then new event is created.
@@ -39,7 +39,7 @@ final class EventEvents
      *
      *@var string
      */
-    const EVENT_EDITED_ADD_USERS = 'event.edited.prideti.emailai';
+    const EVENT_EDITED_ADD_USERS = 'event.edited.add.users';
 
     /*
      * the event.timeout event is thrown every time, then event time reaches its limit
@@ -94,4 +94,15 @@ final class EventEvents
      * siusti visiems
      */
     const EVENT_FOOD_DELIVERED = 'event.food.delivered';
+
+    /*
+     * the event.timeout event is thrown every time, then event time reaches its limit
+     *
+     *The event listener receives an
+     *Corvus\EventBundle\Event\EventStatusChangeEvent
+     *
+     *@var string
+     * siusti visiems
+     */
+    const EVENT_NO_DEBTS= 'event.no.debts';
 }

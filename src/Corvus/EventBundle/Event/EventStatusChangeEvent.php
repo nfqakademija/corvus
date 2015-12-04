@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class EventStatusChangeEvent extends Event
 {
-    protected $event;
+    private $event;
 
     public function __construct(\Corvus\EventBundle\Entity\Event $event)
     {

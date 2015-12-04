@@ -4,14 +4,13 @@ namespace Corvus\EventBundle\Controller;
 
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
-use Corvus\EventBundle\Event\EventUsersChangeEvent;
-use Corvus\EventBundle\Event\EventEvents;
 use Corvus\EventBundle\Entity\Payment;
+use Corvus\EventBundle\Event\SendMailsEvent;
+use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\EventBundle\Form\Type\PaymentType;
 use Corvus\FoodBundle\Entity\Dish;
-use Corvus\EventBundle\Form\Type\OrderType;
 use Corvus\MainBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -35,7 +34,6 @@ class DefaultController extends Controller
         if ($isFullyAuthenticated) {
             $event = new Event();
             $form = $this->createForm(new EventType(), $event);
-            $event->setStatus(1);
             $form->handleRequest($request);
 
             if ($form->isValid()) {
@@ -52,7 +50,9 @@ class DefaultController extends Controller
                         $event->removeEmail($email);
                         continue;
                     }
+
                     $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
+
                     if ($user) {
                         $event->addUser($user);
                         $event->removeEmail($email);
@@ -65,6 +65,13 @@ class DefaultController extends Controller
                         $em->persist($email);
                     }
                 }
+
+                $users = $event->getUsers();
+                $emails = $event->getEmails();
+
+                $dispatcher = $this->get('event_dispatcher');
+                $dispatcher->dispatch(EventEvents::EVENT_CREATED, new SendMailsEvent($event, $users, $emails));
+
                 $em->persist($event);
                 $em->flush();
                 return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
@@ -122,6 +129,8 @@ class DefaultController extends Controller
 
                 $em->persist($event);
                 $em->flush();
+
+
                 return $this->redirect($this->generateUrl('dashboard'));
             }
             return [
@@ -199,11 +208,6 @@ class DefaultController extends Controller
 
                 if($form->isValid())
                 {
-
-                    $dispatcher = $this->get('event_dispatcher');
-
-                    $dispatcher->dispatch(EventEvents::EVENT_CREATED, new EventUsersChangeEvent($event, $user));
-
                     $newOrders = $form["orders"];
 
                     /*For security purposes. In form every dish_id mustbe
@@ -385,6 +389,10 @@ class DefaultController extends Controller
                             $event->setStatus(3);
 
                             $em->flush();
+
+                            $dispatcher = $this->get('event_dispatcher');
+                            $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
                             return $this->redirectToRoute('dashboard');
                         }
 
@@ -487,10 +495,15 @@ class DefaultController extends Controller
         if ($isFullyAuthenticated)
         {
             $event = $this->getDoctrine()->getRepository("EventBundle:Event")->find($id);
-            if ($event != null) {
+            if ($event != null)
+            {
                 $user = $this->container->get('security.token_storage')->getToken()->getUser();
-                if (($user == $event->getHost()) || ($event->getUsers()->contains($user))) {
-                    return ['event' => $event, 'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))];
+                if (($user == $event->getHost()) || ($event->getUsers()->contains($user)))
+                {
+                    return [
+                        'event' => $event,
+                        'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))
+                    ];
                 } else {
                     throw $this->createAccessDeniedException('You shall not pass!');
                 }
