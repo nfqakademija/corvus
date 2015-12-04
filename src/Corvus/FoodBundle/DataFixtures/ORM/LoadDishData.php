@@ -18,7 +18,7 @@ class LoadDishData extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $dish1 = new Dish();
-        $dish1->setName('Pica MArgarita');
+        $dish1->setName('Pica Margarita');
         $dish1->setDescription('Sūris, prieskoniai, raudonėlis');
         $dish1->setPrice(2.99);
         $dish1->setRemovedFromMenu(false);
