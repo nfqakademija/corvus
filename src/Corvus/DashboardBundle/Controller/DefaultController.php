@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DefaultController extends Controller
 {
@@ -46,7 +47,7 @@ class DefaultController extends Controller
             case 2:
                 $now = new \DateTime('now');
                 $endTime = $event->getEndDateTime();
-                if ($now->diff($endTime) > 0)
+                if ($now < $endTime)
                 {
                     $event->setStatus(1);
                     $em->flush();
