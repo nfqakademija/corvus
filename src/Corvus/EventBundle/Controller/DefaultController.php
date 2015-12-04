@@ -500,6 +500,7 @@ class DefaultController extends Controller
                 $user = $this->container->get('security.token_storage')->getToken()->getUser();
                 if (($user == $event->getHost()) || ($event->getUsers()->contains($user)))
                 {
+
                     return [
                         'event' => $event,
                         'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Vartotojas
+ * User: Lezas
  * Date: 2015.12.04
  * Time: 12:09
  */
@@ -13,13 +13,14 @@ use Corvus\EventBundle\Event\SendMailsEvent;
 use Swift_Mailer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Corvus\EventBundle\EventEvents;
+use Twig_Environment;
 
 class SendMails implements EventSubscriberInterface
 {
     private $mailer;
     private $twig;
 
-    public function __construct(Swift_Mailer $mailer, \Twig_Environment $twig)
+    public function __construct(Swift_Mailer $mailer, Twig_Environment $twig)
     {
         $this->mailer = $mailer;
         $this->twig = $twig;
@@ -62,7 +63,6 @@ class SendMails implements EventSubscriberInterface
                         'text/html'
                     );
                 $this->mailer->send($message);
-
             }
         }
     }
@@ -210,9 +210,7 @@ class SendMails implements EventSubscriberInterface
     public function onEventFoodOrdered(SendMailsEvent $sendMailsEvent)
     {
         $event = $sendMailsEvent->getEvent();
-
         $deliveryTime = $event->getDeliveryDateTime();
-
         $users = $event->getUsers();
 
         if($users != null)
