@@ -36,7 +36,7 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
-     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id", nullable=false)
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
      * @var Dealer
      */
     protected $dealer;
