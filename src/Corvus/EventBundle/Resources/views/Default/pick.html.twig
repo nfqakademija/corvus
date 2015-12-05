@@ -2,8 +2,8 @@
 
 {% block event_content %}
 
-Event name: {{ event_name }}!<br>
-dealer {{ dealer }}<br>
+    Event name: {{ event_name }}!<br>
+    dealer {{ dealer }}<br>
     <div class="col-md-8" style="outline: 1px solid lightgray;" >
         <h3>Dish'es</h3>
         <div>
@@ -152,6 +152,7 @@ dealer {{ dealer }}<br>
                             + "</span>   <button class='plus btn btn-default btn-xs'>+</button><button class='minus btn btn-default btn-xs'>-</button> <br> Price: <p class='price' style='display: inline'>"+
                             ($price*$amount).toFixed(2) +"</p> €";
 
+
             // increase the index with one for the next item
             $collectionHolder.data('index', index + 1);
 
@@ -183,7 +184,7 @@ dealer {{ dealer }}<br>
             $collectionHolder.find('li').each(function () {
                 var $price_val = parseFloat($(this).find(".price").first().text());
                 if(!isNaN($price_val))
-                $sum += $price_val;
+                    $sum += $price_val;
             });
             $newLinkLi.text("Total: " + $sum.toFixed(2) + " €");
         }
