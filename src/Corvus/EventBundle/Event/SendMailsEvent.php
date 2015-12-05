@@ -13,8 +13,8 @@ use Symfony\Component\EventDispatcher\Event;
 
 class SendMailsEvent extends EventStatusChangeEvent
 {
-    protected $event;
-    protected $users;
+    private $event;
+    private $users;
     private $emails;
 
     /* Send mails event have corvus_event, users who need to send emails, and plain emails. That is because

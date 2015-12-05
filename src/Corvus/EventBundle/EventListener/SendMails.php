@@ -56,7 +56,7 @@ class SendMails implements EventSubscriberInterface
                         $this->twig->render(
                             '@Event/Emails/eventCancel.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $event
                             ]
                         ),
@@ -87,7 +87,7 @@ class SendMails implements EventSubscriberInterface
                         $this->twig->render(
                             '@Event/Emails/inviteuser.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $event
                             ]
                         ),
@@ -143,7 +143,7 @@ class SendMails implements EventSubscriberInterface
                         $this->twig->render(
                             '@Event/Emails/inviteuser.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $event
                             ]
                         ),
@@ -196,7 +196,7 @@ class SendMails implements EventSubscriberInterface
                         $this->twig->render(
                             '@Event/Emails/foodDelivered.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $sendMailsEvent->getEvent()
                             ]
                         ),
@@ -227,9 +227,9 @@ class SendMails implements EventSubscriberInterface
                         $this->twig->render(
                             '@Event/Emails/foodOrdered.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $event,
-                                'delivery.time' => $deliveryTime
+                                'delivery_time' => $deliveryTime
                             ]
                         ),
                         'text/html'
@@ -256,9 +256,9 @@ class SendMails implements EventSubscriberInterface
                     ->setTo($email)
                     ->setBody(
                         $this->twig->render(
-                            '@Event/Emails/eventSuspended.html.twig',
+                            '@Event/Emails/eventSuspend.html.twig',
                             [
-                                'name' => $user->getUsername,
+                                'name' => $user->getUsername(),
                                 'event' => $event,
                             ]
                         ),
