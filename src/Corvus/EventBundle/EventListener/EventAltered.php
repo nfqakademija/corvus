@@ -31,11 +31,16 @@ class EventAltered implements EventSubscriberInterface
 
     public function onEventCancel(EventStatusChangeEvent $event)
     {
-        $event->getEvent()->setIsDeleted(true)->setStatus(0);
+        $Corvus_event = $event->getEvent();
+        $Corvus_event->setIsDeleted(true);
+        $Corvus_event->setStatus(0);
         $orders = $event->getEvent()->getOrders();
 
-        foreach ($orders as $order) {
-            $order->setIsRemoved(true);
+        if($orders != null)
+        {
+            foreach ($orders as $order) {
+                $order->setIsRemoved(true);
+            }
         }
 
     }

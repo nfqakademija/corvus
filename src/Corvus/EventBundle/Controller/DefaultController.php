@@ -19,7 +19,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Corvus\EventBundle\Entity\Event;
 use Corvus\EventBundle\Form\EventType;
 use Corvus\EventBundle\Form\EditEventType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -93,10 +96,19 @@ class DefaultController extends Controller
         ->isGranted('IS_AUTHENTICATED_FULLY');
         $userIsHost = ($event->getHost() === $this->getUser());
         if($isFullyAuthenticated && $userIsHost) {
+
+            $OldDateTime = $event->getEndDateTime();
+            $OldEmails =$this->getDoctrine()->getRepository('EventBundle:EventMail')->findBy(['event' => $event]);
+
             $form = $this->createForm(new EditEventType(), $event);
             $form->handleRequest($request);
+
+            $users = new ArrayCollection();
+            $emails = new ArrayCollection();
+
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
+                $NewDateTime = $event->getEndDateTime();
                 foreach ($event->getEmails() as $email) {
                     $count = 0;
                     foreach ($event->getEmails() as $emailDupe) {
@@ -113,13 +125,46 @@ class DefaultController extends Controller
                         $event->removeEmail($email);
                         continue;
                     }
+
                     $user = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->findOneBy(['email' => $email->getEmail()]);
                     if ($user) {
                         $event->addUser($user);
                         $event->removeEmail($email);
+
+                        $users->add($user);
                     } else {
+
+                        //Need to iterate through old emails and check if this email is already in the list.
+                        $count = 0;
+                        foreach($OldEmails as $OldEmail){
+                            if(strtolower($OldEmail->getEmail()) == strtolower($email->getEmail())){
+                                $count++;
+                            }
+                        }
+                        if($count ==0){
+                            $emails->add($email);
+                        }
+
                         $event->addEmail($email);
                     }
+                }
+
+                $dispatcher = $this->get('event_dispatcher');
+                if(!($OldDateTime == $NewDateTime)){
+                    $dispatcher->dispatch(EventEvents::EVENT_EDITED_TIME_EXTENDED, new SendMailsEvent($event));
+                }
+
+
+                if($emails->count() == 0){
+                    $emails = null;
+                }
+
+                if($users->count() == 0){
+                    $users = null;
+                }
+
+                if($emails != null || $users != null) {
+                    $dispatcher->dispatch(EventEvents::EVENT_EDITED_ADD_USERS, new SendMailsEvent($event, $users, $emails));
                 }
 
                 foreach ($event->getEmails() as $email) {
@@ -130,6 +175,10 @@ class DefaultController extends Controller
                 $em->persist($event);
                 $em->flush();
 
+                $this->addFlash(
+                    'notice',
+                    'Changes have been saved!'
+                );
 
                 return $this->redirect($this->generateUrl('dashboard'));
             }
@@ -268,6 +317,12 @@ class DefaultController extends Controller
                         }
                     }
                     $em->flush();
+
+                    $this->addFlash(
+                        'notice',
+                        'Your cart for "'. $event->getTitle() . '" event have been saved!'
+                    );
+
                     return $this->redirectToRoute('dashboard');
                 }
 
@@ -284,7 +339,6 @@ class DefaultController extends Controller
         } else
         {
             return $this->redirectToRoute('dashboard');
-
         }
     }
 
@@ -393,6 +447,11 @@ class DefaultController extends Controller
                             $dispatcher = $this->get('event_dispatcher');
                             $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
 
+                            $this->addFlash(
+                                'notice',
+                                'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
+                            );
+
                             return $this->redirectToRoute('dashboard');
                         }
 
@@ -469,10 +528,26 @@ class DefaultController extends Controller
                                 }
                             }
                         }
+                        $this->addFlash(
+                            'notice',
+                            'Payments have been saved!'
+                        );
                         return $this->redirectToRoute('dashboard');
                     }
 
-                    return ['event' => $event, 'guests' => $unpaidGuests, 'form' => $form->createView()];
+                    $request = new Request();
+                    $request->setRequestFormat('from_payment');
+
+
+                    $RemindButton = $this->remindDebtsAction($event->getId(), $request);
+
+
+                    return [
+                        'event' => $event,
+                        'guests' => $unpaidGuests,
+                        'form' => $form->createView(),
+                        'Remind_button' => $RemindButton['form'],
+                    ];
                 } else {
                     throw $this->createAccessDeniedException("You shall not pass!");
                 }
@@ -515,4 +590,151 @@ class DefaultController extends Controller
             return $this->redirectToRoute('login');
         }
     }
+
+    /**
+     * @Route("/event/{id}/cancel", name="cancel_event")
+     * @Template()
+     *
+     */
+    public function cancelAction($id, Request $request)
+    {
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        /* If not logged in, user will be redirected*/
+        if ($isFullyAuthenticated)
+        {
+            $event = $this->getDoctrine()
+                ->getRepository('EventBundle:Event')
+                ->find($id);
+
+            /* Throw exception if event with that id doesn't exists*/
+            if (!$event)
+            {
+                throw $this->createNotFoundException(
+                    'No event found for id ' . $id
+                );
+            } else
+            {
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                if ($event->getHost() != $user) {
+                    throw $this->createNotFoundException(
+                        'You are not in this event' . $id
+                    );
+                } else {
+                    //main code
+
+                    $form = $this->createFormBuilder()
+                        ->add('confirm', 'checkbox', [
+
+                            'label'     => 'Confirm',
+                            'required'  => false,
+                            'data'      => false,
+                        ])
+                        ->add('save', 'submit', ['label' => 'Save'])
+                        ->getForm();
+
+                    $form->handleRequest($request);
+
+                    if($form->isValid()){
+
+                        $data = $form->getData();
+                        $confirm = $data['confirm'];
+
+                        if($confirm == true){
+                            $dispatcher = $this->get('event_dispatcher');
+                            $dispatcher->dispatch(EventEvents::EVENT_CANCEL, new SendMailsEvent($event));
+                            $em = $this->getDoctrine()->getManager();
+
+                            $em->persist($event);
+                            $em->flush();
+                        }
+                        $this->addFlash(
+                            'notice',
+                            'Event has been canceled!'
+                        );
+                        return $this->redirectToRoute('dashboard');
+                    }
+
+                    return $this->render('@Event/Default/cancel.html.twig',
+                        [
+                            'event' => $event,
+                            'form' => $form->createView(),
+                        ]
+                    );
+
+                }
+            }
+        }
+    }
+
+    /**
+     * @Route("remind/{id}",name="remind_debts")
+     * @Template()
+     */
+    public function remindDebtsAction($id, Request $request)
+    {
+
+        $form = $this->createFormBuilder()
+            ->setAction($this->generateUrl('remind_debts',['id' => $id]))
+            ->setData(['id' => $id])
+            ->add('save', 'submit', ['label' => 'Remind To pay debts'])
+            ->getForm();
+
+        if($request->getRequestFormat() == 'from_payment') {
+            return [
+                'form' => $form->createView(),
+            ];
+        } else {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
+                $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
+                $unpaidUserIds = [];
+                $unpaidGuests = new ArrayCollection();
+                foreach ($orderedGuests as $guest)
+                {
+                    if ($guest[1] != $event->getHost()->getId())
+                    {
+                        $usr = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($guest[1]);
+                        if (($event->getUserDebt($usr)) != 0.0)
+                        {
+                            $unpaidGuests->add($usr);
+                        }
+                    }
+                }
+
+                foreach($unpaidGuests as $user){
+                    $mailer=$this->get('mailer');
+                    $email = $user->getEmail();
+                    $message = $mailer->createMessage()
+                        ->setSubject('You have unpaid debts')
+                        ->setFrom('corvusfood@gmail.com')
+                        ->setTo($email)
+                        ->setBody(
+                            $this->renderView(
+                                '@Event/Emails/remindUserDebt.html.twig',
+                                [
+                                    'user' => $user,
+                                    'event' => $event,
+                                    'debt' => ($event->getUserDebt($usr)),
+                                ]
+                            ),
+                            'text/html'
+                        );
+                    $mailer->send($message);
+                }
+
+                $this->addFlash(
+                    'notice',
+                    'Emails have been sent!'
+                );
+
+                return $this->redirectToRoute('payments',['id' => $id]);
+            } else {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+    }
+
 }

@@ -46,6 +46,8 @@ class DefaultController extends Controller
             case 1:
                     $dispatcher = $this->get('event_dispatcher');
                     $dispatcher->dispatch(EventEvents::EVENT_SUSPEND, new SendMailsEvent($event));
+                    $em->persist($event);
+                    $em->flush();
                     return $this->redirectToRoute('order_food', ['id' => $eventId]);
                 break;
             case 2:
@@ -61,6 +63,54 @@ class DefaultController extends Controller
             default:
                 return $this->redirectToRoute('dashboard');
 
+        }
+    }
+
+    /**
+     * @Route("/orderArrived/{id}", name="order_arrived")
+     * @param integer
+     */
+    public function orderArrivedAction($id)
+    {
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        /* If not logged in, user will be redirected*/
+        if (!$isFullyAuthenticated)
+        {
+            throw $this->createNotFoundException(
+                'Not found'
+            );
+        }else
+        {
+            $event = $this->getDoctrine()
+                ->getRepository('EventBundle:Event')
+                ->find($id);
+
+            /* Throw exception if event with that id doesn't exists*/
+            if (!$event)
+            {
+                throw $this->createNotFoundException(
+                    'No event found for id ' . $id
+                );
+            } else
+            {
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                if ($event->getHost() != $user)
+                {
+                    throw $this->createNotFoundException(
+                        'No event found for id ' . $id
+                    );
+                } else
+                {
+                    $em = $this->getDoctrine()->getManager();
+                    $dispatcher = $this->get('event_dispatcher');
+                    $dispatcher->dispatch(EventEvents::EVENT_FOOD_DELIVERED, new SendMailsEvent($event));
+                    $em->persist($event);
+                    $em->flush();
+                    return $this->redirectToRoute('dashboard');
+                }
+            }
         }
     }
 }
