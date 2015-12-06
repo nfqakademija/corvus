@@ -45,8 +45,6 @@ class RegistrationCompleted implements EventSubscriberInterface
         $invitations = $this->doctrine
             ->getRepository('EventBundle:EventMail')->findBy(['email' => $user_email]);
 
-        dump($invitations);
-
         if($invitations != null) {
             foreach($invitations as $invitation){
                 $event = $invitation->getEvent();
