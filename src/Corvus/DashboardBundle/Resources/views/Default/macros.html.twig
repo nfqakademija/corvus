@@ -15,7 +15,7 @@
 {% endmacro %}
 
 {% macro suspend(eid) %}
-    <a href="{{ path('suspend', {'eventId': eid}) }}" class="btn btn-primary">Place order</a>
+    <a href="{{ path('suspend', {'eventId': eid}) }}" class="btn btn-primary">Suspend</a>
 {% endmacro %}
 
 {% macro place(eid) %}
@@ -23,9 +23,9 @@
 {% endmacro %}
 
 {% macro cancel(eid) %}
-    <a href="#path('cancel_event', {'id': eid})" class="btn btn-primary">Cancel order</a>
+    <a href="{{ path('cancel_event', {'id': eid}) }}" class="btn btn-primary">Cancel event</a>
 {% endmacro %}
 
 {% macro arrived(eid) %}
-    <a href="#path('order_arrived', {'id': eid})" class="btn btn-primary">Order arrived</a>
+    <a href="{{ path('order_arrived', {'id': eid}) }}" class="btn btn-primary">Order arrived</a>
 {% endmacro %}

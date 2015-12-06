@@ -1,0 +1,13 @@
+
+<h3>Food, for {{ event.title }} event has been ordered</h3>
+
+Hello, {{ name }}<br><br>
+
+We want to announce, that food for {{ event.title }} has been ordered<br>
+Approximate devlivery time: {{ delivery_time |date('Y-m-d H-i')}}<br>
+Enjoy your meal :)<br><br>
+
+Massive Food ordering system: <a href="{{ url('login') }}">CorvusFood</a>.<br><br>
+
+Thanks!<br>
+CorvusFood Group.

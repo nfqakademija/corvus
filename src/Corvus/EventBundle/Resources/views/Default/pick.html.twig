@@ -2,8 +2,9 @@
 
 {% block event_content %}
 
-    Event name: {{ event_name }}!<br>
-    dealer {{ dealer }}<br>
+    <h4>Dealer: {{ dealer }}</h4>
+    <h4>Event name: {{ event_name }}!</h4>
+
     <div class="col-md-8" style="outline: 1px solid lightgray;" >
         <h3>Dish'es</h3>
         <div>
@@ -147,10 +148,11 @@
                             .replace(/__name__/g, index)
                             .replace(/__idvalue__/g, $dish_id)
                             .replace(/__qvalue__/g, $amount)
-                    +"<b>" +  $dish_name + "</b> <br> Amount: <span>"
-                    + $amount
-                    + "</span>   <button class='plus btn btn-default btn-xs'>+</button><button class='minus btn btn-default btn-xs'>-</button> <br> Price: <p class='price' style='display: inline'>"+
-                    ($price*$amount).toFixed(2) +"</p> €";
+                            +"<b>" +  $dish_name + "</b> <br> Amount: <span>"
+                            + $amount
+                            + "</span>   <button class='plus btn btn-default btn-xs'>+</button><button class='minus btn btn-default btn-xs'>-</button> <br> Price: <p class='price' style='display: inline'>"+
+                            ($price*$amount).toFixed(2) +"</p> €";
+
 
             // increase the index with one for the next item
             $collectionHolder.data('index', index + 1);

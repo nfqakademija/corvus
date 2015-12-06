@@ -1,0 +1,13 @@
+{# app/Resources/views/Emails/registration.html.twig #}
+<h3>You have been choosen</h3><br><br>
+
+Hello, {{ name }}<br><br>
+
+You have been invited by {{ event.host.username }} to participate in {{ event.title }} event.<br><br>
+
+Go to website, pick your food and save a lot of time.<br>
+<br>
+To login, go to: <a href="{{ url('login') }}">Login</a>.<br>
+<br>
+Thanks!<br>
+CorvusFood Group.

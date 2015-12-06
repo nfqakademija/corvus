@@ -22,9 +22,17 @@
                 {% endfor %}
             {% endif %}
             </div>
+            <div class="col-md-8 col-md-offset-2" >
+
+                {% for flash_message in app.session.flashbag.get('notice') %}
+                    <div class="flash-notice">
+                        {{ flash_message }}
+                    </div>
+                {% endfor %}
+
             {% block body %}
             {% endblock body %}
-
+            </div>
         </div>
     </body>
 </html>

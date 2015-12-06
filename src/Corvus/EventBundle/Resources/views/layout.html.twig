@@ -24,7 +24,11 @@
 
 
                 <div class="col-md-8 col-md-offset-2">
-
+                    {% for flash_message in app.session.flashbag.get('notice') %}
+                        <div class="flash-notice">
+                            <b>{{ flash_message }}</b>
+                        </div>
+                    {% endfor %}
                     {% block event_content %}
                     {% endblock event_content %}
                 </div>
