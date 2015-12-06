@@ -26,7 +26,7 @@ class MissingDishCheckType extends AbstractType
             'type' => 'checkbox',
             'required' => false,
             'data' => $this->dish_ids,
-        ])
+            ])
             ->add('dueDate', 'datetime',[
                 'data' => new \DateTime(),
             ])
