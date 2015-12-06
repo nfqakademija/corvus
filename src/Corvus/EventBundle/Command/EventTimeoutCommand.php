@@ -14,6 +14,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Corvus\EventBundle\EventEvents;
+use Corvus\EventBundle\Event\SendMailsEvent;
 
 class EventTimeoutCommand extends ContainerAwareCommand
 {
@@ -35,9 +37,10 @@ class EventTimeoutCommand extends ContainerAwareCommand
             $endDate = $event->getEndDateTime();
             if ($endDate < $timeNow)
             {
-                $event->setStatus(2);
-                //$dispatcher = $this->getContainer()->get('event_dispatcher');
-                //$dispatcher->dispatch(EventEvents::EVENT_TIMEOUT, new SendMailsEvent($event));
+                $dispatcher = $this->getContainer()->get('event_dispatcher');
+                $dispatcher->dispatch(EventEvents::EVENT_TIMEOUT, new SendMailsEvent($event));
+                $em->persist($event);
+                $em->flush();
             }
         }
     }
