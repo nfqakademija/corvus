@@ -7,9 +7,9 @@ We want to announce, that food for {{ event.title }} has been ordered<br><br>
 Your order:<br>
 <ul>
     {% for order in orders %}
-        <li> {{ order.getDish.getName }}</li>
+        <li>{{ order.getDish.getName }}, {{ order.getQuantity }} piece's. Price: {{ order.getQuantity * order.pricePerUnit }}</li>
     {% endfor %}
-</ul><br><br>
+</ul><br>
 
 Approximate devlivery time: {{ delivery_time |date('Y-m-d H-i')}}<br>
 Enjoy your meal :)<br><br>
