@@ -22,8 +22,6 @@ class EventType extends AbstractType
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
-                'model_timezone' => 'UTC',
-                'view_timezone' => 'Europe/Vilnius',
                 'attr' => ['class' => 'date'],
                     'constraints' => [
                         new DateTimeNotPast()
