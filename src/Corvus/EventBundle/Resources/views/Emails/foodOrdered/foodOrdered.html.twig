@@ -3,7 +3,14 @@
 
 Hello, {{ name }}<br><br>
 
-We want to announce, that food for {{ event.title }} has been ordered<br>
+We want to announce, that food for {{ event.title }} has been ordered<br><br>
+Your order:<br>
+<ul>
+    {% for order in orders %}
+        <li> {{ order.getDish.getName }}</li>
+    {% endfor %}
+</ul><br><br>
+
 Approximate devlivery time: {{ delivery_time |date('Y-m-d H-i')}}<br>
 Enjoy your meal :)<br><br>
 
