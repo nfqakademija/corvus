@@ -1,0 +1,15 @@
+{# AppBundle:Welcome:welcome.html.twig #}
+{% extends "CorvusMainBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+    <div class="col-md-5">
+        <h1>Log in</h1>
+        {{ render(controller('FOSUserBundle:Security:login')) }}
+    </div>
+    <div class="col-md-5 col-md-offset-1">
+        <h1>Registration</h1>
+
+            {% include "CorvusUserBundle:Registration:register_content.html.twig" %}
+
+    </div>
+{% endblock fos_user_content %}

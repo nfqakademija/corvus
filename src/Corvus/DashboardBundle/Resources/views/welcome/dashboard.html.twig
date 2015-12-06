@@ -1,0 +1,9 @@
+{% extends "DashboardBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+    <h1>This is your dashboard</h1>
+    <p>Your ID: {{ user_id }}</p>
+    <a href="{{ path('fos_user_security_logout') }}">Logout</a></br>
+    <a href="{{ path('fos_user_profile_show') }}">Your Profile</a>
+
+{% endblock fos_user_content %}

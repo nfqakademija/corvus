@@ -1,0 +1,30 @@
+{% extends "EventBundle::layout.html.twig" %}
+{% block event_content %}
+    <div class="col md-12">
+        {{ form_start(form) }}
+        <table class="table-bordered">
+            {% for guest in guests %}
+                <tr>
+                    <td>
+                        {{ guest.getUsername }}
+                    </td>
+                    <td>
+                        Debt: {{ event.getUserDebt(guest) }}
+                    </td>
+                    <td>
+                        Paid amount: {{ form_widget(form.payment[guest.id]) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default'} }) }}
+        <a href="{{ path('dashboard') }}" class="btn btn-default" role="button">Cancel</a>
+
+        {{ form_end(form) }}
+
+        {{ form_start(Remind_button) }}
+        {{ form_widget(Remind_button.save, { 'attr': {'class': 'btn btn-default'} }) }}
+        {{ form_end(Remind_button) }}
+
+    </div>
+{% endblock event_content %}

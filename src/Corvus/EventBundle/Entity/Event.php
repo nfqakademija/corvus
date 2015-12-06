@@ -7,33 +7,43 @@
  */
 namespace Corvus\EventBundle\Entity;
 
+use Corvus\MainBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Corvus\EventBundle\Entity\EventRepository")
  * @ORM\Table(name="event")
  */
 class Event
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="event_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $eventId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="host_id")
+     * @ORM\ManyToOne(targetEntity = "Corvus\MainBundle\Entity\User", inversedBy = "eventsHost")
+     * @ORM\JoinColumn(name = "host_id", referencedColumnName = "id")
+     * @var Host
      */
-    protected $hostId;
+    protected $host;
 
     /**
-     * @ORM\Column(type="integer", name="dealer_id")
+     * @ORM\ManyToOne(targetEntity="Corvus\FoodBundle\Entity\Dealer")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @var Dealer
      */
-    protected $dealerId;
+    protected $dealer;
 
     /**
      * @ORM\Column(type="string", length=255, name="title")
+     * @var string
      */
     protected $title;
 
@@ -43,66 +53,62 @@ class Event
     protected $endDateTime;
 
     /**
+    * @ORM\Column(type="datetime", name="delivery_date_time", nullable=true)
+    */
+    protected $deliveryDateTime;
+
+    /**
+     * @ORM\Column(type="integer", name="status")
+     * @var integer
+     */
+    protected $status;
+
+    /**
      * @ORM\Column(type="boolean", name="is_deleted")
      */
-    protected $isDeleted;
+    protected $isDeleted = false;
 
     /**
-     * Get eventId
+     * @ORM\ManyToMany(targetEntity="Corvus\MainBundle\Entity\User", inversedBy="events")
+     * @ORM\JoinTable(name="events_users")
+     * @var User[]|ArrayCollection
+     */
+    protected $users;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "EventMail", mappedBy="event")
+     * @var EventEmail[]|ArrayCollection
+     */
+    protected $emails;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "Payment", mappedBy="event" )
+     * @var Payment[]|ArrayCollection
+     */
+    protected $payments;
+
+    /**
+     * @ORM\OneToMany(targetEntity = "Order", mappedBy = "event")
+     * @var Order[]|ArrayCollection
+     */
+    protected $orders;
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+        $this->emails = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+        $this->orders = new ArrayCollection();
+    }
+
+    /**
+     * Get id
      *
      * @return integer
      */
-    public function getEventId()
+    public function getId()
     {
-        return $this->eventId;
-    }
-
-    /**
-     * Set hostId
-     *
-     * @param integer $hostId
-     *
-     * @return Event
-     */
-    public function setHostId($hostId)
-    {
-        $this->hostId = $hostId;
-
-        return $this;
-    }
-
-    /**
-     * Get hostId
-     *
-     * @return integer
-     */
-    public function getHostId()
-    {
-        return $this->hostId;
-    }
-
-    /**
-     * Set dealerId
-     *
-     * @param integer $dealerId
-     *
-     * @return Event
-     */
-    public function setDealerId($dealerId)
-    {
-        $this->dealerId = $dealerId;
-
-        return $this;
-    }
-
-    /**
-     * Get dealerId
-     *
-     * @return integer
-     */
-    public function getDealerId()
-    {
-        return $this->dealerId;
+        return $this->id;
     }
 
     /**
@@ -154,6 +160,54 @@ class Event
     }
 
     /**
+     * Set deliveryDateTime
+     *
+     * @param \DateTime $deliveryDateTime
+     *
+     * @return Event
+     */
+    public function setDeliveryDateTime($deliveryDateTime)
+    {
+        $this->deliveryDateTime = $deliveryDateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryDateTime
+     *
+     * @return \DateTime
+     */
+    public function getDeliveryDateTime()
+    {
+        return $this->deliveryDateTime;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return Event
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Set isDeleted
      *
      * @param boolean $isDeleted
@@ -175,5 +229,267 @@ class Event
     public function getIsDeleted()
     {
         return $this->isDeleted;
+    }
+
+    /**
+     * Set host
+     *
+     * @param \Corvus\MainBundle\Entity\User $host
+     *
+     * @return Event
+     */
+    public function setHost(\Corvus\MainBundle\Entity\User $host = null)
+    {
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * Get host
+     *
+     * @return \Corvus\MainBundle\Entity\User
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * Set dealer
+     *
+     * @param \Corvus\FoodBundle\Entity\Dealer $dealer
+     *
+     * @return Event
+     */
+    public function setDealer(\Corvus\FoodBundle\Entity\Dealer $dealer = null)
+    {
+        $this->dealer = $dealer;
+
+        return $this;
+    }
+
+    /**
+     * Get dealer
+     *
+     * @return \Corvus\FoodBundle\Entity\Dealer
+     */
+    public function getDealer()
+    {
+        return $this->dealer;
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add email
+     *
+     * @param \Corvus\EventBundle\Entity\EventMail $email
+     *
+     * @return Event
+     */
+    public function addEmail(\Corvus\EventBundle\Entity\EventMail $email)
+    {
+        $this->emails->add($email);
+
+        return $this;
+    }
+
+    /**
+     * Remove email
+     *
+     * @param \Corvus\EventBundle\Entity\EventMail $email
+     */
+    public function removeEmail(\Corvus\EventBundle\Entity\EventMail $email)
+    {
+        $this->emails->removeElement($email);
+    }
+
+    /**
+     * Get emails
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEmails()
+    {
+        return $this->emails;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \Corvus\EventBundle\Entity\Payment $payment
+     *
+     * @return Event
+     */
+    public function addPayment(\Corvus\EventBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \Corvus\EventBundle\Entity\Payment $payment
+     */
+    public function removePayment(\Corvus\EventBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    /**
+     * Add order
+     *
+     * @param \Corvus\EventBundle\Entity\Order $order
+     *
+     * @return Event
+     */
+    public function addOrder(\Corvus\EventBundle\Entity\Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param \Corvus\EventBundle\Entity\Order $order
+     */
+    public function removeOrder(\Corvus\EventBundle\Entity\Order $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * Add user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     *
+     * @return Event
+     */
+    public function addUser(\Corvus\MainBundle\Entity\User $user)
+    {
+        $this->users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param \Corvus\MainBundle\Entity\User $user
+     */
+    public function removeUser(\Corvus\MainBundle\Entity\User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    public function getOrdersCount()
+    {
+        $orders = [];
+        foreach ($this->orders as $order) {
+            if ($order->getUser() != $order->getEvent()->getHost())
+            {
+                $orders[$order->getUser()->getId()] = true;
+            }
+        }
+
+        return count($orders);
+    }
+
+    public function getDebtLeft()
+    {
+        $eventPayment = 0;
+        foreach ($this->payments as $payment) {
+            $eventPayment += $payment->getPaid();
+        }
+
+        return $this->getDebtTotal() - $eventPayment;
+    }
+
+    public function getDebtTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if (($order->getUser() != $this->host) && (!$order->getIsRemoved())) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+
+        return $eventSum;
+    }
+
+    public function getTotal()
+    {
+        $eventSum = 0;
+        foreach ($this->orders as $order) {
+            if (!$order->getIsRemoved()) {
+                $eventSum += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+        return $eventSum;
+    }
+
+    public function getTimeLeft()
+    {
+        $timeNow = new \DateTime('now');
+        return $timeNow->diff($this->endDateTime);
+    }
+
+    public function getUserTotal(User $user)
+    {
+        $total = 0;
+        foreach ($this->orders as $order)
+        {
+            if (($order->getUser() == $user) && (!$order->getIsRemoved()))
+            {
+                $total += $order->getPricePerUnit() * $order->getQuantity();
+            }
+        }
+        return $total;
+    }
+
+    public function getUserDebt(User $user)
+    {
+        $debt = $this->getUserTotal($user);
+        foreach ($this->payments as $payment)
+        {
+            if ($payment->getUser() == $user)
+            {
+                $debt -= $payment->getPaid();
+            }
+        }
+        return $debt;
     }
 }
