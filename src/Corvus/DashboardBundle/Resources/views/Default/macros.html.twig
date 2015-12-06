@@ -1,0 +1,31 @@
+{% macro pick(eid) %}
+    <a href="{{ path('select_food', {'id': eid}) }}" class="btn btn-primary">Pick food</a>
+{% endmacro %}
+
+{% macro review(eid) %}
+    <a href="{{ path('review', {'id': eid}) }}" class="btn btn-primary">Review order</a>
+{% endmacro %}
+
+{% macro payments(eid) %}
+    <a href="{{ path('payments', {'id': eid}) }}" class="btn btn-primary">Payments</a>
+{% endmacro %}
+
+{% macro edit(eid) %}
+    <a href="{{ path('corvus_event_default_editevent', {'id': eid}) }}" class="btn btn-primary">Edit event</a>
+{% endmacro %}
+
+{% macro suspend(eid) %}
+    <a href="{{ path('suspend', {'eventId': eid}) }}" class="btn btn-primary">Suspend</a>
+{% endmacro %}
+
+{% macro place(eid) %}
+    <a href="{{ path('order_food', {'id': eid}) }}" class="btn btn-primary">Place order</a>
+{% endmacro %}
+
+{% macro cancel(eid) %}
+    <a href="{{ path('cancel_event', {'id': eid}) }}" class="btn btn-primary">Cancel event</a>
+{% endmacro %}
+
+{% macro arrived(eid) %}
+    <a href="{{ path('order_arrived', {'id': eid}) }}" class="btn btn-primary">Order arrived</a>
+{% endmacro %}

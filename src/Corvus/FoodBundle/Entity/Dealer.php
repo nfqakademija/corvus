@@ -8,6 +8,7 @@
 
 namespace Corvus\FoodBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,40 +18,56 @@ use Doctrine\ORM\Mapping as ORM;
 class Dealer
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="dealer_id")
+     * @ORM\OneToMany(targetEntity = "Dish", mappedBy = "dealer")
+     * @var Dish[]|ArrayCollection
+     */
+    protected $dishes;
+
+    public function __construct()
+    {
+        $this->dishes = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $dealerId;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255, name="name")
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", length=255, name="phone")
+     * @var string
      */
     protected $phone;
 
     /**
      * @ORM\Column(type="string", length=255, name="address")
+     * @var string
      */
     protected $address;
 
     /**
      * @ORM\Column(type="string", length=255, name="email")
+     * @var string
      */
     protected $email;
 
     /**
-     * Get dealerId
+     * Get id
      *
      * @return integer
      */
-    public function getDealerId()
+    public function getId()
     {
-        return $this->dealerId;
+        return $this->id;
     }
 
     /**
@@ -147,5 +164,42 @@ class Dealer
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Add dish
+     *
+     * @param \Corvus\FoodBundle\Entity\Dish $dish
+     *
+     * @return Dealer
+     */
+    public function addDish(\Corvus\FoodBundle\Entity\Dish $dish)
+    {
+        $this->dishes[] = $dish;
+
+        return $this;
+    }
+
+    /**
+     * Remove dish
+     *
+     * @param \Corvus\FoodBundle\Entity\Dish $dish
+     */
+    public function removeDish(\Corvus\FoodBundle\Entity\Dish $dish)
+    {
+        $this->dishes->removeElement($dish);
+    }
+
+    /**
+     * Get dishes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDishes()
+    {
+        return $this->dishes;
+    }
+    public function __toString(){
+        return $this->name;
     }
 }
