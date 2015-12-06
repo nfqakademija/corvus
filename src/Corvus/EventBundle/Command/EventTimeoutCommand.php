@@ -34,13 +34,16 @@ class EventTimeoutCommand extends ContainerAwareCommand
         $timeNow = new \DateTime('now');
         foreach ($events as $event)
         {
-            $endDate = $event->getEndDateTime();
-            if ($endDate < $timeNow)
+            if ($event->getStatus() == 1)
             {
-                $dispatcher = $this->getContainer()->get('event_dispatcher');
-                $dispatcher->dispatch(EventEvents::EVENT_TIMEOUT, new SendMailsEvent($event));
-                $em->persist($event);
-                $em->flush();
+                $endDate = $event->getEndDateTime();
+                if ($endDate < $timeNow)
+                {
+                    $dispatcher = $this->getContainer()->get('event_dispatcher');
+                    $dispatcher->dispatch(EventEvents::EVENT_TIMEOUT, new SendMailsEvent($event));
+                    $em->persist($event);
+                    $em->flush();
+                }
             }
         }
     }
