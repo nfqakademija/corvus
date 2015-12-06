@@ -10,6 +10,7 @@ namespace Corvus\EventBundle\EventListener;
 
 
 use Corvus\EventBundle\Event\SendMailsEvent;
+use Doctrine\Common\Collections\ArrayCollection;
 use Swift_Mailer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Corvus\EventBundle\EventEvents;
@@ -212,29 +213,101 @@ class SendMails implements EventSubscriberInterface
         $event = $sendMailsEvent->getEvent();
         $deliveryTime = $event->getDeliveryDateTime();
         $users = $event->getUsers();
+        $orders = $event->getOrders();
 
         if($users != null)
         {
             foreach ($users as $user)
             {
-                $email = $user->getEmail();
+                $user_orders = new ArrayCollection();
+                $user_removed_orders = new ArrayCollection();
 
-                $message = $this->mailer->createMessage()
-                    ->setSubject('Food ordered')
-                    ->setFrom('corvusfood@gmail.com')
-                    ->setTo($email)
-                    ->setBody(
-                        $this->twig->render(
-                            '@Event/Emails/foodOrdered.html.twig',
-                            [
-                                'name' => $user->getUsername(),
-                                'event' => $event,
-                                'delivery_time' => $deliveryTime
-                            ]
-                        ),
-                        'text/html'
-                    );
-                $this->mailer->send($message);
+
+                /*We need to check if user, which is participating in event, have any orders
+                And need to check if these orders are not deleted. */
+                foreach($orders as $order)
+                {
+                    if($order->getUser() == $user)
+                    {
+                        if($order->getIsRemoved() == true)
+                        {
+                            $user_removed_orders->add($order);
+                        } else
+                        {
+                            $user_orders->add($order);
+                        }
+                    }
+                }
+
+
+                if($user_orders->count() != 0 || $user_removed_orders->count() != 0)
+                {
+
+                    $email = $user->getEmail();
+
+                    /*If only some of users orders were deleted, we are going to pronounce that orders he will get,
+                    and which orders were deleted*/
+                    if($user_orders->count() > 0 && $user_removed_orders->count() > 0){
+
+                        $message = $this->mailer->createMessage()
+                            ->setSubject('Food ordered')
+                            ->setFrom('corvusfood@gmail.com')
+                            ->setTo($email)
+                            ->setBody(
+                                $this->twig->render(
+                                    '@Event/Emails/foodOrdered/someOrdersDeleted.html.twig',
+                                    [
+                                        'name' => $user->getUsername(),
+                                        'event' => $event,
+                                        'delivery_time' => $deliveryTime,
+                                        'orders' => $user_orders,
+                                        'removed_orders' => $user_removed_orders,
+                                    ]
+                                ),
+                                'text/html'
+                            );
+                        $this->mailer->send($message);
+                    } else if($user_orders->count() > 0 && $user_removed_orders->count() == 0){
+                        $message = $this->mailer->createMessage()
+                            ->setSubject('Food ordered')
+                            ->setFrom('corvusfood@gmail.com')
+                            ->setTo($email)
+                            ->setBody(
+                                $this->twig->render(
+                                    '@Event/Emails/foodOrdered.html.twig',
+                                    [
+                                        'name' => $user->getUsername(),
+                                        'event' => $event,
+                                        'delivery_time' => $deliveryTime,
+                                        'orders' => $user_orders,
+                                    ]
+                                ),
+                                'text/html'
+                            );
+                        $this->mailer->send($message);
+                    } else if($user_orders->count() == 0 && $user_removed_orders->count() > 0){
+                        $message = $this->mailer->createMessage()
+                            ->setSubject('Food ordered')
+                            ->setFrom('corvusfood@gmail.com')
+                            ->setTo($email)
+                            ->setBody(
+                                $this->twig->render(
+                                    '@Event/Emails/foodOrdered/allOrdersDelete.html.twig',
+                                    [
+                                        'name' => $user->getUsername(),
+                                        'event' => $event,
+                                        'delivery_time' => $deliveryTime,
+                                        'removed_orders' => $user_removed_orders,
+                                    ]
+                                ),
+                                'text/html'
+                            );
+                        $this->mailer->send($message);
+                    }
+
+
+
+                }
             }
         }
     }
@@ -276,7 +349,7 @@ class SendMails implements EventSubscriberInterface
         $email = $host->getEmail();
 
         $message = $this->mailer->createMessage()
-            ->setSubject('Hello Email')
+            ->setSubject('Event "' . $event->getTitle() . '" time ended.')
             ->setFrom('corvusfood@gmail.com')
             ->setTo($email)
             ->setBody(

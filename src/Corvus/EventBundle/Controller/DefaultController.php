@@ -440,12 +440,13 @@ class DefaultController extends Controller
                             }
 
                             $event->setDeliveryDateTime($form["dueDate"]->getData());
-                            $event->setStatus(3);
 
                             $em->flush();
 
                             $dispatcher = $this->get('event_dispatcher');
                             $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
+                            $em->flush();
 
                             $this->addFlash(
                                 'notice',
