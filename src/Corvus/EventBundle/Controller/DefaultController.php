@@ -508,12 +508,13 @@ class DefaultController extends Controller
                     $form->handleRequest($request);
 
                     if ($form->isValid()) {
+                        $hasErrors = false;
                         $payments = $form['payment']->getData();
                         $em = $this->getDoctrine()->getEntityManager();
                         foreach ($payments as $unpaidUserId => $amount) {
-                            if ($amount > 0)
+                            $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
+                            if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest)))
                             {
-                                $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
                                 $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
                                 if ($payment != null)
                                 {
@@ -527,13 +528,24 @@ class DefaultController extends Controller
                                     $em->persist($payment);
                                     $em->flush();
                                 }
+                            } else {
+                                $hasErrors = true;
                             }
                         }
-                        $this->addFlash(
-                            'notice',
-                            'Payments have been saved!'
-                        );
-                        return $this->redirectToRoute('dashboard');
+                        if ($hasErrors)
+                        {
+                            $this->addFlash(
+                                'notice',
+                                'Payment should be not less than 0 and not greater than debt.'
+                            );
+                            return $this->redirectToRoute('payments', ['id' => $id]);
+                        } else {
+                            $this->addFlash(
+                                'notice',
+                                'Payments have been saved!'
+                            );
+                            return $this->redirectToRoute('dashboard');
+                        }
                     }
 
                     $request = new Request();
