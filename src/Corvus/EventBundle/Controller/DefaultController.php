@@ -5,6 +5,7 @@ namespace Corvus\EventBundle\Controller;
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Entity\Payment;
+use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\Event\SendMailsEvent;
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
@@ -417,6 +418,9 @@ class DefaultController extends Controller
 
                         if ($form->isValid())
                         {
+                            /*$debt is used to determine if someone(not host) have ordered something
+                            If there are no debts, so no one have ordered anything*/
+                            $debt = $event->getDebtLeft();
 
                             $event_orders = $event->getOrders();
                             $dish_ids = $form["dish_id"]->getData();
@@ -440,18 +444,33 @@ class DefaultController extends Controller
                             }
 
                             $event->setDeliveryDateTime($form["dueDate"]->getData());
-
                             $em->flush();
+
+
 
                             $dispatcher = $this->get('event_dispatcher');
-                            $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
+                            /*Checking if someone have placed orders. of not, event status instantly will be
+                            changed to EVENT_NO_DEBTS. This way FOOD_DELIVERED will be skiped*/
+                            if($debt == 0){
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+
+                                $this->addFlash(
+                                    'notice',
+                                    'Changes have been saved.'
+                                );
+
+                            } else {
+
+                                $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
+                                $this->addFlash(
+                                    'notice',
+                                    'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
+                                );
+                            }
 
                             $em->flush();
-
-                            $this->addFlash(
-                                'notice',
-                                'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
-                            );
 
                             return $this->redirectToRoute('dashboard');
                         }
