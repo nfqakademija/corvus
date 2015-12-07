@@ -1,0 +1,15 @@
+.dish_list_wrapper{
+    border: 1px solid lightgray;
+}
+.dish_item{
+    float:right;
+}
+.price{
+    display: inline-block;
+}
+.cart_wrapper{
+    border: 1px solid lightgray;
+    margin-left: 10px;
+    min-height: 200px;
+    padding-bottom: 10px;
+}

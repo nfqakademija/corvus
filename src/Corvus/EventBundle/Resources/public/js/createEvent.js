@@ -8,11 +8,14 @@ $(document).ready(function(){
     //var $removeRowButton = $('<span class="remove_email"></span>');
     //var $emailRow = $('<div></div>').append($removeRowButton);
 
+    var ROUNDING = 30 * 60 * 1000; /*ms*/
+    start = moment();
+    start = moment(Math.ceil((+start) / ROUNDING) * ROUNDING);
     jQuery(document).ready(function() {
         $('#time_input').datetimepicker({
             locale: 'en',
             format: 'YYYY-MM-DD HH:mm',
-            minDate: moment(),
+            minDate: start,
             stepping: 30
         });
         // Get the ul that holds the collection of tags

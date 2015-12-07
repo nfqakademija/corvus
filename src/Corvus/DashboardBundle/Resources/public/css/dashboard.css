@@ -1,0 +1,28 @@
+.event_list_wrapper{
+}
+.event_list_head{
+    overflow: auto;
+    min-height: 50px;
+}
+.event_list_head > *{
+    display: inline-block;
+    margin: 0;
+}
+.event_item{
+    min-height: 116px;
+    position: relative;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+}
+.event_item .buttons{
+    padding-top: 25px;
+}
+.event_item .buttons .btn{
+    width: 100%;
+    float: right;
+}
+.hosted_by{
+    position:absolute;
+    right: 30px;
+    bottom: 15px;
+}

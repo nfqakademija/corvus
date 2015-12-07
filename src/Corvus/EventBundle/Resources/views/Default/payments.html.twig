@@ -1,5 +1,5 @@
-{% extends "EventBundle::layout.html.twig" %}
-{% block event_content %}
+{% extends '::base.html.twig'  %}
+{% block body %}
     <div class="col md-12">
         {{ form_start(form) }}
         <table class="table-bordered">
@@ -22,4 +22,4 @@
         <a href="#" class="btn btn-default" role="button">Send reminder for unpaid guests</a>
         {{ form_end(form) }}
     </div>
-{% endblock event_content %}
+{% endblock body %}
