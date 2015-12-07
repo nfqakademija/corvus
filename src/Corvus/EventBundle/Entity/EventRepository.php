@@ -18,8 +18,8 @@ class EventRepository extends EntityRepository
             'SELECT e
             FROM EventBundle:Event e
             LEFT JOIN e.users u
-            WHERE e.host = :uid OR u.id = :uid
-            ORDER BY e.endDateTime ASC'
+            WHERE (e.host = :uid OR u.id = :uid) AND e.status > 0
+            ORDER BY ABS(e.endDateTime - CURRENT_TIMESTAMP()) ASC'
         )->setParameter('uid', $id);
 
         try {
@@ -29,18 +29,6 @@ class EventRepository extends EntityRepository
         }
     }
 
-    /*public function getOrderedUsers($id)
-    {
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT u
-            FROM CorvusMainBundle:User u
-            LEFT JOIN u.events e
-            LEFT JOIN u.orders o
-            WHERE e.id = :eid'
-        )->setParameters(['eid' => $id]);
-
-        return $query->getScalarResult();
-    }*/
     public function getUsersWithOrders($id)
     {
         $query = $this->getEntityManager()->createQuery(
