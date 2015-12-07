@@ -23,9 +23,9 @@
 {% endmacro %}
 
 {% macro cancel(eid, class) %}
-    <a href="#path('cancel_event', {'id': eid})" class="  event_action  {{class}}" >Cancel order</a>
+    <a href="{{path('cancel_event', {'id': eid})}}" class="  event_action  {{class}}" >Cancel event</a>
 {% endmacro %}
 
 {% macro arrived(eid, class) %}
-    <a href="#path('order_arrived', {'id': eid})" class="  event_action  {{class}}" >Order arrived</a>
+    <a href="{{path('order_arrived', {'id': eid})}}" class="  event_action  {{class}}" >Order arrived</a>
 {% endmacro %}
