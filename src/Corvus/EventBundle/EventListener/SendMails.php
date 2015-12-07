@@ -297,7 +297,7 @@ class SendMails implements EventSubscriberInterface
                             ->setTo($email)
                             ->setBody(
                                 $this->twig->render(
-                                    '@Event/Emails/foodOrdered.html.twig',
+                                    '@Event/Emails/foodOrdered/foodOrdered.html.twig',
                                     [
                                         'name' => $user->getUsername(),
                                         'event' => $event,
