@@ -1,0 +1,12 @@
+{% extends "EventBundle::layout.html.twig" %}
+
+{% block event_content %}
+
+    <div class="container">
+        <h3>Are you sure you want to cancel "{{ event.title }}" event</h3><br>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+
+{% endblock event_content %}

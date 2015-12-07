@@ -51,6 +51,7 @@ class RegistrationCompleted implements EventSubscriberInterface
                 $event->addUser($user);
                 $em->remove($invitation);
             }
+            $em->flush();
         }
     }
 }

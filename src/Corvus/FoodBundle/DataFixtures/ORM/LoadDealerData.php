@@ -18,10 +18,10 @@ class LoadDealerData extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $dealer = new Dealer();
-        $dealer->setName('Kebabine');
-        $dealer->setAddress('In Shehkine');
-        $dealer->setEmail("kebab@one.lt");
-        $dealer->setPhone("852223322");
+        $dealer->setName('Čili pica');
+        $dealer->setAddress('Gedimino prospektas, Vilnius');
+        $dealer->setEmail("uzsakymai@cili.lt");
+        $dealer->setPhone("+37060000000");
 
         $manager->persist($dealer);
         $manager->flush();
@@ -29,10 +29,10 @@ class LoadDealerData extends AbstractFixture implements OrderedFixtureInterface
         $this->addReference('d1', $dealer);
 
         $dealer2 = new Dealer();
-        $dealer2->setName('Tashnilovka');
-        $dealer2->setAddress('Stoties rajonas');
-        $dealer2->setEmail("volodzia@mail.ru");
-        $dealer2->setPhone("+37060012345");
+        $dealer2->setName('Statoil');
+        $dealer2->setAddress('Gedimino prospektas, Vilnius');
+        $dealer2->setEmail("statoil@statoil.lt");
+        $dealer2->setPhone("+370600000");
 
         $manager->persist($dealer2);
         $manager->flush();

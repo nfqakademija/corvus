@@ -2,6 +2,8 @@
 
 namespace Corvus\DashboardBundle\Controller;
 
+use Corvus\EventBundle\Event\SendMailsEvent;
+use Corvus\EventBundle\EventEvents;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,7 +25,10 @@ class DefaultController extends Controller
             $user = $this->container->get('security.context')->getToken()->getUser();
             $event = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($user->getId());
 
-            return ['user' => $user, 'events' => $event];
+            return [
+                'user' => $user,
+                'events' => $event
+            ];
         } else {
             return $this->redirectToRoute('login');
         }
@@ -40,9 +45,11 @@ class DefaultController extends Controller
         switch ($event->getStatus())
         {
             case 1:
-                $event->setStatus(2);
-                $em->flush();
-                return $this->redirectToRoute('order_food', ['id' => $eventId]);
+                    $dispatcher = $this->get('event_dispatcher');
+                    $dispatcher->dispatch(EventEvents::EVENT_SUSPEND, new SendMailsEvent($event));
+                    $em->persist($event);
+                    $em->flush();
+                    return $this->redirectToRoute('order_food', ['id' => $eventId]);
                 break;
             case 2:
                 $now = new \DateTime('now');
@@ -57,6 +64,54 @@ class DefaultController extends Controller
             default:
                 return $this->redirectToRoute('dashboard');
 
+        }
+    }
+
+    /**
+     * @Route("/orderArrived/{id}", name="order_arrived")
+     * @param integer
+     */
+    public function orderArrivedAction($id)
+    {
+        $isFullyAuthenticated = $this->get('security.context')
+            ->isGranted('IS_AUTHENTICATED_FULLY');
+
+        /* If not logged in, user will be redirected*/
+        if (!$isFullyAuthenticated)
+        {
+            throw $this->createNotFoundException(
+                'Not found'
+            );
+        }else
+        {
+            $event = $this->getDoctrine()
+                ->getRepository('EventBundle:Event')
+                ->find($id);
+
+            /* Throw exception if event with that id doesn't exists*/
+            if (!$event)
+            {
+                throw $this->createNotFoundException(
+                    'No event found for id ' . $id
+                );
+            } else
+            {
+                $user = $this->container->get('security.context')->getToken()->getUser();
+                if ($event->getHost() != $user)
+                {
+                    throw $this->createNotFoundException(
+                        'No event found for id ' . $id
+                    );
+                } else
+                {
+                    $em = $this->getDoctrine()->getManager();
+                    $dispatcher = $this->get('event_dispatcher');
+                    $dispatcher->dispatch(EventEvents::EVENT_FOOD_DELIVERED, new SendMailsEvent($event));
+                    $em->persist($event);
+                    $em->flush();
+                    return $this->redirectToRoute('dashboard');
+                }
+            }
         }
     }
 }

@@ -19,7 +19,12 @@
         </table>
         {{ form_widget(form.save, { 'attr': {'class': 'btn btn-default'} }) }}
         <a href="{{ path('dashboard') }}" class="btn btn-default" role="button">Cancel</a>
-        <a href="#" class="btn btn-default" role="button">Send reminder for unpaid guests</a>
+
         {{ form_end(form) }}
+
+        {{ form_start(Remind_button) }}
+        {{ form_widget(Remind_button.save, { 'attr': {'class': 'btn btn-default'} }) }}
+        {{ form_end(Remind_button) }}
+
     </div>
 {% endblock body %}
