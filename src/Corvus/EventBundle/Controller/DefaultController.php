@@ -527,16 +527,19 @@ class DefaultController extends Controller
                     $form->handleRequest($request);
 
                     if ($form->isValid()) {
+                        $hasErrors = false;
                         $payments = $form['payment']->getData();
                         $em = $this->getDoctrine()->getEntityManager();
                         foreach ($payments as $unpaidUserId => $amount) {
-                            if ($amount > 0)
+                            $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
+                            if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest)))
                             {
-                                $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
                                 $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
+
                                 if ($payment != null)
                                 {
                                     $payment->setPaid($payment->getPaid() + $amount);
+                                    $em->persist($payment);
                                     $em->flush();
                                 } else {
                                     $payment = new Payment();
@@ -545,14 +548,34 @@ class DefaultController extends Controller
                                     $payment->setPaid($amount);
                                     $em->persist($payment);
                                     $em->flush();
+                                    $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                                 }
+                            } else {
+                                $hasErrors = true;
                             }
                         }
-                        $this->addFlash(
-                            'notice',
-                            'Payments have been saved!'
-                        );
-                        return $this->redirectToRoute('dashboard');
+                        if ($hasErrors)
+                        {
+                            $this->addFlash(
+                                'notice',
+                                'Payment should be not less than 0 and not greater than debt.'
+                            );
+                            return $this->redirectToRoute('payments', ['id' => $id]);
+                        } else {
+                            $em->refresh($event);
+                            if (($event->getDebtLeft() == 0.0) && ($event->getStatus() == 4))
+                            {
+                                $dispatcher = $this->get('event_dispatcher');
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+                                $em->persist($event);
+                                $em->flush();
+                            }
+                            $this->addFlash(
+                                'notice',
+                                'Payments have been saved!'
+                            );
+                            return $this->redirectToRoute('dashboard');
+                        }
                     }
 
                     $request = new Request();
