@@ -1,0 +1,7 @@
+.dish_list .dish div{
+    background-color: lightgray;
+    margin-bottom: 10px;
+}
+.review_head{
+    border-bottom:1px solid lightgray;
+}
