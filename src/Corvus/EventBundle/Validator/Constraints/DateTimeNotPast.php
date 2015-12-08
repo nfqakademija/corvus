@@ -1,5 +1,5 @@
 <?php
-// src/AppBundle/Validator/Constraints/ContainsAlphanumeric.php
+
 namespace Corvus\EventBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Vartotojas
- * Date: 2015.11.22
- * Time: 16:15
- */
 
 namespace Corvus\EventBundle\Form\Type;
 

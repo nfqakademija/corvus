@@ -68,7 +68,7 @@ class SendMails implements EventSubscriberInterface
             }
         }
 
-        if($emails != null){
+        if ($emails != null) {
             foreach ($emails as $email) {
                 $email_string = $email->getEmail();
 
@@ -97,10 +97,8 @@ class SendMails implements EventSubscriberInterface
         $users = $sendMailsEvent->getUsers();
         $emails = $sendMailsEvent->getEmails();
 
-        if($users != null)
-        {
-            foreach ($users as $user)
-            {
+        if ($users != null) {
+            foreach ($users as $user) {
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
@@ -122,10 +120,8 @@ class SendMails implements EventSubscriberInterface
             }
         }
 
-        if($emails != null)
-        {
-            foreach ($emails as $email)
-            {
+        if ($emails != null) {
+            foreach ($emails as $email) {
                 $email_string = $email->getEmail();
 
                 $message = $this->mailer->createMessage()
@@ -153,10 +149,8 @@ class SendMails implements EventSubscriberInterface
         $users = $sendMailsEvent->getUsers();
         $emails = $sendMailsEvent->getEmails();
 
-        if($users != null)
-        {
-            foreach ($users as $user)
-            {
+        if ($users != null) {
+            foreach ($users as $user) {
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
@@ -177,10 +171,8 @@ class SendMails implements EventSubscriberInterface
             }
         }
 
-        if($emails != null)
-        {
-            foreach ($emails as $email)
-            {
+        if ($emails != null) {
+            foreach ($emails as $email) {
                 $email_string = $email->getEmail();
 
                 $message = $this->mailer->createMessage()
@@ -202,14 +194,11 @@ class SendMails implements EventSubscriberInterface
         }
     }
 
-    public function onEventFoodDelivered(SendMailsEvent $sendMailsEvent)
-    {
+    public function onEventFoodDelivered(SendMailsEvent $sendMailsEvent) {
         $users = $sendMailsEvent->getEvent()->getUsers();
 
-        if($users != null)
-        {
-            foreach ($users as $user)
-            {
+        if ($users != null) {
+            foreach ($users as $user) {
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
@@ -238,39 +227,30 @@ class SendMails implements EventSubscriberInterface
         $users = $event->getUsers();
         $orders = $event->getOrders();
 
-        if($users != null)
-        {
-            foreach ($users as $user)
-            {
+        if ($users != null) {
+            foreach ($users as $user) {
                 $user_orders = new ArrayCollection();
                 $user_removed_orders = new ArrayCollection();
 
-
                 /*We need to check if user, which is participating in event, have any orders
                 And need to check if these orders are not deleted. */
-                foreach($orders as $order)
-                {
-                    if($order->getUser() == $user)
-                    {
-                        if($order->getIsRemoved() == true)
-                        {
+                foreach ($orders as $order) {
+                    if ($order->getUser() == $user) {
+                        if ($order->getIsRemoved() == true) {
                             $user_removed_orders->add($order);
-                        } else
-                        {
+                        } else {
                             $user_orders->add($order);
                         }
                     }
                 }
 
-
-                if($user_orders->count() != 0 || $user_removed_orders->count() != 0)
-                {
+                if ($user_orders->count() != 0 || $user_removed_orders->count() != 0) {
 
                     $email = $user->getEmail();
 
                     /*If only some of users orders were deleted, we are going to pronounce that orders he will get,
                     and which orders were deleted*/
-                    if($user_orders->count() > 0 && $user_removed_orders->count() > 0){
+                    if ($user_orders->count() > 0 && $user_removed_orders->count() > 0){
 
                         $message = $this->mailer->createMessage()
                             ->setSubject('Food ordered')
@@ -340,10 +320,8 @@ class SendMails implements EventSubscriberInterface
         $event = $sendMailsEvent->getEvent();
         $users = $event->getUsers();
 
-        if($users != null)
-        {
-            foreach ($users as $user)
-            {
+        if ($users != null) {
+            foreach ($users as $user) {
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()

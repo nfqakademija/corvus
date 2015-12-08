@@ -13,7 +13,6 @@ class RemindDebtsType extends AbstractType
 
     public function __construct( $url = null)
     {
-
         $this->url = $url;
     }
 
@@ -23,8 +22,8 @@ class RemindDebtsType extends AbstractType
             'label' => 'Remind To pay debts',
             ]
         )->setAction($this->url['url']);
-
     }
+
     public function getName()
     {
         return 'RemindDebts';

@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -31,8 +32,11 @@ class EventType extends AbstractType
             ->add('emails', 'collection', [
                 'label' => 'Guests:',
                 'type' => new EventMailType,
-                'allow_add'    => true])
-            ->add('submit', 'submit', ['label' => 'Create']);
+                'allow_add'    => true]
+            )
+            ->add('submit', 'submit', [
+                'label' => 'Create'
+            ]);
     }
     public function getName()
     {

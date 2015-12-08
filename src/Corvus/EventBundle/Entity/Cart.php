@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Vartotojas
- * Date: 2015.11.22
- * Time: 16:17
- */
-
 
 namespace Corvus\EventBundle\Entity;
 

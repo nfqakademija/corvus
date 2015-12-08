@@ -38,6 +38,7 @@ class EventRepository extends EntityRepository
             LEFT JOIN e.users u
             WHERE e.id = :eid AND o.user = u'
         )->setParameter('eid', $id);
+
         return $query->getResult();
     }
 }

@@ -36,7 +36,8 @@ class RegistrationCompleted implements EventSubscriberInterface
         ];
     }
 
-    public function onRegistrationCompleted(FilterUserResponseEvent $event){
+    public function onRegistrationCompleted(FilterUserResponseEvent $event)
+    {
         $user = $event->getUser();
         $user_email = $user->getEmail();
 
@@ -45,7 +46,7 @@ class RegistrationCompleted implements EventSubscriberInterface
         $invitations = $this->doctrine
             ->getRepository('EventBundle:EventMail')->findBy(['email' => $user_email]);
 
-        if($invitations != null) {
+        if ($invitations != null) {
             foreach($invitations as $invitation){
                 $event = $invitation->getEvent();
                 $event->addUser($user);

@@ -8,7 +8,6 @@
 
 namespace Corvus\EventBundle;
 
-
 final class EventEvents
 {
     /*
@@ -21,7 +20,7 @@ final class EventEvents
      */
     const EVENT_CREATED = 'event.created';
 
-    /*
+    /*The event.edited.extended.time is thrown, when time is
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
@@ -31,6 +30,7 @@ final class EventEvents
     const EVENT_EDITED_TIME_EXTENDED = 'event.edited.extended.time';
 
     /*
+     *The event.edited.add.users is thrown, when event is edited and new users are added.
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\EventUsersChangeEvent
@@ -40,29 +40,27 @@ final class EventEvents
     const EVENT_EDITED_ADD_USERS = 'event.edited.add.users';
 
     /*
-     * the event.timeout event is thrown every time, then event time reaches its limit
+     *The event.timeout event is thrown every time, then event time reaches its limit
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
      *
      *@var string
-     * siusti email tik hostui
      */
     const EVENT_TIMEOUT = 'event.timeout';
 
     /*
-     * the event.suspend is thrown when event host press Suspend button
+     *The event.suspend is thrown when event host press Suspend button
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
      *
      *@var string
-     * siusti email visiems
      */
     const EVENT_SUSPEND = 'event.suspend';
 
     /*
-     * the event.cancel is thrown when event host press Cacnel Event button
+     *The event.cancel is thrown when event host press Cacnel Event button
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
@@ -72,28 +70,25 @@ final class EventEvents
     const EVENT_CANCEL = 'event.cancel';
 
     /*
-     * the event.food.ordered is thrown when host ordered food
+     *The event.food.ordered is thrown when host orders food
      *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
      *
-     *@var string
      * siusti visiems
      */
     const EVENT_FOOD_ORDERED = 'event.food.ordered';
 
     /*
-     *
      *The event listener receives an
      *Corvus\EventBundle\Event\SendMailsEvent
      *
      *@var string
-     * siusti visiems
      */
     const EVENT_FOOD_DELIVERED = 'event.food.delivered';
 
     /*
-     * the event.no.debts is thrown, when nobody has any debts for event host
+     * The event.no.debts is thrown, when nobody has any debts for event host
      * It changes event status to 5
      *
      *The event listener receives an
