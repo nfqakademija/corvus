@@ -8,6 +8,7 @@
 
 namespace Corvus\EventBundle\Form\Type;
 
+use Corvus\EventBundle\Validator\Constraints\DateTimeNotPast;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,7 +29,14 @@ class MissingDishCheckType extends AbstractType
             'data' => $this->dish_ids,
             ])
             ->add('dueDate', 'datetime',[
-                'data' => new \DateTime(),
+                'widget' => 'single_text',
+                'format' => 'y-MM-dd HH:mm',
+                'model_timezone' => 'UTC',
+                'view_timezone' => 'Europe/Vilnius',
+                'attr' => ['class' => 'date'],
+                'constraints' => [
+                    new DateTimeNotPast()
+                ]
             ])
             ->add('save', 'submit', ['label' => 'Save']);
     }

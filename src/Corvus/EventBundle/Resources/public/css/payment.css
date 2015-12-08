@@ -1,0 +1,15 @@
+.paid{
+    width: 60px;
+}
+.payment_head{
+    padding-bottom: 5px;
+}
+.payment_item {
+    padding: 5px 0;
+}
+.event_info{
+    padding: 5px 0;
+}
+.save{
+    margin-left: 10px;
+}

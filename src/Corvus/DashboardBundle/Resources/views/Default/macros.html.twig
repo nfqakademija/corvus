@@ -1,31 +1,215 @@
-{% macro pick(eid) %}
-    <a href="{{ path('select_food', {'id': eid}) }}" class="btn btn-primary">Pick food</a>
+{% macro pick(eid, class) %}
+    <a href="{{ path('select_food', {'id': eid}) }}" class="  event_action  {{class}}" >Pick food</a>
 {% endmacro %}
 
-{% macro review(eid) %}
-    <a href="{{ path('review', {'id': eid}) }}" class="btn btn-primary">Review order</a>
+{% macro review(eid, class) %}
+    <a href="{{ path('review', {'id': eid}) }}" class="  event_action  {{class}}" >Review order</a>
 {% endmacro %}
 
-{% macro payments(eid) %}
-    <a href="{{ path('payments', {'id': eid}) }}" class="btn btn-primary">Payments</a>
+{% macro payments(eid, class) %}
+    <a href="{{ path('payments', {'id': eid}) }}" class="  event_action  {{class}}" >Payments</a>
 {% endmacro %}
 
-{% macro edit(eid) %}
-    <a href="{{ path('corvus_event_default_editevent', {'id': eid}) }}" class="btn btn-primary">Edit event</a>
+{% macro edit(eid, class) %}
+    <a href="{{ path('corvus_event_default_editevent', {'id': eid}) }}" class="  event_action  {{class}}" >Edit event</a>
 {% endmacro %}
 
-{% macro suspend(eid) %}
-    <a href="{{ path('suspend', {'eventId': eid}) }}" class="btn btn-primary">Suspend</a>
+{% macro suspend(eid, class) %}
+    <a href="{{ path('suspend', {'eventId': eid}) }}" class="  event_action  {{class}}" >Place order</a>
 {% endmacro %}
 
-{% macro place(eid) %}
-    <a href="{{ path('order_food', {'id': eid}) }}" class="btn btn-primary">Place order</a>
+{% macro place(eid, class) %}
+    <a href="{{ path('order_food', {'id': eid}) }}" class="  event_action  {{class}}" >Place order</a>
 {% endmacro %}
 
-{% macro cancel(eid) %}
-    <a href="{{ path('cancel_event', {'id': eid}) }}" class="btn btn-primary">Cancel event</a>
+{% macro cancel(eid, class) %}
+    <a href="{{path('cancel_event', {'id': eid})}}" class="  event_action  {{class}}" >Cancel event</a>
 {% endmacro %}
 
-{% macro arrived(eid) %}
-    <a href="{{ path('order_arrived', {'id': eid}) }}" class="btn btn-primary">Order arrived</a>
+{% macro arrived(eid, class) %}
+    <a href="{{path('order_arrived', {'id': eid})}}" class="  event_action  {{class}}" >Order arrived</a>
+{% endmacro %}
+{% macro renderEvent(event, user) %}
+    {% import _self as buttons %}
+                {% if user.id == event.host.id %}
+                    {% if event.status == 1 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
+                                    <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6">
+                                    {{ buttons.pick(event.id, 'btn btn-default') }}
+                                </div>
+                                <div class="dropdown col-md-6">
+                                    <button class="btn btn-default dropdown-toggle col-md-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        More
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li>{{ buttons.edit(event.id) }}</li>
+                                        <li>{{ buttons.suspend(event.id) }}</li>
+                                        <li>{{ buttons.cancel(event.id) }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 2 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ordering ended - time to order food</p>
+                                    <p>Users who already ordered: {{ event.getOrdersCount }} / {{ event.users.count + event.emails.count}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6">
+                                    {{ buttons.pick(event.id, 'btn btn-default') }}
+                                </div>
+                                <div class="dropdown col-md-6">
+                                    <button class="btn btn-default dropdown-toggle col-md-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        More
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li>{{ buttons.edit(event.id) }}</li>
+                                        <li>{{ buttons.cancel(event.id) }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 3 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ordered. Waiting</p>
+                                    <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6">
+                                    {{ buttons.arrived(event.id, 'btn btn-default') }}
+                                </div>
+                                <div class="dropdown col-md-6 pull-right">
+                                    <button class="btn btn-default dropdown-toggle col-md-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        More
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <li>{{ buttons.review(event.id) }}</li>
+                                        <li>{{ buttons.payments(event.id) }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 4 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Arrived</p>
+                                    <p>Unpaid amount {{ event.getDebtLeft }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6">
+                                    {{ buttons.payments(event.id, 'btn btn-default') }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ buttons.review(event.id, 'btn btn-default') }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Finished</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                {{ buttons.review(event.id, 'btn btn-default') }}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if event.status == 1 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ends in: {{ event.getTimeLeft.format('%d days %H hours %i minutes') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6 col-md-offset-6">{{ buttons.pick(event.id, 'btn btn-default') }}</div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 2 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ordering ended</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6 col-md-offset-6">{{ buttons.pick(event.id, 'btn btn-default') }}</div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 3 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Ordered. Waiting</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6 col-md-offset-6">{{ buttons.review(event.id, 'btn btn-default') }}</div>
+                            </div>
+                        </div>
+                    {% elseif event.status == 4 %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Arrived</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6 col-md-offset-6">{{ buttons.review(event.id, 'btn btn-default') }}</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="event_item row">
+                            <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
+                            <div class="col-md-7 ">
+                                <h3>{{ event.title }}</h3>
+                                <div class="col-md-12 ">
+                                    <p>Finished</p>
+                                </div>
+                            </div>
+                            <div class="col-md-5 buttons">
+                                <div class="col-md-6 col-md-offset6">{{ buttons.review(event.id, 'btn btn-default') }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
 {% endmacro %}

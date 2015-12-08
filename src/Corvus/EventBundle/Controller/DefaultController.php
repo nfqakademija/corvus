@@ -78,6 +78,10 @@ class DefaultController extends Controller
 
                 $em->persist($event);
                 $em->flush();
+                $this->addFlash(
+                    'notice',
+                    'Event has been created. Time to pick some food!'
+                );
                 return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
             }
             return [
@@ -96,7 +100,12 @@ class DefaultController extends Controller
         $isFullyAuthenticated = $this->get('security.context')
         ->isGranted('IS_AUTHENTICATED_FULLY');
         $userIsHost = ($event->getHost() === $this->getUser());
-        if($isFullyAuthenticated && $userIsHost) {
+        if (!$event) {
+            throw $this->createNotFoundException(
+                'No event found for id ' . $event->getId()
+            );
+        }
+        elseif($isFullyAuthenticated && $userIsHost) {
 
             $OldDateTime = $event->getEndDateTime();
             $OldEmails =$this->getDoctrine()->getRepository('EventBundle:EventMail')->findBy(['event' => $event]);
@@ -321,7 +330,7 @@ class DefaultController extends Controller
 
                     $this->addFlash(
                         'notice',
-                        'Your cart for "'. $event->getTitle() . '" event have been saved!'
+                        'Your cart for "'. $event->getTitle() . '" event has been saved!'
                     );
 
                     return $this->redirectToRoute('dashboard');
@@ -384,7 +393,7 @@ class DefaultController extends Controller
                     if($event_host !== $user)
                     {
                         throw $this->createNotFoundException(
-                            'You are not host of this event ' . $event_status
+                            'You are not a host of this event ' . $event_status
                         );
                     } else
                     {
@@ -674,7 +683,7 @@ class DefaultController extends Controller
                             'required'  => false,
                             'data'      => false,
                         ])
-                        ->add('save', 'submit', ['label' => 'Save'])
+                        ->add('save', 'submit', ['label' => 'Confirm'])
                         ->getForm();
 
                     $form->handleRequest($request);
@@ -691,11 +700,11 @@ class DefaultController extends Controller
 
                             $em->persist($event);
                             $em->flush();
+                            $this->addFlash(
+                                'notice',
+                                'Event has been canceled!'
+                            );
                         }
-                        $this->addFlash(
-                            'notice',
-                            'Event has been canceled!'
-                        );
                         return $this->redirectToRoute('dashboard');
                     }
 

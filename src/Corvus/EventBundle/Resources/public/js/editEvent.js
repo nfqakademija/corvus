@@ -29,7 +29,6 @@ $(document).ready(function(){
 
             // add a new tag form (see next code block)
             addEmailForm($collectionHolder);
-            renderEmails($collectionHolder);
         });
     });
     function isEmail(email) {
@@ -37,8 +36,10 @@ $(document).ready(function(){
         return regex.test(email);
     }
     function addEmailForm($collectionHolder) {
-        var value = $addEmailInput.val()
-        if( value != '' && isEmail(value) ){
+
+        var value = $addEmailInput.val();
+        if( value.replace(/^\s+|\s+$/g, "").length != 0 && isEmail(value) ){
+            console.log(true);
             // Get the data-prototype explained earlier
             var prototype = $collectionHolder.data('prototype');
 
@@ -65,10 +66,5 @@ $(document).ready(function(){
             });
             $addEmailInput.val('');
         }
-    }
-    function renderEmails($collectionHolder){
-        $collectionHolder.find(':input').each( function (){
-            $collectionHolder.append($('<div class="email_row"></div>').text($addEmailInput.val()));
-        });
     }
 });

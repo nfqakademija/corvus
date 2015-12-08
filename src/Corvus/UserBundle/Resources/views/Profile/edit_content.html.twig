@@ -1,13 +1,27 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-<div class="container" style="padding: 5px;">
-    <a class="btn btn-default" href="{{ path('fos_user_profile_show') }}">Your profile</a>
-    <a class="btn btn-default" href="{{ path('dashboard') }}">Dashboard</a>
+<div class="col-md-4 col-md-offset-4">
+
+
+        {{ form_start(form, { 'attr' : {'class' : 'create_event_form'}}) }}
+    <form action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit">
+        <div class="form-group">
+            {{ form_label(form.username) }}
+            {{ form_errors(form.username) }}
+            {{ form_widget(form.username, { 'attr' : { 'class' : 'form-control'}  }) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(form.current_password) }}
+            {{ form_errors(form.current_password) }}
+            {{ form_widget(form.current_password, { 'attr' : { 'class' : 'form-control'}  }) }}
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-default pull-left" href="{{ path('fos_user_profile_show') }}">Cancel</a>
+        </div>
+        <div class="col-md-6">
+            <input class="btn btn-default" type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+        </div>
+        {{ form_end(form) }}
+    </form>
 </div>
 
-<form action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit">
-    {{ form_widget(form) }}
-    <div>
-        <input class="btn btn-default" type="submit" value="{{ 'profile.edit.submit'|trans }}" />
-    </div>
-</form>
