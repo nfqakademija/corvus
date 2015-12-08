@@ -11,6 +11,7 @@ use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\EventBundle\Form\Type\PaymentType;
+use Corvus\EventBundle\Form\Type\RemindDebtsType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\MainBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -590,15 +591,16 @@ class DefaultController extends Controller
                     $request = new Request();
                     $request->setRequestFormat('from_payment');
 
+                    $button_action_url = ['url' => 'remind/'.$id];
 
-                    $RemindButton = $this->remindDebtsAction($event->getId(), $request);
+                    $RemindButton = $this->createForm(new RemindDebtsType($id, $button_action_url));
 
 
                     return [
                         'event' => $event,
                         'guests' => $unpaidGuests,
                         'form' => $form->createView(),
-                        'Remind_button' => $RemindButton['form'],
+                        'Remind_button' => $RemindButton->createView(),
                     ];
                 } else {
                     throw $this->createAccessDeniedException("You shall not pass!");
@@ -726,17 +728,12 @@ class DefaultController extends Controller
     public function remindDebtsAction($id, Request $request)
     {
 
-        $form = $this->createFormBuilder()
-            ->setAction($this->generateUrl('remind_debts',['id' => $id]))
-            ->setData(['id' => $id])
-            ->add('save', 'submit', ['label' => 'Remind To pay debts'])
-            ->getForm();
+        $form = $this->createForm(new RemindDebtsType());
 
-        if($request->getRequestFormat() == 'from_payment') {
-            return [
-                'form' => $form->createView(),
-            ];
-        } else {
+        if($request->getMethod() == 'POST') {
+            return $this->redirectToRoute('dashboard');
+        } else
+        {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
