@@ -20,8 +20,7 @@ class DefaultController extends Controller
     {
         $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
 
-        if ($isFullyAuthenticated)
-        {
+        if ($isFullyAuthenticated) {
             $user = $this->container->get('security.context')->getToken()->getUser();
             $event = $this->getDoctrine()->getRepository('EventBundle:Event')->getUserEventsOrderedByDate($user->getId());
 
@@ -42,8 +41,7 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($eventId);
-        switch ($event->getStatus())
-        {
+        switch ($event->getStatus()) {
             case 1:
                     $dispatcher = $this->get('event_dispatcher');
                     $dispatcher->dispatch(EventEvents::EVENT_SUSPEND, new SendMailsEvent($event));
@@ -54,8 +52,7 @@ class DefaultController extends Controller
             case 2:
                 $now = new \DateTime('now');
                 $endTime = $event->getEndDateTime();
-                if ($now < $endTime)
-                {
+                if ($now < $endTime) {
                     $event->setStatus(1);
                     $em->flush();
                 }
@@ -77,33 +74,27 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         /* If not logged in, user will be redirected*/
-        if (!$isFullyAuthenticated)
-        {
+        if (!$isFullyAuthenticated) {
             throw $this->createNotFoundException(
                 'Not found'
             );
-        }else
-        {
+        } else {
             $event = $this->getDoctrine()
                 ->getRepository('EventBundle:Event')
                 ->find($id);
 
             /* Throw exception if event with that id doesn't exists*/
-            if (!$event)
-            {
+            if (!$event) {
                 throw $this->createNotFoundException(
                     'No event found for id ' . $id
                 );
-            } else
-            {
+            } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
-                if ($event->getHost() != $user)
-                {
+                if ($event->getHost() != $user) {
                     throw $this->createNotFoundException(
                         'No event found for id ' . $id
                     );
-                } else
-                {
+                } else {
                     $em = $this->getDoctrine()->getManager();
                     $dispatcher = $this->get('event_dispatcher');
                     $dispatcher->dispatch(EventEvents::EVENT_FOOD_DELIVERED, new SendMailsEvent($event));

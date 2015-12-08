@@ -11,4 +11,3 @@ class DateTimeNotPast extends Constraint
 {
     public $message = 'The date is in the past.';
 }
-

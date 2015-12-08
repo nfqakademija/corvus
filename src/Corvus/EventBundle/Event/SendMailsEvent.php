@@ -8,7 +8,6 @@
 
 namespace Corvus\EventBundle\Event;
 
-
 class SendMailsEvent extends EventStatusChangeEvent
 {
     private $event;

@@ -8,14 +8,12 @@
 
 namespace Corvus\EventBundle\Entity;
 
-
 use Doctrine\ORM\EntityRepository;
 
 class OrderRepository extends EntityRepository
 {
     public function getPeopleCountWhoOrdered(Event $event)
     {
-
         $query = $this->getEntityManager()->createQuery(
             'SELECT COUNT(DISTINCT o.user)
                             FROM EventBundle:Order o

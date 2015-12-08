@@ -22,7 +22,7 @@ class EditEventType extends AbstractType
             ->add('title', 'text', [
                 'disabled' => true
             ])
-            ->add('end_date_time', 'datetime',[
+            ->add('end_date_time', 'datetime', [
                 'label' => 'Order ends:',
                 'input' => 'datetime',
                 'widget' => 'single_text',
