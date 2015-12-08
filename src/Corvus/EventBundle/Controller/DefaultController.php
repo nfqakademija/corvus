@@ -226,7 +226,6 @@ class DefaultController extends Controller
                 if(!$event->getUsers()->contains($user)) {
                     if($event->getHost() != $user) {
                         throw new \Exception('You are not in this event');
-
                     }
                 }
 
@@ -326,8 +325,7 @@ class DefaultController extends Controller
                     ]
                 );
             }
-        } else
-        {
+        } else {
             return $this->redirectToRoute('dashboard');
         }
     }
@@ -342,41 +340,34 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         /* If not logged in, user will be redirected*/
-        if ($isFullyAuthenticated)
-        {
+        if ($isFullyAuthenticated) {
             $event = $this->getDoctrine()
                 ->getRepository('EventBundle:Event')
                 ->find($id);
 
             /* Throw exception if event with that id doesnt exists*/
-            if (!$event)
-            {
+            if (!$event) {
                 throw $this->createNotFoundException(
                     'No event found for id '.$id
                 );
-            } else
-            {
+            } else {
                 $event_status =$event->getStatus();
                 /* Status event must be 2, that means that event is suspend, time for order is out, now host must call
                 for dealer and order food for real*/
-                if($event_status != 2)
-                {
+                if($event_status != 2) {
                     throw $this->createNotFoundException(
                         'Event status is incorect '.$event_status
                     );
-                } else
-                {
+                } else {
                     $event_host = $event->getHost();
                     $user =$this->get('security.context')->getToken()->getUser();
 
                     /*If current user is not this event host*/
-                    if($event_host !== $user)
-                    {
+                    if($event_host !== $user) {
                         throw $this->createNotFoundException(
                             'You are not a host of this event ' . $event_status
                         );
-                    } else
-                    {
+                    } else {
                         $em = $this->getDoctrine()->getManager();
 
                         $people_count = $this->getDoctrine()
@@ -387,7 +378,6 @@ class DefaultController extends Controller
                             ->getRepository('EventBundle:Order')
                             ->getGroupedOrders($event);
 
-                        /* Get dealer name*/
                         $dealer_id = $event->getDealer();
                         $dealer = $this->getDoctrine()
                             ->getRepository('FoodBundle:Dealer')->find($dealer_id);
@@ -405,8 +395,7 @@ class DefaultController extends Controller
 
                         $form->handleRequest($request);
 
-                        if ($form->isValid())
-                        {
+                        if ($form->isValid()) {
                             /*$debt is used to determine if someone(not host) have ordered something
                             If there are no debts, so no one have ordered anything*/
                             $debt = $event->getDebtLeft();
@@ -415,16 +404,12 @@ class DefaultController extends Controller
                             $dish_ids = $form["dish_id"]->getData();
 
                             /*Checking if order with that dish_id need to be removed*/
-                            foreach ($dish_ids as $dish_id => $statement)
-                            {
-                                if ($statement === true)
-                                {
-                                    foreach ($event_orders as $order)
-                                    {
+                            foreach ($dish_ids as $dish_id => $statement) {
+                                if ($statement === true) {
+                                    foreach ($event_orders as $order) {
                                         $order_dish_id = $order->getDish()->getId();
 
-                                        if ($order_dish_id === $dish_id)
-                                        {
+                                        if ($order_dish_id === $dish_id) {
                                             $order->setIsRemoved(true);
                                             $em->persist($order);
                                         }
@@ -473,8 +458,7 @@ class DefaultController extends Controller
                     }
                 }
             }
-        } else
-        {
+        } else {
             return $this->redirectToRoute('dashboard');
         }
     }
