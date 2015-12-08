@@ -1,0 +1,18 @@
+{% extends '::base.html.twig'  %}
+
+{% block body %}
+
+    <div class="col-md-6 col-md-offset-3 text-center">
+        <h3>Are you sure you want to cancel "{{ event.title }}" event?</h3><br>
+        {{ form_start(form) }}
+            <label> Yes, I am sure:</label>
+            {{ form_errors(form.confirm) }}
+            {{ form_widget(form.confirm, { 'attr' : { 'class' : ''}  }) }}
+        <div class="form-group">
+            <a class="btn btn-default" href="{{ path('dashboard') }}">Back</a>
+            {{ form_widget(form.save, {'attr' : { 'class' : 'btn btn-default'}})}}
+        </div>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock body %}

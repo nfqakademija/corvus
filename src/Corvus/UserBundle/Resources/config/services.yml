@@ -1,0 +1,8 @@
+parameters:
+
+services:
+    corvus_user.registration_completed:
+        class: Corvus\UserBundle\EventListener\RegistrationCompleted
+        arguments: [@doctrine]
+        tags:
+          - {name: kernel.event_subscriber}

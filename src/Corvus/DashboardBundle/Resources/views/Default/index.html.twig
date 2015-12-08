@@ -1,1 +1,21 @@
-Hello {{ name }}!
+{% extends '::base.html.twig'  %}
+{% import "DashboardBundle::Default/macros.html.twig" as macro %}
+{% block stylesheets %}
+    <link href="{{asset('bundles/dashboard/css/dashboard.css')}}" type="text/css" rel="stylesheet">
+{% endblock stylesheets %}
+{% block header %}
+    {{ parent() }}
+{% endblock header %}
+    {% block body %}
+        <div class="event_list_head col-md-offset-1 col-md-10">
+            <h1 class="list-inline">Events:</h1>
+            <a id="addEvent" href="{{ path('corvus_event_default_createevent') }}" class="btn btn-primary pull-right">Add new event</a>
+        </div>
+        <div class="event_list_wrapper col-md-offset-1 col-md-10">
+    {% for event in events %}
+        {{ macro.renderEvent(event, user) }}
+    {% endfor %}
+        </div>
+        </div>
+</div>
+{% endblock body %}
