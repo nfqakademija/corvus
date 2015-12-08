@@ -230,9 +230,7 @@ class DefaultController extends Controller
                 {
                     if($event->getHost() != $user)
                     {
-                        throw $this->createNotFoundException(
-                            'You are not in this event' . $id
-                        );
+                        throw new \Exception('You are not in this event');
                     }
                 }
 
@@ -285,9 +283,7 @@ class DefaultController extends Controller
                         }
                         if($contains == false)
                         {
-                            throw $this->createNotFoundException(
-                                'Nah'
-                            );
+                            throw new \Exception('Something went wrong!');
                         }
                     }
 
@@ -456,15 +452,13 @@ class DefaultController extends Controller
                             $event->setDeliveryDateTime($form["dueDate"]->getData());
                             $em->flush();
 
-
-
                             $dispatcher = $this->get('event_dispatcher');
 
                             /*Checking if someone have placed orders. of not, event status instantly will be
                             changed to EVENT_NO_DEBTS. This way FOOD_DELIVERED will be skiped*/
                             if($debt == 0){
-                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
 
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
                                 $this->addFlash(
                                     'notice',
                                     'Changes have been saved.'
@@ -473,7 +467,6 @@ class DefaultController extends Controller
                             } else {
 
                                 $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
-
                                 $this->addFlash(
                                     'notice',
                                     'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
@@ -531,7 +524,6 @@ class DefaultController extends Controller
                         }
 
                         $form = $this->createForm(new PaymentType($unpaidUserIds));
-
                         $form->handleRequest($request);
 
                         if ($form->isValid()) {
@@ -583,9 +575,8 @@ class DefaultController extends Controller
                         }
 
 
-                        $button_action_url = ['url' => '/remind/'.$id];
-
-                        $RemindButton = $this->createForm(new RemindDebtsType($button_action_url));
+                        $remind_button_action_url = ['url' => '/remind/'.$id];
+                        $RemindButton = $this->createForm(new RemindDebtsType($remind_button_action_url));
                         
                         return [
                             'event' => $event,
@@ -733,8 +724,8 @@ class DefaultController extends Controller
             if ($form->isValid()) {
                 $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                 $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
-                $unpaidUserIds = [];
                 $unpaidGuests = new ArrayCollection();
+
                 foreach ($orderedGuests as $guest)
                 {
                     if ($guest[1] != $event->getHost()->getId())

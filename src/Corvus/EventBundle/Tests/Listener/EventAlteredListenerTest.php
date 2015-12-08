@@ -46,28 +46,4 @@ class EventAlteredListenerTest extends WebTestCase
         $this->assertGreaterThan(3, $corvus_event->getStatus());
         $this->assertLessThan(6, $corvus_event->getStatus());
     }
-
-//    public function testMailIsSendWhenEventStatusChange()
-//    {
-//        $client = static::createClient();
-//
-//        // Enable the profiler for the next request (it does nothing if the profiler is not available)
-//        $client->enableProfiler();
-//        $container = $client->getContainer();
-//        $dispatcher = $container->get('event_dispatcher');
-//        $corvus_event = new Event();
-//
-//        $client->enableProfiler();
-//        $profiler = $container->get('profiler');
-//        $mailCollector = $profiler->get('swiftmailer');
-//
-//
-//        $email = new \Corvus\EventBundle\Entity\EventMail();
-//        $email->setEmail('corvusfood@gmail.com');
-//        $dispatcher->dispatch(EventEvents::EVENT_CREATED, new \Corvus\EventBundle\Event\SendMailsEvent($corvus_event,null,$email));
-//
-//
-//        $this->assertEquals(1, $mailCollector->getMessageCount());
-//    }
-
 }

@@ -5,13 +5,13 @@ namespace Corvus\EventBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\BrowserKit\Cookie;
+
 
 class DefaultControllerTest extends WebTestCase
 {
-
-
     public function testRemindDebtsAction(){
         $client = static::createClient();
 
@@ -19,6 +19,4 @@ class DefaultControllerTest extends WebTestCase
 
         $this->assertTrue($client->getResponse()->isRedirect());
     }
-
-
 }
