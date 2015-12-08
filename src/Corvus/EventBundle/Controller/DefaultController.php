@@ -6,6 +6,7 @@ use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Entity\Payment;
 use Corvus\EventBundle\Event\SendMailsEvent;
+use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
@@ -516,9 +517,11 @@ class DefaultController extends Controller
                             if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest)))
                             {
                                 $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
+
                                 if ($payment != null)
                                 {
                                     $payment->setPaid($payment->getPaid() + $amount);
+                                    $em->persist($payment);
                                     $em->flush();
                                 } else {
                                     $payment = new Payment();
@@ -527,6 +530,7 @@ class DefaultController extends Controller
                                     $payment->setPaid($amount);
                                     $em->persist($payment);
                                     $em->flush();
+                                    $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                                 }
                             } else {
                                 $hasErrors = true;
@@ -540,6 +544,14 @@ class DefaultController extends Controller
                             );
                             return $this->redirectToRoute('payments', ['id' => $id]);
                         } else {
+                            $em->refresh($event);
+                            if (($event->getDebtLeft() == 0.0) && ($event->getStatus() == 4))
+                            {
+                                $dispatcher = $this->get('event_dispatcher');
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+                                $em->persist($event);
+                                $em->flush();
+                            }
                             $this->addFlash(
                                 'notice',
                                 'Payments have been saved!'

@@ -19,7 +19,7 @@ class EventRepository extends EntityRepository
             FROM EventBundle:Event e
             LEFT JOIN e.users u
             WHERE (e.host = :uid OR u.id = :uid) AND e.status > 0
-            ORDER BY ABS(e.endDateTime - CURRENT_TIMESTAMP()) ASC'
+            ORDER BY e.status ASC, ABS(e.endDateTime - CURRENT_TIMESTAMP()) ASC'
         )->setParameter('uid', $id);
 
         try {
