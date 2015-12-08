@@ -678,7 +678,7 @@ class DefaultController extends Controller
                             'required'  => false,
                             'data'      => false,
                         ])
-                        ->add('save', 'submit', ['label' => 'Save'])
+                        ->add('save', 'submit', ['label' => 'Confirm'])
                         ->getForm();
 
                     $form->handleRequest($request);
@@ -695,11 +695,11 @@ class DefaultController extends Controller
 
                             $em->persist($event);
                             $em->flush();
+                            $this->addFlash(
+                                'notice',
+                                'Event has been canceled!'
+                            );
                         }
-                        $this->addFlash(
-                            'notice',
-                            'Event has been canceled!'
-                        );
                         return $this->redirectToRoute('dashboard');
                     }
 
