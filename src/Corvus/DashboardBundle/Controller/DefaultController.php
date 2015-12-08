@@ -41,6 +41,9 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($eventId);
+
+        // This state change is needed to access 'order food' page before event timeout,
+        // but if 'cancel' button is pressed during ordering, we need to return event to previous state
         switch ($event->getStatus()) {
             case 1:
                     $dispatcher = $this->get('event_dispatcher');
