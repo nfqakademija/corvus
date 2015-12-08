@@ -24,7 +24,6 @@ class EventTimeoutCommand extends ContainerAwareCommand
         $this
             ->setName('corvus:event:timeout')
             ->setDescription('Check events ordering time and suspend them if time is up');
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

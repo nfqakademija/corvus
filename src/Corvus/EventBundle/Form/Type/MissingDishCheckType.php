@@ -22,7 +22,7 @@ class MissingDishCheckType extends AbstractType
             'required' => false,
             'data' => $this->dish_ids,
             ])
-            ->add('dueDate', 'datetime',[
+            ->add('dueDate', 'datetime', [
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
                 'model_timezone' => 'UTC',

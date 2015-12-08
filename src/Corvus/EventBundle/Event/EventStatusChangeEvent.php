@@ -8,7 +8,6 @@
 
 namespace Corvus\EventBundle\Event;
 
-
 use Symfony\Component\EventDispatcher\Event;
 
 class EventStatusChangeEvent extends Event

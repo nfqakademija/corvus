@@ -105,9 +105,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException(
                 'No event found for id ' . $event->getId()
             );
-        }
-        elseif($isFullyAuthenticated && $userIsHost) {
-
+        } elseif ($isFullyAuthenticated && $userIsHost) {
             $OldDateTime = $event->getEndDateTime();
             $OldEmails =$this->getDoctrine()->getRepository('EventBundle:EventMail')->findBy(['event' => $event]);
 
@@ -147,12 +145,12 @@ class DefaultController extends Controller
 
                         //Need to iterate through old emails and check if this email is already in the list.
                         $count = 0;
-                        foreach($OldEmails as $OldEmail){
-                            if(strtolower($OldEmail->getEmail()) == strtolower($email->getEmail())){
+                        foreach ($OldEmails as $OldEmail) {
+                            if (strtolower($OldEmail->getEmail()) == strtolower($email->getEmail())) {
                                 $count++;
                             }
                         }
-                        if($count ==0){
+                        if ($count ==0) {
                             $emails->add($email);
                         }
                         $event->addEmail($email);
@@ -160,20 +158,20 @@ class DefaultController extends Controller
                 }
 
                 $dispatcher = $this->get('event_dispatcher');
-                if(!($OldDateTime == $NewDateTime)){
+                if (!($OldDateTime == $NewDateTime)) {
                     $dispatcher->dispatch(EventEvents::EVENT_EDITED_TIME_EXTENDED, new SendMailsEvent($event));
                 }
 
 
-                if($emails->count() == 0){
+                if ($emails->count() == 0) {
                     $emails = null;
                 }
 
-                if($users->count() == 0){
+                if ($users->count() == 0) {
                     $users = null;
                 }
 
-                if($emails != null || $users != null) {
+                if ($emails != null || $users != null) {
                     $dispatcher->dispatch(EventEvents::EVENT_EDITED_ADD_USERS, new SendMailsEvent($event, $users, $emails));
                 }
 
@@ -223,8 +221,8 @@ class DefaultController extends Controller
             } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
 
-                if(!$event->getUsers()->contains($user)) {
-                    if($event->getHost() != $user) {
+                if (!$event->getUsers()->contains($user)) {
+                    if ($event->getHost() != $user) {
                         throw new \Exception('You are not in this event');
                     }
                 }
@@ -257,7 +255,7 @@ class DefaultController extends Controller
 
                 $form->handleRequest($request);
 
-                if($form->isValid()) {
+                if ($form->isValid()) {
                     $newOrders = $form["orders"];
 
                     /*For security purposes. In form every dish_id mustbe
@@ -266,35 +264,35 @@ class DefaultController extends Controller
                     foreach ($newOrders as $newOrder) {
                         $contains = false;
                         foreach ($dishes as $dish) {
-                            if($newOrder->get('dish_id')->getData() == $dish->getId()) {
+                            if ($newOrder->get('dish_id')->getData() == $dish->getId()) {
                                 $contains = true;
                             }
                         }
-                        if($contains == false) {
+                        if ($contains == false) {
                             throw new \Exception('Something went wrong!');
                         }
                     }
 
                     $matched = false;
                     foreach ($OriginalOrders as $order) {
-                        foreach($newOrders as $newOrder) {
-                            if($order->getDish()->getId() == $newOrder->get('dish_id')->getData()) {
+                        foreach ($newOrders as $newOrder) {
+                            if ($order->getDish()->getId() == $newOrder->get('dish_id')->getData()) {
                                 $matched = true;
                             }
-                            if($matched == false) {
+                            if ($matched == false) {
                                 $em->remove($order);
                             }
                             $matched = false;
                         }
                     }
 
-                    foreach($newOrders as $newOrder) {
+                    foreach ($newOrders as $newOrder) {
                         $dish_id = $newOrder->get('dish_id')->getData();
                         $order = $newOrder->getData();
 
                         $quantity = $order->getQuantity();
 
-                        if($quantity > 0 && $quantity < 1000) {
+                        if ($quantity > 0 && $quantity < 1000) {
                             $dish = $this->getDoctrine()
                                 ->getRepository('FoodBundle:Dish')->find($dish_id);
 
@@ -354,7 +352,7 @@ class DefaultController extends Controller
                 $event_status =$event->getStatus();
                 /* Status event must be 2, that means that event is suspend, time for order is out, now host must call
                 for dealer and order food for real*/
-                if($event_status != 2) {
+                if ($event_status != 2) {
                     throw $this->createNotFoundException(
                         'Event status is incorect '.$event_status
                     );
@@ -363,7 +361,7 @@ class DefaultController extends Controller
                     $user =$this->get('security.context')->getToken()->getUser();
 
                     /*If current user is not this event host*/
-                    if($event_host !== $user) {
+                    if ($event_host !== $user) {
                         throw $this->createNotFoundException(
                             'You are not a host of this event ' . $event_status
                         );
@@ -377,7 +375,7 @@ class DefaultController extends Controller
                         $orders = $this->getDoctrine()
                             ->getRepository('EventBundle:Order')
                             ->getGroupedOrders($event);
-
+                        
                         $dealer_id = $event->getDealer();
                         $dealer = $this->getDoctrine()
                             ->getRepository('FoodBundle:Dealer')->find($dealer_id);
@@ -385,8 +383,7 @@ class DefaultController extends Controller
 
                         /* Get dish id's. Used for form*/
                         $dish_ids = [];
-                        foreach ($orders as $order)
-                        {
+                        foreach ($orders as $order) {
                             $dish = $order["orders"]->getDish()->getId();
                             $dish_ids[$dish] = false;
                         }
@@ -424,16 +421,13 @@ class DefaultController extends Controller
 
                             /*Checking if someone have placed orders. of not, event status instantly will be
                             changed to EVENT_NO_DEBTS. This way FOOD_DELIVERED will be skiped*/
-                            if($debt == 0){
-
+                            if ($debt == 0) {
                                 $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
                                 $this->addFlash(
                                     'notice',
                                     'Changes have been saved.'
                                 );
-
                             } else {
-
                                 $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
                                 $this->addFlash(
                                     'notice',
@@ -470,8 +464,7 @@ class DefaultController extends Controller
     public function paymentsAction($id, Request $request)
     {
         $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
-        if ($isFullyAuthenticated)
-        {
+        if ($isFullyAuthenticated) {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
             if ($event != null) {
@@ -551,8 +544,7 @@ class DefaultController extends Controller
                             'form' => $form->createView(),
                             'Remind_button' => $RemindButton->createView(),
                         ];
-                    } else
-                    {
+                    } else {
                         return $this->redirectToRoute('dashboard');
                     }
                 } else {
@@ -574,15 +566,11 @@ class DefaultController extends Controller
     public function reviewAction($id)
     {
         $isFullyAuthenticated = $this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY');
-        if ($isFullyAuthenticated)
-        {
+        if ($isFullyAuthenticated) {
             $event = $this->getDoctrine()->getRepository("EventBundle:Event")->find($id);
-            if ($event != null)
-            {
+            if ($event != null) {
                 $user = $this->container->get('security.token_storage')->getToken()->getUser();
-                if (($user == $event->getHost()) || ($event->getUsers()->contains($user)))
-                {
-
+                if (($user == $event->getHost()) || ($event->getUsers()->contains($user))) {
                     return [
                         'event' => $event,
                         'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))
@@ -609,20 +597,17 @@ class DefaultController extends Controller
             ->isGranted('IS_AUTHENTICATED_FULLY');
 
         /* If not logged in, user will be redirected*/
-        if ($isFullyAuthenticated)
-        {
+        if ($isFullyAuthenticated) {
             $event = $this->getDoctrine()
                 ->getRepository('EventBundle:Event')
                 ->find($id);
 
             /* Throw exception if event with that id doesn't exists*/
-            if (!$event)
-            {
+            if (!$event) {
                 throw $this->createNotFoundException(
                     'No event found for id ' . $id
                 );
-            } else
-            {
+            } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
                 if ($event->getHost() != $user) {
                     throw $this->createNotFoundException(
@@ -643,12 +628,11 @@ class DefaultController extends Controller
 
                     $form->handleRequest($request);
 
-                    if($form->isValid()){
-
+                    if ($form->isValid()) {
                         $data = $form->getData();
                         $confirm = $data['confirm'];
 
-                        if($confirm == true){
+                        if ($confirm == true) {
                             $dispatcher = $this->get('event_dispatcher');
                             $dispatcher->dispatch(EventEvents::EVENT_CANCEL, new SendMailsEvent($event));
                             $em = $this->getDoctrine()->getManager();
@@ -680,32 +664,27 @@ class DefaultController extends Controller
      */
     public function remindDebtsAction($id, Request $request)
     {
-
         $form = $this->createForm(new RemindDebtsType());
 
-        if($request->getMethod() != 'POST') {
+        if ($request->getMethod() != 'POST') {
             return $this->redirectToRoute('dashboard');
         } else {
-
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                 $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
                 $unpaidGuests = new ArrayCollection();
 
-                foreach ($orderedGuests as $guest)
-                {
-                    if ($guest[1] != $event->getHost()->getId())
-                    {
+                foreach ($orderedGuests as $guest) {
+                    if ($guest[1] != $event->getHost()->getId()) {
                         $usr = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($guest[1]);
-                        if (($event->getUserDebt($usr)) != 0.0)
-                        {
+                        if (($event->getUserDebt($usr)) != 0.0) {
                             $unpaidGuests->add($usr);
                         }
                     }
                 }
 
-                foreach($unpaidGuests as $user){
+                foreach ($unpaidGuests as $user) {
                     $mailer=$this->get('mailer');
                     $email = $user->getEmail();
                     $message = $mailer->createMessage()
@@ -731,7 +710,7 @@ class DefaultController extends Controller
                     'Emails have been sent!'
                 );
 
-                return $this->redirectToRoute('payments',['id' => $id]);
+                return $this->redirectToRoute('payments', ['id' => $id]);
             } else {
                 return $this->redirectToRoute('dashboard');
             }

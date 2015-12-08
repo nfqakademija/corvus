@@ -19,7 +19,7 @@ class EventType extends AbstractType
                 'class' => 'Corvus\FoodBundle\Entity\Dealer'
             ])
             ->add('title', 'text')
-            ->add('end_date_time', 'datetime',[
+            ->add('end_date_time', 'datetime', [
                 'label' => 'Order ends:',
                 'input' => 'datetime',
                 'widget' => 'single_text',
