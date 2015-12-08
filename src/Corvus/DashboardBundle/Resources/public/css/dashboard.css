@@ -26,6 +26,9 @@
 .event_item.grey{
     border-left: 10px solid gray;
 }
+.event_item.red{
+    border-left: 10px solid red;
+}
 .event_item .buttons{
     padding-top: 25px;
 }
