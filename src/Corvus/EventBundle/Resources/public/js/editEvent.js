@@ -4,7 +4,7 @@ $(document).ready(function(){
 // setup an "add a tag" link
     var $addEmailInput =  $('.create_event_form .email_input');
     var $addEmailButton = $('.create_event_form .email_add');
-    var $removeEmailButton = $('<div class="remove_email glyphicon glyphicon-minus"></div>')
+    var $removeEmailButton = $('<div class="remove_email glyphicon glyphicon-remove"></div>')
     //var $removeRowButton = $('<span class="remove_email"></span>');
     //var $emailRow = $('<div></div>').append($removeRowButton);
 

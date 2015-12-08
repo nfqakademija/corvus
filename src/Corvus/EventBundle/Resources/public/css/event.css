@@ -28,6 +28,7 @@
     padding: 0 5px;
     display: inline-block;
     cursor: pointer;
+    color:red;
  }
 .create_event_form .email_list .email_row{
     padding: 5px;
