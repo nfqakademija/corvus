@@ -167,6 +167,16 @@ class LoadDishData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($dish8);
         $manager->persist($dish9);
         $manager->persist($dish10);
+        $manager->persist($dish11);
+        $manager->persist($dish12);
+        $manager->persist($dish13);
+        $manager->persist($dish14);
+        $manager->persist($dish15);
+        $manager->persist($dish16);
+        $manager->persist($dish17);
+        $manager->persist($dish18);
+        $manager->persist($dish19);
+        $manager->persist($dish20);
         $manager->flush();
     }
 
