@@ -100,7 +100,12 @@ class DefaultController extends Controller
         $isFullyAuthenticated = $this->get('security.context')
         ->isGranted('IS_AUTHENTICATED_FULLY');
         $userIsHost = ($event->getHost() === $this->getUser());
-        if($isFullyAuthenticated && $userIsHost) {
+        if (!$event) {
+            throw $this->createNotFoundException(
+                'No event found for id ' . $event->getId()
+            );
+        }
+        elseif($isFullyAuthenticated && $userIsHost) {
 
             $OldDateTime = $event->getEndDateTime();
             $OldEmails =$this->getDoctrine()->getRepository('EventBundle:EventMail')->findBy(['event' => $event]);
