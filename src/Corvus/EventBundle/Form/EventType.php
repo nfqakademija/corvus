@@ -25,13 +25,11 @@ class EventType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
                 'attr' => ['class' => 'date'],
-                    'constraints' => [
-                        new DateTimeNotPast()
-                    ]
+                'constraints' => new DateTimeNotPast()
                 ]
             )
             ->add('emails', 'collection', [
-                'constraint' => new Count(1),
+                'constraints' => new Count(1),
                 'label' => 'Guests:',
                 'type' => new EventMailType,
                 'allow_add'    => true])
