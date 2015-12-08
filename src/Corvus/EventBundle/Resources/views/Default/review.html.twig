@@ -3,8 +3,19 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class = "col-md-12">
-            <h3>{{ event.title }}</h3>
+            <div class = "col-md-12" >
+            <h3>Event: {{ event.title }}</h3>
+            </div>
+            <div class = "row" >
+                <div class="col-md-3">
+                    <h4><strong>User</strong></h4>
+                </div>
+                <div class="col-md-3">
+                    <h4><strong>Dish</strong></h4>
+                </div>
+                <div class=" col-md-offset-3 col-md-3">
+                    <h4><strong>Amount</strong></h4>
+                </div>
             </div>
         </div>
         {% for user in users %}
