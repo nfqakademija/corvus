@@ -1,9 +1,9 @@
 
-<h3>Food, for {{ event.title }} event has been ordered</h3>
+<h3>Food, for "{{ event.title }}" event has been ordered</h3>
 
 Hello, {{ name }}<br><br>
 
-We want to announce, that food for {{ event.title }} has been ordered<br>
+We want to announce, that food for "{{ event.title }}" has been ordered<br>
 But your order was deleted:<br>
 <ul>
     {% for order in removed_orders %}
