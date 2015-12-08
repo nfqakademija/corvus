@@ -3,7 +3,7 @@
     <link href="{{asset('bundles/event/css/review.css')}}" type="text/css" rel="stylesheet">
 {% endblock %}
 {% block body %}
-    <div class="row  review_head">
+    <div class="row  review_head text-center">
             <div class = "col-md-12" >
             <h3 class="">Event: {{ event.title }}</h3>
             </div>
@@ -23,9 +23,10 @@
             </div>
         </div>
         {% for user in users %}
+            <div class="review_group col-md-12 text-center">
             {% if (user.getOrdersForEvent(event).count > 0) %}
                 <div class = "row entry">
-                    <div class="col-md-12">
+                    <div class="col-md-12 text-left">
                         <h4>{{ user.getUsername }}</h4>
                     </div>
                 </div>
@@ -39,6 +40,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
+            </div>
         {% endfor %}
         <div class="row">
             <div class="col-md-offset-9 col-md-3"><h4>Total price: €{{ event.getTotal }}</h4></div>
