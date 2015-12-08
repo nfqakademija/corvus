@@ -18,25 +18,22 @@ class LoadDealerData extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $dealer = new Dealer();
-        $dealer->setName('Čili pica');
-        $dealer->setAddress('Gedimino prospektas, Vilnius');
-        $dealer->setEmail("uzsakymai@cili.lt");
-        $dealer->setPhone("+37060000000");
-
+        $dealer->setName('Senoji kibininė');
+        $dealer->setAddress('Karaimų g. 65, Trakai');
+        $dealer->setEmail("senoji@kibinas.lt");
+        $dealer->setPhone("+370 659 72132");
         $manager->persist($dealer);
+
+        $dealer2 = new Dealer();
+        $dealer2->setName('Visa pica');
+        $dealer2->setAddress('Šilo g. 13a, Vilnius');
+        $dealer2->setEmail("visapica@gmail.com");
+        $dealer2->setPhone("+370 685 10505");
+        $manager->persist($dealer2);
+
         $manager->flush();
 
         $this->addReference('d1', $dealer);
-
-        $dealer2 = new Dealer();
-        $dealer2->setName('Statoil');
-        $dealer2->setAddress('Gedimino prospektas, Vilnius');
-        $dealer2->setEmail("statoil@statoil.lt");
-        $dealer2->setPhone("+370600000");
-
-        $manager->persist($dealer2);
-        $manager->flush();
-
         $this->addReference('d2', $dealer2);
     }
 
