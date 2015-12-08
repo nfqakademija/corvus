@@ -8,7 +8,6 @@
 
 namespace Corvus\EventBundle\EventListener;
 
-
 use Corvus\EventBundle\Event\SendMailsEvent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Swift_Mailer;
@@ -46,7 +45,7 @@ class SendMails implements EventSubscriberInterface
         $emails = $sendMailsEvent->getEvent()->getEmails();
         $event = $sendMailsEvent->getEvent();
 
-        if($users != null) {
+        if ($users != null) {
             foreach ($users as $user) {
                 $email = $user->getEmail();
 
@@ -116,7 +115,6 @@ class SendMails implements EventSubscriberInterface
                         'text/html'
                     );
                 $this->mailer->send($message);
-
             }
         }
 
@@ -194,7 +192,8 @@ class SendMails implements EventSubscriberInterface
         }
     }
 
-    public function onEventFoodDelivered(SendMailsEvent $sendMailsEvent) {
+    public function onEventFoodDelivered(SendMailsEvent $sendMailsEvent)
+    {
         $users = $sendMailsEvent->getEvent()->getUsers();
 
         if ($users != null) {
@@ -245,13 +244,11 @@ class SendMails implements EventSubscriberInterface
                 }
 
                 if ($user_orders->count() != 0 || $user_removed_orders->count() != 0) {
-
                     $email = $user->getEmail();
 
                     /*If only some of users orders were deleted, we are going to pronounce that orders he will get,
                     and which orders were deleted*/
-                    if ($user_orders->count() > 0 && $user_removed_orders->count() > 0){
-
+                    if ($user_orders->count() > 0 && $user_removed_orders->count() > 0) {
                         $message = $this->mailer->createMessage()
                             ->setSubject('Food ordered')
                             ->setFrom('corvusfood@gmail.com')
@@ -270,7 +267,7 @@ class SendMails implements EventSubscriberInterface
                                 'text/html'
                             );
                         $this->mailer->send($message);
-                    } else if($user_orders->count() > 0 && $user_removed_orders->count() == 0){
+                    } elseif ($user_orders->count() > 0 && $user_removed_orders->count() == 0) {
                         $message = $this->mailer->createMessage()
                             ->setSubject('Food ordered')
                             ->setFrom('corvusfood@gmail.com')
@@ -288,7 +285,7 @@ class SendMails implements EventSubscriberInterface
                                 'text/html'
                             );
                         $this->mailer->send($message);
-                    } else if($user_orders->count() == 0 && $user_removed_orders->count() > 0){
+                    } elseif ($user_orders->count() == 0 && $user_removed_orders->count() > 0) {
                         $message = $this->mailer->createMessage()
                             ->setSubject('Food ordered')
                             ->setFrom('corvusfood@gmail.com')
@@ -307,9 +304,6 @@ class SendMails implements EventSubscriberInterface
                             );
                         $this->mailer->send($message);
                     }
-
-
-
                 }
             }
         }

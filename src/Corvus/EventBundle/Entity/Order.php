@@ -218,5 +218,3 @@ class Order
         return $this->event;
     }
 }
-
-
