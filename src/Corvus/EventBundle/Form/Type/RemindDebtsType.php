@@ -2,7 +2,6 @@
 
 namespace Corvus\EventBundle\Form\Type;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,7 +10,7 @@ class RemindDebtsType extends AbstractType
 {
     private $url;
 
-    public function __construct( $url = null)
+    public function __construct($url = null)
     {
         $this->url = $url;
     }

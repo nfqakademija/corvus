@@ -19,7 +19,7 @@ class DefaultController extends Controller
 
         if ($isFullyAuthenticated) {
             return $this->redirectToRoute('dashboard');
-        } else{
+        } else {
             return $this->welcomeAction();
         }
     }

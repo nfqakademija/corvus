@@ -8,7 +8,6 @@
 
 namespace Corvus\EventBundle\EventListener;
 
-
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -36,12 +35,11 @@ class EventAltered implements EventSubscriberInterface
         $Corvus_event->setStatus(0);
         $orders = $event->getEvent()->getOrders();
 
-        if($orders != null) {
+        if ($orders != null) {
             foreach ($orders as $order) {
                 $order->setIsRemoved(true);
             }
         }
-
     }
 
     public function onEventCreated(EventStatusChangeEvent $event)

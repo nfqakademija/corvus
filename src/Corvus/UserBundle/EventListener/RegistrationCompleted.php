@@ -47,7 +47,7 @@ class RegistrationCompleted implements EventSubscriberInterface
             ->getRepository('EventBundle:EventMail')->findBy(['email' => $user_email]);
 
         if ($invitations != null) {
-            foreach($invitations as $invitation){
+            foreach ($invitations as $invitation) {
                 $event = $invitation->getEvent();
                 $event->addUser($user);
                 $em->remove($invitation);
