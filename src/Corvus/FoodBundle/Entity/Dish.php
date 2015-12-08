@@ -17,74 +17,58 @@ use Doctrine\ORM\Mapping as ORM;
 class Dish
 {
     /**
-     * @ORM\Column(type="integer", unique=true, name="dish_id")
+     * @ORM\Column(type="integer", unique=true, name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
-    protected $dishId;
+    protected $id;
 
     /**
-     * @ORM\Column(type="integer", name="dealer_id")
+     * @ORM\ManyToOne(targetEntity = "Dealer", inversedBy = "dishes")
+     * @ORM\JoinColumn(name = "dealer_id", referencedColumnName = "id")
+     * @var Dealer
      */
-    protected $dealerId;
+    protected $dealer;
 
     /**
      * @ORM\Column(type="string", name="name", length=255)
+     * @var string
      */
     protected $name;
 
     /**
-     * @ORM\Column(type="string", name="image_link", length=255)
+     * @ORM\Column(type="string", name="description", length=255)
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * @ORM\Column(type="string", name="image_link", length=255, nullable=true)
+     * @var string
      */
     protected $imageLink;
 
     /**
-     * @ORM\Column(type="string", name="category", length=255)
-     */
-    protected $category;
-
-    /**
-     * @ORM\Column(type="integer", name="price")
+     * @ORM\Column(type="decimal", precision=8, scale=2, name="price")
+     * @var float
      */
     protected $price;
 
     /**
-     * @ORM\Column(type="boolean", name="removed_from_menu")
+     * @ORM\Column(type="boolean", name="removed_from_menu", nullable=true)
+     * @var boolean
      */
-    protected $removedFromMenu;
+    protected $removedFromMenu = false;
 
     /**
-     * Get dishId
+     * Get id
      *
      * @return integer
      */
-    public function getDishId()
+    public function getId()
     {
-        return $this->dishId;
-    }
-
-    /**
-     * Set dealerId
-     *
-     * @param integer $dealerId
-     *
-     * @return Dish
-     */
-    public function setDealerId($dealerId)
-    {
-        $this->dealerId = $dealerId;
-
-        return $this;
-    }
-
-    /**
-     * Get dealerId
-     *
-     * @return integer
-     */
-    public function getDealerId()
-    {
-        return $this->dealerId;
+        return $this->id;
     }
 
     /**
@@ -112,33 +96,33 @@ class Dish
     }
 
     /**
-     * Set category
+     * Set imageLink
      *
-     * @param string $category
+     * @param string $imageLink
      *
      * @return Dish
      */
-    public function setCategory($category)
+    public function setImageLink($imageLink)
     {
-        $this->category = $category;
+        $this->imageLink = $imageLink;
 
         return $this;
     }
 
     /**
-     * Get category
+     * Get imageLink
      *
      * @return string
      */
-    public function getCategory()
+    public function getImageLink()
     {
-        return $this->category;
+        return $this->imageLink;
     }
 
     /**
      * Set price
      *
-     * @param integer $price
+     * @param float $price
      *
      * @return Dish
      */
@@ -152,7 +136,7 @@ class Dish
     /**
      * Get price
      *
-     * @return integer
+     * @return float
      */
     public function getPrice()
     {
@@ -184,26 +168,50 @@ class Dish
     }
 
     /**
-     * Set imageLink
+     * Set dealer
      *
-     * @param string $imageLink
+     * @param \Corvus\FoodBundle\Entity\Dealer $dealer
      *
      * @return Dish
      */
-    public function setImageLink($imageLink)
+    public function setDealer(\Corvus\FoodBundle\Entity\Dealer $dealer = null)
     {
-        $this->imageLink = $imageLink;
+        $this->dealer = $dealer;
 
         return $this;
     }
 
     /**
-     * Get imageLink
+     * Get dealer
+     *
+     * @return \Corvus\FoodBundle\Entity\Dealer
+     */
+    public function getDealer()
+    {
+        return $this->dealer;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Dish
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
      *
      * @return string
      */
-    public function getImageLink()
+    public function getDescription()
     {
-        return $this->imageLink;
+        return $this->description;
     }
 }

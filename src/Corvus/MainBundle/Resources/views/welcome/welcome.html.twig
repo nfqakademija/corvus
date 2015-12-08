@@ -1,0 +1,20 @@
+{% extends '::base.html.twig'  %}
+{% block header %}
+    {{ parent() }}
+    <h1 class="text-center">Massive Food Ordering System</h1>
+    <p class="col-md-8 col-md-offset-2 text-center">
+        <img style="width: 200px; height: auto;" class="img-rounded" src="{{asset('bundles/corvusmain/img/take-away-box-icons-set-prev.jpg')}}">
+    </p>
+{% endblock header %}
+{% block body %}
+    <div style="padding-bottom: 50px; overflow: auto">
+        <div class="col-md-offset-2 col-md-4">
+            <h1>Log in</h1>
+            {{ render(controller('FOSUserBundle:Security:login')) }}
+        </div>
+        <div class="col-md-4 col-md-offset-1">
+            <h1>Register</h1>
+                {% include "CorvusUserBundle:Registration:register_content.html.twig" %}
+        </div>
+    </div>
+{% endblock body %}
