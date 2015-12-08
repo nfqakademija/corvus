@@ -11,7 +11,7 @@
     </head>
     <body>
     {% block header %}
-        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <nav class="navbar navbar-inverse navbar-static-top" style="margin: 0;" role="navigation">
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -34,6 +34,9 @@
                                     <p class="navbar-text">Logged in as <strong>{{app.user.username }}</strong></p>
                                 </li>
                                 <li>
+                                    <a href="{{ path('dashboard') }}">Dashboard</a>
+                                </li>
+                                <li>
                                     <a href="{{ path('fos_user_profile_show') }}">Your Profile</a>
                                 </li>
                                 <li>
@@ -47,8 +50,14 @@
             </div>
             <!-- /.container -->
         </nav>
+        {% if app.session.flashbag.has('notice') %}
+            <div class="alert alert-info text-center">
+                <strong>Info!</strong> {{ app.session.flashbag.get('notice').0 }}<br/>
+            </div>
+        {% endif %}
+
     {% endblock %}
-        <div class="container main">
+        <div class="container main " style="padding-top: 25px;">
             <div class="col-md-10 col-md-offset-1">
                 {% block body %}{% endblock %}
             </div>

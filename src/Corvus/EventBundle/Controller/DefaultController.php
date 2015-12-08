@@ -77,6 +77,10 @@ class DefaultController extends Controller
 
                 $em->persist($event);
                 $em->flush();
+                $this->addFlash(
+                    'notice',
+                    'Event has been created. Time to pick some food!'
+                );
                 return $this->redirect($this->generateUrl('select_food', ['id' => $event->getId()]));
             }
             return [
@@ -320,7 +324,7 @@ class DefaultController extends Controller
 
                     $this->addFlash(
                         'notice',
-                        'Your cart for "'. $event->getTitle() . '" event have been saved!'
+                        'Your cart for "'. $event->getTitle() . '" event has been saved!'
                     );
 
                     return $this->redirectToRoute('dashboard');
@@ -383,7 +387,7 @@ class DefaultController extends Controller
                     if($event_host !== $user)
                     {
                         throw $this->createNotFoundException(
-                            'You are not host of this event ' . $event_status
+                            'You are not a host of this event ' . $event_status
                         );
                     } else
                     {
