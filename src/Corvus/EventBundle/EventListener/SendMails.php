@@ -43,6 +43,7 @@ class SendMails implements EventSubscriberInterface
     public function onEventCanceled(SendMailsEvent $sendMailsEvent)
     {
         $users = $sendMailsEvent->getEvent()->getUsers();
+        $emails = $sendMailsEvent->getEvent()->getEmails();
         $event = $sendMailsEvent->getEvent();
 
         if($users != null) {
@@ -58,6 +59,28 @@ class SendMails implements EventSubscriberInterface
                             '@Event/Emails/eventCancel.html.twig',
                             [
                                 'name' => $user->getUsername(),
+                                'event' => $event
+                            ]
+                        ),
+                        'text/html'
+                    );
+                $this->mailer->send($message);
+            }
+        }
+
+        if($emails != null){
+            foreach ($emails as $email) {
+                $email_string = $email->getEmail();
+
+                $message = $this->mailer->createMessage()
+                    ->setSubject('Event: ' . $event->getTitle() . ' canceled')
+                    ->setFrom('corvusfood@gmail.com')
+                    ->setTo($email_string)
+                    ->setBody(
+                        $this->twig->render(
+                            '@Event/Emails/eventCancel.html.twig',
+                            [
+                                'name' => $email_string,
                                 'event' => $event
                             ]
                         ),
@@ -274,7 +297,7 @@ class SendMails implements EventSubscriberInterface
                             ->setTo($email)
                             ->setBody(
                                 $this->twig->render(
-                                    '@Event/Emails/foodOrdered.html.twig',
+                                    '@Event/Emails/foodOrdered/foodOrdered.html.twig',
                                     [
                                         'name' => $user->getUsername(),
                                         'event' => $event,

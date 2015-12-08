@@ -5,6 +5,7 @@ namespace Corvus\EventBundle\Controller;
 use Corvus\EventBundle\Entity\Cart;
 use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Entity\Payment;
+use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\Event\SendMailsEvent;
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
@@ -421,6 +422,9 @@ class DefaultController extends Controller
 
                         if ($form->isValid())
                         {
+                            /*$debt is used to determine if someone(not host) have ordered something
+                            If there are no debts, so no one have ordered anything*/
+                            $debt = $event->getDebtLeft();
 
                             $event_orders = $event->getOrders();
                             $dish_ids = $form["dish_id"]->getData();
@@ -444,18 +448,33 @@ class DefaultController extends Controller
                             }
 
                             $event->setDeliveryDateTime($form["dueDate"]->getData());
-
                             $em->flush();
+
+
 
                             $dispatcher = $this->get('event_dispatcher');
-                            $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
+                            /*Checking if someone have placed orders. of not, event status instantly will be
+                            changed to EVENT_NO_DEBTS. This way FOOD_DELIVERED will be skiped*/
+                            if($debt == 0){
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+
+                                $this->addFlash(
+                                    'notice',
+                                    'Changes have been saved.'
+                                );
+
+                            } else {
+
+                                $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
+
+                                $this->addFlash(
+                                    'notice',
+                                    'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
+                                );
+                            }
 
                             $em->flush();
-
-                            $this->addFlash(
-                                'notice',
-                                'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
-                            );
 
                             return $this->redirectToRoute('dashboard');
                         }
@@ -512,16 +531,19 @@ class DefaultController extends Controller
                     $form->handleRequest($request);
 
                     if ($form->isValid()) {
+                        $hasErrors = false;
                         $payments = $form['payment']->getData();
                         $em = $this->getDoctrine()->getEntityManager();
                         foreach ($payments as $unpaidUserId => $amount) {
-                            if ($amount > 0)
+                            $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
+                            if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest)))
                             {
-                                $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
                                 $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
+
                                 if ($payment != null)
                                 {
                                     $payment->setPaid($payment->getPaid() + $amount);
+                                    $em->persist($payment);
                                     $em->flush();
                                 } else {
                                     $payment = new Payment();
@@ -530,14 +552,34 @@ class DefaultController extends Controller
                                     $payment->setPaid($amount);
                                     $em->persist($payment);
                                     $em->flush();
+                                    $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                                 }
+                            } else {
+                                $hasErrors = true;
                             }
                         }
-                        $this->addFlash(
-                            'notice',
-                            'Payments have been saved!'
-                        );
-                        return $this->redirectToRoute('dashboard');
+                        if ($hasErrors)
+                        {
+                            $this->addFlash(
+                                'notice',
+                                'Payment should be not less than 0 and not greater than debt.'
+                            );
+                            return $this->redirectToRoute('payments', ['id' => $id]);
+                        } else {
+                            $em->refresh($event);
+                            if (($event->getDebtLeft() == 0.0) && ($event->getStatus() == 4))
+                            {
+                                $dispatcher = $this->get('event_dispatcher');
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+                                $em->persist($event);
+                                $em->flush();
+                            }
+                            $this->addFlash(
+                                'notice',
+                                'Payments have been saved!'
+                            );
+                            return $this->redirectToRoute('dashboard');
+                        }
                     }
 
                     $request = new Request();

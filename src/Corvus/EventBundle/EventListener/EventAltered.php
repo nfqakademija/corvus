@@ -52,7 +52,12 @@ class EventAltered implements EventSubscriberInterface
 
     public function onEventFoodDelivered(EventStatusChangeEvent $event)
     {
-        $event->getEvent()->setStatus(4);
+        if ($event->getEvent()->getDebtLeft() != 0)
+        {
+            $event->getEvent()->setStatus(4);
+        } else {
+            $event->getEvent()->setStatus(5);
+        }
     }
 
     public function onEventFoodOrdered(EventStatusChangeEvent $event)
