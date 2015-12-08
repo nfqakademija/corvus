@@ -11,6 +11,7 @@ use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\EventBundle\Form\Type\PaymentType;
+use Corvus\EventBundle\Form\Type\RemindDebtsType;
 use Corvus\FoodBundle\Entity\Dish;
 use Corvus\MainBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -229,9 +230,7 @@ class DefaultController extends Controller
                 {
                     if($event->getHost() != $user)
                     {
-                        throw $this->createNotFoundException(
-                            'You are not in this event' . $id
-                        );
+                        throw new \Exception('You are not in this event');
                     }
                 }
 
@@ -284,9 +283,7 @@ class DefaultController extends Controller
                         }
                         if($contains == false)
                         {
-                            throw $this->createNotFoundException(
-                                'Nah'
-                            );
+                            throw new \Exception('Something went wrong!');
                         }
                     }
 
@@ -455,15 +452,13 @@ class DefaultController extends Controller
                             $event->setDeliveryDateTime($form["dueDate"]->getData());
                             $em->flush();
 
-
-
                             $dispatcher = $this->get('event_dispatcher');
 
                             /*Checking if someone have placed orders. of not, event status instantly will be
                             changed to EVENT_NO_DEBTS. This way FOOD_DELIVERED will be skiped*/
                             if($debt == 0){
-                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
 
+                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
                                 $this->addFlash(
                                     'notice',
                                     'Changes have been saved.'
@@ -472,7 +467,6 @@ class DefaultController extends Controller
                             } else {
 
                                 $dispatcher->dispatch(EventEvents::EVENT_FOOD_ORDERED, new SendMailsEvent($event));
-
                                 $this->addFlash(
                                     'notice',
                                     'Changes have been saved, and emails to all event "' . $event->getTitle() .'" members have been sent'
@@ -515,91 +509,85 @@ class DefaultController extends Controller
             $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
             if ($event != null) {
                 if ($user == $event->getHost()) {
-                    $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
-                    $unpaidUserIds = [];
-                    $unpaidGuests = new ArrayCollection();
-                    foreach ($orderedGuests as $guest)
-                    {
-                        if ($guest[1] != $event->getHost()->getId())
-                        {
-                            $usr = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($guest[1]);
-                            if (($event->getUserDebt($usr)) != 0.0)
-                            {
-                                $unpaidUserIds[$guest[1]] = 0;
-                                $unpaidGuests->add($usr);
-                            }
-                        }
-                    }
-
-                    $form =$this->createForm(new PaymentType($unpaidUserIds));
-
-                    $form->handleRequest($request);
-
-                    if ($form->isValid()) {
-                        $hasErrors = false;
-                        $payments = $form['payment']->getData();
-                        $em = $this->getDoctrine()->getEntityManager();
-                        foreach ($payments as $unpaidUserId => $amount) {
-                            $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
-                            if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest)))
-                            {
-                                $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
-
-                                if ($payment != null)
-                                {
-                                    $payment->setPaid($payment->getPaid() + $amount);
-                                    $em->persist($payment);
-                                    $em->flush();
-                                } else {
-                                    $payment = new Payment();
-                                    $payment->setEvent($event);
-                                    $payment->setUser($paidGuest);
-                                    $payment->setPaid($amount);
-                                    $em->persist($payment);
-                                    $em->flush();
-                                    $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
+                    if ($event->getDebtLeft() > 0) {
+                        $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
+                        $unpaidUserIds = [];
+                        $unpaidGuests = new ArrayCollection();
+                        foreach ($orderedGuests as $guest) {
+                            if ($guest[1] != $event->getHost()->getId()) {
+                                $usr = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($guest[1]);
+                                if (($event->getUserDebt($usr)) != 0.0) {
+                                    $unpaidUserIds[$guest[1]] = 0;
+                                    $unpaidGuests->add($usr);
                                 }
+                            }
+                        }
+
+                        $form = $this->createForm(new PaymentType($unpaidUserIds));
+                        $form->handleRequest($request);
+
+                        if ($form->isValid()) {
+                            $hasErrors = false;
+                            $payments = $form['payment']->getData();
+                            $em = $this->getDoctrine()->getEntityManager();
+                            foreach ($payments as $unpaidUserId => $amount) {
+                                $paidGuest = $this->getDoctrine()->getRepository('CorvusMainBundle:User')->find($unpaidUserId);
+                                if (($amount >= 0) && ($amount <= $event->getUserDebt($paidGuest))) {
+                                    $payment = $this->getDoctrine()->getRepository('EventBundle:Payment')->findOneBy(['event' => $event, 'user' => $paidGuest]);
+
+                                    if ($payment != null) {
+                                        $payment->setPaid($payment->getPaid() + $amount);
+                                        $em->persist($payment);
+                                        $em->flush();
+                                    } else {
+                                        $payment = new Payment();
+                                        $payment->setEvent($event);
+                                        $payment->setUser($paidGuest);
+                                        $payment->setPaid($amount);
+                                        $em->persist($payment);
+                                        $em->flush();
+                                        $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
+                                    }
+                                } else {
+                                    $hasErrors = true;
+                                }
+                            }
+                            if ($hasErrors) {
+                                $this->addFlash(
+                                    'notice',
+                                    'Payment should be not less than 0 and not greater than debt.'
+                                );
+                                return $this->redirectToRoute('payments', ['id' => $id]);
                             } else {
-                                $hasErrors = true;
+                                $em->refresh($event);
+                                if (($event->getDebtLeft() == 0.0) && ($event->getStatus() == 4)) {
+                                    $dispatcher = $this->get('event_dispatcher');
+                                    $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
+                                    $em->persist($event);
+                                    $em->flush();
+                                }
+                                $this->addFlash(
+                                    'notice',
+                                    'Payments have been saved!'
+                                );
+                                return $this->redirectToRoute('dashboard');
                             }
                         }
-                        if ($hasErrors)
-                        {
-                            $this->addFlash(
-                                'notice',
-                                'Payment should be not less than 0 and not greater than debt.'
-                            );
-                            return $this->redirectToRoute('payments', ['id' => $id]);
-                        } else {
-                            $em->refresh($event);
-                            if (($event->getDebtLeft() == 0.0) && ($event->getStatus() == 4))
-                            {
-                                $dispatcher = $this->get('event_dispatcher');
-                                $dispatcher->dispatch(EventEvents::EVENT_NO_DEBTS, new EventStatusChangeEvent($event));
-                                $em->persist($event);
-                                $em->flush();
-                            }
-                            $this->addFlash(
-                                'notice',
-                                'Payments have been saved!'
-                            );
-                            return $this->redirectToRoute('dashboard');
-                        }
+
+
+                        $remind_button_action_url = ['url' => '/remind/'.$id];
+                        $RemindButton = $this->createForm(new RemindDebtsType($remind_button_action_url));
+                        
+                        return [
+                            'event' => $event,
+                            'guests' => $unpaidGuests,
+                            'form' => $form->createView(),
+                            'Remind_button' => $RemindButton->createView(),
+                        ];
+                    } else
+                    {
+                        return $this->redirectToRoute('dashboard');
                     }
-
-                    $request = new Request();
-                    $request->setRequestFormat('from_payment');
-
-
-                    $RemindButton = $this->remindDebtsAction($event->getId(), $request);
-
-
-                    return [
-                        'event' => $event,
-                        'guests' => $unpaidGuests,
-                        'form' => $form->createView(),
-                        'Remind_button' => $RemindButton['form'],
-                    ];
                 } else {
                     throw $this->createAccessDeniedException("You shall not pass!");
                 }
@@ -726,23 +714,18 @@ class DefaultController extends Controller
     public function remindDebtsAction($id, Request $request)
     {
 
-        $form = $this->createFormBuilder()
-            ->setAction($this->generateUrl('remind_debts',['id' => $id]))
-            ->setData(['id' => $id])
-            ->add('save', 'submit', ['label' => 'Remind To pay debts'])
-            ->getForm();
+        $form = $this->createForm(new RemindDebtsType());
 
-        if($request->getRequestFormat() == 'from_payment') {
-            return [
-                'form' => $form->createView(),
-            ];
+        if($request->getMethod() != 'POST') {
+            return $this->redirectToRoute('dashboard');
         } else {
+
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                 $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
-                $unpaidUserIds = [];
                 $unpaidGuests = new ArrayCollection();
+
                 foreach ($orderedGuests as $guest)
                 {
                     if ($guest[1] != $event->getHost()->getId())
