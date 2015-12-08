@@ -185,12 +185,15 @@
                             </div>
                         </div>
                     {% elseif event.status == 4 %}
-                        <div class="event_item row grey">
+                        <div class="event_item row  {% if event.getUserDebt(user) > 0%}red{% else %}grey{% endif %}">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
                                 <div class="col-md-12 ">
                                     <p>Arrived</p>
+                                    {% if event.getUserDebt(user) > 0%}
+                                        <p>Your debt: {{ event.getUserDebt(user) }}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-5 buttons">
