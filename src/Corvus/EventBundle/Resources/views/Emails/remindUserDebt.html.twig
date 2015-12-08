@@ -1,0 +1,15 @@
+<h3>You have unpaid debts</h3>
+
+Hello, {{ user.username }}.<br><br>
+
+User {{ event.host.username }} want to remind you, that you have unpaid debts.<br><br>
+
+You owe him: {{ debt }}<br>
+You were participating in "{{ event.title }}"<br>
+<br>
+CorvusFood website:
+<a href="{{ url('login') }}">CorvusFood</a> <br><br>
+
+Thanks!<br>
+
+CorvusFood Group.
