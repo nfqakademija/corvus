@@ -13,7 +13,8 @@ class RemindDebtsType extends AbstractType
 
     public function __construct( $url = null)
     {
-        $this->action_url = $url;
+
+        $this->url = $url;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -21,7 +22,7 @@ class RemindDebtsType extends AbstractType
         $builder->add('save', 'submit', [
             'label' => 'Remind To pay debts',
             ]
-        )->setAction($this->url);
+        )->setAction($this->url['url']);
 
     }
     public function getName()

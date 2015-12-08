@@ -591,9 +591,9 @@ class DefaultController extends Controller
                     $request = new Request();
                     $request->setRequestFormat('from_payment');
 
-                    $button_action_url = ['url' => 'remind/'.$id];
+                    $button_action_url = ['url' => '/remind/'.$id];
 
-                    $RemindButton = $this->createForm(new RemindDebtsType($id, $button_action_url));
+                    $RemindButton = $this->createForm(new RemindDebtsType($button_action_url));
 
 
                     return [
@@ -728,13 +728,16 @@ class DefaultController extends Controller
     public function remindDebtsAction($id, Request $request)
     {
 
+
         $form = $this->createForm(new RemindDebtsType());
 
-        if($request->getMethod() == 'POST') {
+        if($request->getMethod() != 'POST') {
             return $this->redirectToRoute('dashboard');
         } else
         {
+
             $form->handleRequest($request);
+
             if ($form->isValid()) {
                 $event = $this->getDoctrine()->getRepository('EventBundle:Event')->find($id);
                 $orderedGuests = $this->getDoctrine()->getRepository('EventBundle:Event')->getUsersWithOrders($id);
