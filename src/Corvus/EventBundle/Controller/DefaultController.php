@@ -7,7 +7,6 @@ use Corvus\EventBundle\Entity\Order;
 use Corvus\EventBundle\Entity\Payment;
 use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\Event\SendMailsEvent;
-use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
