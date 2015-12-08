@@ -9,8 +9,6 @@
 namespace Corvus\EventBundle\Event;
 
 
-use Symfony\Component\EventDispatcher\Event;
-
 class SendMailsEvent extends EventStatusChangeEvent
 {
     private $event;
@@ -26,10 +24,6 @@ class SendMailsEvent extends EventStatusChangeEvent
         $this->event = $event;
         $this->users = $users;
         $this->emails = $emails;
-    }
-    public function getEvent()
-    {
-        return $this->event;
     }
 
     public function getUsers()
