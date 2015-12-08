@@ -33,7 +33,7 @@
     {% import _self as buttons %}
                 {% if user.id == event.host.id %}
                     {% if event.status == 1 %}
-                        <div class="event_item row">
+                        <div class="event_item row green">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                     {% elseif event.status == 2 %}
-                        <div class="event_item row">
+                        <div class="event_item row orange">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                     {% elseif event.status == 3 %}
-                        <div class="event_item row">
+                        <div class="event_item row orange">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -99,7 +99,7 @@
                                 <div class="col-md-6">
                                     {{ buttons.arrived(event.id, 'btn btn-default') }}
                                 </div>
-                                <div class="dropdown col-md-6 pull-right">
+                                <div class="dropdown col-md-6">
                                     <button class="btn btn-default dropdown-toggle col-md-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         More
                                         <span class="caret"></span>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                     {% elseif event.status == 4 %}
-                        <div class="event_item row">
+                        <div class="event_item row blue">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -122,7 +122,7 @@
                                 </div>
                             </div>
                             <div class="col-md-5 buttons">
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-xs-12">
                                     {{ buttons.payments(event.id, 'btn btn-default') }}
                                 </div>
                                 <div class="col-md-6">
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="event_item row">
+                        <div class="event_item row grey">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -146,7 +146,7 @@
                     {% endif %}
                 {% else %}
                     {% if event.status == 1 %}
-                        <div class="event_item row">
+                        <div class="event_item row green">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -159,7 +159,7 @@
                             </div>
                         </div>
                     {% elseif event.status == 2 %}
-                        <div class="event_item row">
+                        <div class="event_item row orange">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -172,7 +172,7 @@
                             </div>
                         </div>
                     {% elseif event.status == 3 %}
-                        <div class="event_item row">
+                        <div class="event_item row orange">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
@@ -185,12 +185,15 @@
                             </div>
                         </div>
                     {% elseif event.status == 4 %}
-                        <div class="event_item row">
+                        <div class="event_item row  {% if event.getUserDebt(user) > 0%}red{% else %}grey{% endif %}">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>
                                 <div class="col-md-12 ">
                                     <p>Arrived</p>
+                                    {% if event.getUserDebt(user) > 0%}
+                                        <p>Your debt: {{ event.getUserDebt(user) }}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-5 buttons">
@@ -198,7 +201,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="event_item row">
+                        <div class="event_item row grey">
                             <span class="hosted_by">Host: <strong>{{ event.host.username }}</strong></span>
                             <div class="col-md-7 ">
                                 <h3>{{ event.title }}</h3>

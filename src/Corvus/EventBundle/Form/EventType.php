@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Count;
 
 class EventType extends AbstractType
 {
@@ -24,19 +25,15 @@ class EventType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
                 'attr' => ['class' => 'date'],
-                    'constraints' => [
-                        new DateTimeNotPast()
-                    ]
+                'constraints' => new DateTimeNotPast()
                 ]
             )
             ->add('emails', 'collection', [
+                'constraints' => new Count(1),
                 'label' => 'Guests:',
                 'type' => new EventMailType,
-                'allow_add'    => true]
-            )
-            ->add('submit', 'submit', [
-                'label' => 'Create'
-            ]);
+                'allow_add'    => true])
+            ->add('submit', 'submit', ['label' => 'Create']);
     }
     public function getName()
     {
