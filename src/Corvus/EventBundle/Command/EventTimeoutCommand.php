@@ -32,13 +32,10 @@ class EventTimeoutCommand extends ContainerAwareCommand
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $events = $em->getRepository('EventBundle:Event')->findBy(['status' => 1]);
         $timeNow = new \DateTime('now');
-        foreach ($events as $event)
-        {
-            if ($event->getStatus() == 1)
-            {
+        foreach ($events as $event) {
+            if ($event->getStatus() == 1) {
                 $endDate = $event->getEndDateTime();
-                if ($endDate < $timeNow)
-                {
+                if ($endDate < $timeNow) {
                     $dispatcher = $this->getContainer()->get('event_dispatcher');
                     $dispatcher->dispatch(EventEvents::EVENT_TIMEOUT, new SendMailsEvent($event));
                     $em->persist($event);

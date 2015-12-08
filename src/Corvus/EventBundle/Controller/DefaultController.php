@@ -155,7 +155,6 @@ class DefaultController extends Controller
                         if($count ==0){
                             $emails->add($email);
                         }
-
                         $event->addEmail($email);
                     }
                 }
@@ -217,20 +216,17 @@ class DefaultController extends Controller
                 ->find($id);
 
             /* Throw exception if event with that id doesn't exists*/
-            if (!$event)
-            {
+            if (!$event) {
                 throw $this->createNotFoundException(
                     'No event found for id '.$id
                 );
-            } else
-            {
+            } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
 
-                if(!$event->getUsers()->contains($user))
-                {
-                    if($event->getHost() != $user)
-                    {
+                if(!$event->getUsers()->contains($user)) {
+                    if($event->getHost() != $user) {
                         throw new \Exception('You are not in this event');
+
                     }
                 }
 
@@ -252,10 +248,8 @@ class DefaultController extends Controller
 
                 $cart = new Cart();
 
-                if ($OriginalOrders != null)
-                {
-                    foreach ($OriginalOrders as $order)
-                    {
+                if ($OriginalOrders != null) {
+                    foreach ($OriginalOrders as $order) {
                         $cart->getOrders()->add($order);
                     }
                 }
@@ -264,55 +258,44 @@ class DefaultController extends Controller
 
                 $form->handleRequest($request);
 
-                if($form->isValid())
-                {
+                if($form->isValid()) {
                     $newOrders = $form["orders"];
 
                     /*For security purposes. In form every dish_id mustbe
                     recognizable in dishes. If not, that means someone changed dish id
                     in hidden form for purpose */
-                    foreach ($newOrders as $newOrder)
-                    {
+                    foreach ($newOrders as $newOrder) {
                         $contains = false;
-                        foreach ($dishes as $dish)
-                        {
-                            if($newOrder->get('dish_id')->getData() == $dish->getId())
-                            {
+                        foreach ($dishes as $dish) {
+                            if($newOrder->get('dish_id')->getData() == $dish->getId()) {
                                 $contains = true;
                             }
                         }
-                        if($contains == false)
-                        {
+                        if($contains == false) {
                             throw new \Exception('Something went wrong!');
                         }
                     }
 
                     $matched = false;
-                    foreach ($OriginalOrders as $order)
-                    {
-                        foreach($newOrders as $newOrder)
-                        {
-                            if($order->getDish()->getId() == $newOrder->get('dish_id')->getData())
-                            {
+                    foreach ($OriginalOrders as $order) {
+                        foreach($newOrders as $newOrder) {
+                            if($order->getDish()->getId() == $newOrder->get('dish_id')->getData()) {
                                 $matched = true;
                             }
-                            if($matched == false)
-                            {
+                            if($matched == false) {
                                 $em->remove($order);
                             }
                             $matched = false;
                         }
                     }
 
-                    foreach($newOrders as $newOrder)
-                    {
+                    foreach($newOrders as $newOrder) {
                         $dish_id = $newOrder->get('dish_id')->getData();
                         $order = $newOrder->getData();
 
                         $quantity = $order->getQuantity();
 
-                        if($quantity > 0 && $quantity < 1000)
-                        {
+                        if($quantity > 0 && $quantity < 1000) {
                             $dish = $this->getDoctrine()
                                 ->getRepository('FoodBundle:Dish')->find($dish_id);
 

@@ -39,10 +39,12 @@ class EditEventType extends AbstractType
                 'allow_add'    => true])
             ->add('submit', 'submit', ['label' => 'Save']);
     }
+
     public function getName()
     {
         return 'event';
     }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([

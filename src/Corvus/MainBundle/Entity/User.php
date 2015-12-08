@@ -205,13 +205,12 @@ class User extends BaseUser
     public function getOrdersForEvent(\Corvus\EventBundle\Entity\Event $event)
     {
         $orders = new ArrayCollection();
-        foreach ($this->orders as $order)
-        {
-            if ($order->getEvent() == $event)
-            {
+        foreach ($this->orders as $order) {
+            if ($order->getEvent() == $event) {
                 $orders->add($order);
             }
         }
+
         return $orders;
     }
 }

@@ -36,8 +36,7 @@ class EventAltered implements EventSubscriberInterface
         $Corvus_event->setStatus(0);
         $orders = $event->getEvent()->getOrders();
 
-        if($orders != null)
-        {
+        if($orders != null) {
             foreach ($orders as $order) {
                 $order->setIsRemoved(true);
             }
@@ -52,8 +51,7 @@ class EventAltered implements EventSubscriberInterface
 
     public function onEventFoodDelivered(EventStatusChangeEvent $event)
     {
-        if ($event->getEvent()->getDebtLeft() != 0)
-        {
+        if ($event->getEvent()->getDebtLeft() != 0) {
             $event->getEvent()->setStatus(4);
         } else {
             $event->getEvent()->setStatus(5);

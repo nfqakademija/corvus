@@ -419,8 +419,7 @@ class Event
     {
         $orders = [];
         foreach ($this->orders as $order) {
-            if ($order->getUser() != $order->getEvent()->getHost())
-            {
+            if ($order->getUser() != $order->getEvent()->getHost()) {
                 $orders[$order->getUser()->getId()] = true;
             }
         }
@@ -470,10 +469,8 @@ class Event
     public function getUserTotal(User $user)
     {
         $total = 0;
-        foreach ($this->orders as $order)
-        {
-            if (($order->getUser() == $user) && (!$order->getIsRemoved()))
-            {
+        foreach ($this->orders as $order) {
+            if (($order->getUser() == $user) && (!$order->getIsRemoved())) {
                 $total += $order->getPricePerUnit() * $order->getQuantity();
             }
         }
@@ -483,10 +480,8 @@ class Event
     public function getUserDebt(User $user)
     {
         $debt = $this->getUserTotal($user);
-        foreach ($this->payments as $payment)
-        {
-            if ($payment->getUser() == $user)
-            {
+        foreach ($this->payments as $payment) {
+            if ($payment->getUser() == $user) {
                 $debt -= $payment->getPaid();
             }
         }
