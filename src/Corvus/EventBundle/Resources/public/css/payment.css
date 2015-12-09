@@ -5,10 +5,14 @@
     padding-bottom: 5px;
 }
 .payment_item {
+    border: solid 1px lightgray;
     padding: 5px 0;
+    margin-bottom: 10px;
+    height: 45px;
 }
 .event_info{
-    padding: 5px 0;
+    padding: 10px;
+    border: 1px solid lightgray;
 }
 .save{
     margin-left: 10px;

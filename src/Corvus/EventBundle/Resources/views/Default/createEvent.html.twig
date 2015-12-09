@@ -3,7 +3,9 @@
     <link href="{{asset('bundles/event/css/event.css')}}" type="text/css" rel="stylesheet">
 {% endblock %}
 {% block body %}
+
     <div class="col-md-6 col-md-offset-3 text-center">
+        <div class="h2">New event</div>
         {{ form_start(form, { 'attr' : {'class' : 'create_event_form'}}) }}
         {# render the task's only field: description #}
         <div class="form-group">
@@ -28,7 +30,7 @@
         {{ form_label(form.emails)}}
         {{ form_errors(form.emails) }}
         <div class="form-group email">
-            <input class="form-control email_input" type="text"> <button class="btn btn-default email_add" id="add_email_button">Add</button>
+            <input class="form-control email_input" type="text" placeholder="example@example.com"> <button class="btn btn-default email_add" id="add_email_button">Add</button>
         </div>
         <div class="email_list" data-prototype="{{ form_widget(form.emails.vars.prototype.email)|e }}">
         </div>

@@ -12,9 +12,13 @@
             <a id="addEvent" href="{{ path('corvus_event_default_createevent') }}" class="btn btn-primary pull-right">Add new event</a>
         </div>
         <div class="event_list_wrapper col-md-offset-1 col-md-10">
-    {% for event in events %}
-        {{ macro.renderEvent(event, user) }}
-    {% endfor %}
+    {% if events|length > 0 %}
+        {% for event in events %}
+            {{ macro.renderEvent(event, user) }}
+        {% endfor %}
+    {% else %}
+        <h1>There are no events yet. Go on and create one!</h1>
+    {% endif %}
         </div>
         </div>
 </div>
