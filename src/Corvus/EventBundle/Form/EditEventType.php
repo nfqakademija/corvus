@@ -23,7 +23,7 @@ class EditEventType extends AbstractType
                 'disabled' => true
             ])
             ->add('end_date_time', 'datetime', [
-                'label' => 'Order ends:',
+                'label' => 'Order end time',
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
@@ -34,7 +34,7 @@ class EditEventType extends AbstractType
                 'disabled' => true
             ])
             ->add('emails', 'collection', [
-                'label' => 'Guests:',
+                'label' => 'Email invitations',
                 'type' => new EventMailType,
                 'allow_add'    => true])
             ->add('submit', 'submit', ['label' => 'Save']);
