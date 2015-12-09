@@ -5,72 +5,73 @@
 {% block body %}
     <div class="col-md-offset-1 col-md-10 order_head">
         <h1>Payments</h1>
-
     </div>
-    <div class="col-md-offset-1 col-md-10  event_info">
-        <h4>Event details:</h4>
-        <div class="col-md-4" >
-            <b>Event name:</b> <br>
-            {{ event.title }}!
-        </div>
+    <div class="row">
+        <h4 class="col-md-offset-1 col-md-10">Event details:</h4>
+        <div class="col-md-offset-1 col-md-10  event_info">
 
-        <div class="col-md-4" >
-            <b>End date:</b> <br>
-            {{ event.enddatetime | date }}
-        </div>
+            <div class="col-md-4" >
+                <b>Event name:</b> <br>
+                {{ event.title }}!
+            </div>
+            <div class="col-md-4" >
+                <b>End date:</b> <br>
+                {{ event.enddatetime | date }}
+            </div>
 
-        <div class="col-md-4" >
-            <b>Food Dealer:</b> <br>
-            {{ event.dealer }}
-        </div>
-    </div>
-        <div class="row">
-            <div class="col-md-offset-1 col-md-10 payment_head">
-                <h4>Debt list:</h4>
-                <div class="col-md-4">
-                    <strong>Username</strong>
-                </div>
-                <div class="col-md-4">
-                    <strong>Debt</strong>
-                </div>
-                <div class="col-md-4">
-                    <strong>Paid</strong>
-                </div>
+            <div class="col-md-4" >
+                <b>Food Dealer:</b> <br>
+                {{ event.dealer }}
             </div>
         </div>
-        {{ form_start(form, { 'attr' : {'class' : 'form_inline'}}) }}
-            {% for guest in guests %}
-                <div class="row">
-                    <div class=" payment_item col-md-offset-1 col-md-10">
-                        <div class="col-md-4">
-                            {{ guest.getUsername }}
-                        </div>
-                        <div class="col-md-4">
-                            Debt: {{ event.getUserDebt(guest) }}
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {{ form_errors(form.payment[guest.id]) }}
-                                {{ form_widget(form.payment[guest.id], { 'attr' : { 'class' : 'form-control paid'}  }) }}
-                            </div>
-                        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10 payment_head">
+            <h4>Debt list:</h4>
+            <div class="col-md-4">
+                <strong>Username</strong>
+            </div>
+            <div class="col-md-4">
+                <strong>Debt</strong>
+            </div>
+            <div class="col-md-4">
+                <strong>Paid</strong>
+            </div>
+        </div>
+    </div>
+    {{ form_start(form, { 'attr' : {'class' : 'form_inline'}}) }}
+    {% for guest in guests %}
+        <div class="row">
+            <div class=" payment_item col-md-offset-1 col-md-10">
+                <div class="col-md-4">
+                    {{ guest.getUsername }}
+                </div>
+                <div class="col-md-4">
+                    {{ event.getUserDebt(guest) }}
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {{ form_errors(form.payment[guest.id]) }}
+                        {{ form_widget(form.payment[guest.id], { 'attr' : { 'class' : 'form-control paid'}  }) }}
                     </div>
                 </div>
-            {% endfor %}
-        <div class="row">
-            <div class="col-md-offset-1 col-md-10">
-                {{ form_widget(form.save, { 'attr': {'class': 'save btn btn-success pull-right'} }) }}
-                <a href="{{ path('dashboard') }}" class="btn btn-default pull-right" role="button">Cancel</a>
-
-                {{ form_end(form) }}
-
-                {{ form_start(Remind_button) }}
-                {{ form_widget(Remind_button.save, { 'attr': {'class': 'btn btn-default'} }) }}
-                {{ form_end(Remind_button) }}
-
-
             </div>
         </div>
+    {% endfor %}
+    <div class="row">
+        <div class="col-md-offset-1 col-md-10">
+            {{ form_widget(form.save, { 'attr': {'class': 'save btn btn-success pull-right'} }) }}
+            <a href="{{ path('dashboard') }}" class="btn btn-default pull-right" role="button">Cancel</a>
+
+            {{ form_end(form) }}
+
+            {{ form_start(Remind_button) }}
+            {{ form_widget(Remind_button.save, { 'attr': {'class': 'btn btn-default'} }) }}
+            {{ form_end(Remind_button) }}
+
+
+        </div>
+    </div>
 
     </div>
 {% endblock body %}
