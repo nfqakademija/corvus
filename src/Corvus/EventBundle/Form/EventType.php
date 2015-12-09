@@ -20,7 +20,7 @@ class EventType extends AbstractType
             ])
             ->add('title', 'text')
             ->add('end_date_time', 'datetime', [
-                'label' => 'Order ends:',
+                'label' => 'Order end time',
                 'input' => 'datetime',
                 'widget' => 'single_text',
                 'format' => 'y-MM-dd HH:mm',
@@ -35,7 +35,7 @@ class EventType extends AbstractType
                     'minMessage' => 'Invite at least one guest',
                     'maxMessage' => 'Can not invite more than 50 guests'
                 ]),
-                'label' => 'Guests:',
+                'label' => 'Email invitations',
                 'type' => new EventMailType,
                 'allow_add'    => true])
             ->add('submit', 'submit', ['label' => 'Create']);
