@@ -319,7 +319,7 @@ class SendMails implements EventSubscriberInterface
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
-                    ->setSubject('Event suspended')
+                    ->setSubject('Food picking time ended.')
                     ->setFrom('corvusfood@gmail.com')
                     ->setTo($email)
                     ->setBody(
