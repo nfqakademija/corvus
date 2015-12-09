@@ -280,11 +280,11 @@ class DefaultController extends Controller
                             if ($order->getDish()->getId() == $newOrder->get('dish_id')->getData()) {
                                 $matched = true;
                             }
-                            if ($matched == false) {
-                                $em->remove($order);
-                            }
-                            $matched = false;
                         }
+                        if ($matched == false) {
+                            $em->remove($order);
+                        }
+                        $matched = false;
                     }
 
                     foreach ($newOrders as $newOrder) {
