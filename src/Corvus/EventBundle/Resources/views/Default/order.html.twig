@@ -8,24 +8,31 @@
         <p>Here you can see the list of dishes people participating in your event wants to eat. Once you are sure that every item is really available set approximate delivery time and click save.</p>
         <p>If for some reason dish can not be ordered tick the checkbox and it will not be included in the debt list.</p>
     </div>
-    <div class="col-md-offset-1 col-md-10">
-        <div class="col-md-3" >
+    <div class="col-md-offset-1 col-md-10 event_info">
+        <div class="col-md-4" >
             <b>Event name:</b> <br>
             {{ event.title }}!
         </div>
 
-        <div class="col-md-3" >
+        <div class="col-md-4" >
             <b>Date:</b> <br>
             {{ event.enddatetime | date }}
         </div>
-
-        <div class="col-md-3" >
-            <b>Food Dealer:</b> <br>
-            {{ dealer }}
-        </div>
-        <div class="col-md-3" >
+        <div class="col-md-4" >
             <b>Ammount of people who ordered: </b>
             {{ people_count}}
+        </div>
+        <div class="col-md-4" >
+            <b>Food Dealer:</b> <br>
+            {{ dealer.name }}
+        </div>
+        <div class="col-md-4" >
+            <b>Dealer address:</b> <br>
+            {{ dealer.address }}
+        </div>
+        <div class="col-md-4" >
+            <b>Dealer address:</b> <br>
+            {{ dealer.phone }}
         </div>
     </div>
 
