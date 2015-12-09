@@ -29,7 +29,12 @@ class EventType extends AbstractType
                 ]
             )
             ->add('emails', 'collection', [
-                'constraints' => new Count(1),
+                'constraints' => new Count([
+                    'min' => 1,
+                    'max' => 50,
+                    'minMessage' => 'Invite at least one guest',
+                    'maxMessage' => 'Can not invite more than 50 guests'
+                ]),
                 'label' => 'Guests:',
                 'type' => new EventMailType,
                 'allow_add'    => true])
