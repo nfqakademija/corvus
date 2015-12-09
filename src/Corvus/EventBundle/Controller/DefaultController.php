@@ -571,12 +571,9 @@ class DefaultController extends Controller
             if ($event != null) {
                 $user = $this->container->get('security.token_storage')->getToken()->getUser();
                 if (($user == $event->getHost()) || ($event->getUsers()->contains($user))) {
-
-                    $users = $event->getUsers();
-                    $users->add($event->getHost());
                     return [
                         'event' => $event,
-                        'users' => new ArrayCollection(array_merge([$event->getHost()], $users->toArray()))
+                        'users' => new ArrayCollection(array_merge([$event->getHost()], $event->getUsers()->toArray()))
                     ];
                 } else {
                     throw $this->createAccessDeniedException('You shall not pass!');
