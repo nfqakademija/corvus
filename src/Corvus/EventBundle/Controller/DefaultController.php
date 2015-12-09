@@ -9,6 +9,7 @@ use Corvus\EventBundle\Event\EventStatusChangeEvent;
 use Corvus\EventBundle\Event\SendMailsEvent;
 use Corvus\EventBundle\EventEvents;
 use Corvus\EventBundle\Form\Type\CartType;
+use Corvus\EventBundle\Form\Type\ConfirmCheckboxType;
 use Corvus\EventBundle\Form\Type\MissingDishCheckType;
 use Corvus\EventBundle\Form\Type\PaymentType;
 use Corvus\EventBundle\Form\Type\RemindDebtsType;
@@ -375,8 +376,7 @@ class DefaultController extends Controller
                         $orders = $this->getDoctrine()
                             ->getRepository('EventBundle:Order')
                             ->getGroupedOrders($event);
-
-                        /* Get dealer name*/
+                        
                         $dealer_id = $event->getDealer();
                         $dealer = $this->getDoctrine()
                             ->getRepository('FoodBundle:Dealer')->find($dealer_id);
@@ -615,17 +615,7 @@ class DefaultController extends Controller
                         'You are not in this event' . $id
                     );
                 } else {
-                    //main code
-
-                    $form = $this->createFormBuilder()
-                        ->add('confirm', 'checkbox', [
-
-                            'label'     => 'Confirm',
-                            'required'  => false,
-                            'data'      => false,
-                        ])
-                        ->add('save', 'submit', ['label' => 'Confirm'])
-                        ->getForm();
+                    $form = $this->createForm(new ConfirmCheckboxType());
 
                     $form->handleRequest($request);
 
@@ -717,4 +707,5 @@ class DefaultController extends Controller
             }
         }
     }
+
 }

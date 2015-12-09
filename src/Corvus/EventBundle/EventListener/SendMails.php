@@ -152,7 +152,7 @@ class SendMails implements EventSubscriberInterface
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
-                    ->setSubject('Hello Email')
+                    ->setSubject('Invitation to event ' . $event->getTitle())
                     ->setFrom('corvusfood@gmail.com')
                     ->setTo($email)
                     ->setBody(
@@ -174,7 +174,7 @@ class SendMails implements EventSubscriberInterface
                 $email_string = $email->getEmail();
 
                 $message = $this->mailer->createMessage()
-                    ->setSubject('Hello Email')
+                    ->setSubject('Invitation to event ' . $event->getTitle())
                     ->setFrom('corvusfood@gmail.com')
                     ->setTo($email_string)
                     ->setBody(
@@ -319,7 +319,7 @@ class SendMails implements EventSubscriberInterface
                 $email = $user->getEmail();
 
                 $message = $this->mailer->createMessage()
-                    ->setSubject('Food ordered')
+                    ->setSubject('Event suspended')
                     ->setFrom('corvusfood@gmail.com')
                     ->setTo($email)
                     ->setBody(

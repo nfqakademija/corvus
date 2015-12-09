@@ -1,14 +1,14 @@
 
-<h3>Food, for {{ event.title }} event has been ordered</h3>
+<h3>Food, for "{{ event.title }}" event has been ordered</h3>
 
 Hello, {{ name }}<br><br>
 
-We want to announce, that food for {{ event.title }} has been ordered<br>
+We want to announce, that food for "{{ event.title }}" has been ordered.<br>
 
 But some of your orders were deleted:<br><br>
 <ul>
 {% for order in removed_orders %}
-    <li>{{ order.getDish.getName }}, {{ order.getQuantity }} piece's</li>
+    <li>{{ order.getDish.getName }}, {{ order.getQuantity }} piece's.</li>
 {% endfor %}
 </ul><br>
 
@@ -16,11 +16,11 @@ Food that will be delivered for you:<br><br>
 
 <ul>
     {% for order in orders %}
-        <li>{{ order.getDish.getName }}, {{ order.getQuantity }} piece's. Price: {{ order.getQuantity * order.pricePerUnit }}</li>
+        <li>{{ order.getDish.getName }}, {{ order.getQuantity }} piece's. Price: {{ order.getQuantity * order.pricePerUnit }}€.</li>
     {% endfor %}
 </ul><br>
 
-Approximate devlivery time: {{ delivery_time |date('Y-m-d H-i')}}<br>
+Approximate devlivery time: {{ delivery_time |date('Y-m-d H-i')}}.<br>
 Enjoy your meal :)<br><br>
 
 Massive Food ordering system: <a href="{{ url('login') }}">CorvusFood</a>.<br><br>

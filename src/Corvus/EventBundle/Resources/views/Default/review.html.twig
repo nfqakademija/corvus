@@ -35,7 +35,7 @@
                         <div class="row dish">
                             <div class="col-md-offset-3 col-md-3">{% if order.isRemoved %}<del>{% endif %}{{ order.dish.name }}{% if order.isRemoved %}</del>{% endif %}</div>
                             <div class="col-md-3">{% if order.isRemoved %}<del>{% endif %}{{ order.quantity }}{% if order.isRemoved %}</del>{% endif %}</div>
-                            <div class="col-md-3">{% if order.isRemoved %}<del>{% endif %}{{ order.dish.price }}{% if order.isRemoved %}</del>{% endif %}</div>
+                            <div class="col-md-3">{% if order.isRemoved %}<del>{% endif %}{{ order.dish.price }}€{% if order.isRemoved %}</del>{% endif %}</div>
                         </div>
                     {% endfor %}
                 </div>
@@ -43,7 +43,7 @@
             </div>
         {% endfor %}
         <div class="row">
-            <div class="col-md-offset-9 col-md-3"><h4>Total price: €{{ event.getTotal }}</h4></div>
+            <div class="col-md-offset-9 col-md-3"><h4>Total price: {{ event.getTotal  | number_format(2) }}€</h4></div>
         </div>
     </div>
 {% endblock body %}
