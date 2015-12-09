@@ -443,7 +443,7 @@ class DefaultController extends Controller
                         return $this->render('EventBundle:Default:order.html.twig',
                             [
                             'event' => $event,
-                            'dealer' => $dealer_name,
+                            'dealer' => $dealer,
                             'people_count' => $people_count,
                             'orders' => $orders,
                             'form' => $form->createView(),
@@ -537,7 +537,7 @@ class DefaultController extends Controller
 
                         $remind_button_action_url = ['url' => '/remind/'.$id];
                         $RemindButton = $this->createForm(new RemindDebtsType($remind_button_action_url));
-                        
+
                         return [
                             'event' => $event,
                             'guests' => $unpaidGuests,
