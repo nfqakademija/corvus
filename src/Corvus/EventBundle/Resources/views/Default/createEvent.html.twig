@@ -8,6 +8,7 @@
         <div class="h2">New event</div>
         {{ form_start(form, { 'attr' : {'class' : 'create_event_form'}}) }}
         {# render the task's only field: description #}
+        {{ form_errors(form) }}
         <div class="form-group">
             {{ form_label(form.title) }}
             {{ form_errors(form.title) }}
